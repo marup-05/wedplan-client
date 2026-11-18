@@ -1,33 +1,33 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
+import {   
   ArrowLeft,
   MapPin,
   Star,
   ShieldCheck,
-  CalendarDays,
+  CalendarDays,       
   Heart,
   CheckCircle2,
 } from "lucide-react";
-
+          
 const services = [
   {
-    id: "1",
+    id: "1",             
     name: "Elegant Wedding Photography",
-    category: "Photography & Videography",
+    category: "Photography & Videography",             
     description:
-      "Capture every beautiful moment of your special day with our professional wedding photography team. We focus on natural emotions, elegant portraits, and timeless memories that you will cherish forever.",
+      "Capture every beautiful moment of your special day with our professional wedding photography team. We focus on natural emotions, elegant portraits, and timeless memories that you will cherish forever.",       
     price: 850,
     location: "Dhaka, Bangladesh",
-    vendor: "Dream Moments Studio",
+    vendor: "Dream Moments Studio",         
     vendorDescription:
       "Professional wedding photography and cinematography team creating beautiful wedding memories.",
     rating: "4.9",
-    reviews: 124,
+    reviews: 124,        
     images: [
       "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200",
-      "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800",
+      "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800",     
       "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800",
     ],
     approved: true,
