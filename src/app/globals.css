@@ -5,3 +5,7 @@
   --font-sans: var(--font-jakarta);
   --font-logo: var(--font-cormorant);
 }
+body {
+  background-color: #fff9f6;
+  color: #49333f;
+}
