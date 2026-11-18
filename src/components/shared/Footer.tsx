@@ -1,12 +1,32 @@
 
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import {
+  Heart,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
+import {
+  FaInstagram,
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaYoutube,
+} from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+
+const categories = [
+  "Photography & Videography",
+  "Wedding Venues",
+  "Decoration & Florist",
+];
 
 export function Footer() {
   return (
-    <footer className="bg-[#49333F] px-5 py-7 text-white md:px-8 md:py-8">
+    <footer className="bg-[#49333F] px-5 py-9 text-white md:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-6 border-b border-white/15 pb-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 border-b border-white/15 pb-7 sm:grid-cols-2 lg:grid-cols-4">
+
           {/* Brand */}
           <div>
             <Link
@@ -16,19 +36,46 @@ export function Footer() {
               WedPlan
             </Link>
 
-            <p className="mt-2 max-w-xs text-xs leading-6 text-white/65">
+            <p className="mt-3 max-w-xs text-xs leading-6 text-white/65">
               Discover trusted wedding professionals and bring your
               dream wedding to life with WedPlan.
             </p>
+
+            {/* Social Icons */}
+            <div className="mt-5 flex items-center gap-4 text-white/65">
+              <Link href="#" aria-label="Instagram" className="transition-colors hover:text-[#F3B2C8]">
+                <FaInstagram size={17} />
+              </Link>
+
+              <Link href="#" aria-label="Facebook" className="transition-colors hover:text-[#F3B2C8]">
+                <FaFacebookF size={17} />
+              </Link>
+
+              <Link href="#" aria-label="Twitter" className="transition-colors hover:text-[#F3B2C8]">
+                <FaTwitter size={17} />
+              </Link>
+
+              <Link href="#" aria-label="LinkedIn" className="transition-colors hover:text-[#F3B2C8]">
+                <FaLinkedinIn size={17} />
+              </Link>
+
+              <Link href="#" aria-label="X" className="transition-colors hover:text-[#F3B2C8]">
+                <FaXTwitter size={17} />
+              </Link>
+
+              <Link href="#" aria-label="YouTube" className="transition-colors hover:text-[#F3B2C8]">
+                <FaYoutube size={18} />
+              </Link>
+            </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-white">
+            <h3 className="mb-4 text-sm font-semibold text-white">
               Quick Links
             </h3>
 
-            <div className="flex flex-col gap-2 text-xs text-white/65">
+            <div className="flex flex-col gap-3 text-xs text-white/65">
               <Link href="/" className="transition-colors hover:text-[#F3B2C8]">
                 Home
               </Link>
@@ -44,37 +91,50 @@ export function Footer() {
 
           {/* Wedding Categories */}
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-white">
+            <h3 className="mb-4 text-sm font-semibold text-white">
               Wedding Categories
             </h3>
 
-            <div className="flex flex-col gap-2 text-xs text-white/65">
-              <p
-                // href="/services?category=Photography%20%26%20Videography"
-                className="transition-colors hover:text-[#F3B2C8]"
-              >
-                Photography & Videography
+            <div className="flex flex-col gap-3 text-xs text-white/65">
+              {categories.map((category) => (
+                <Link
+                  key={category}
+                  href={`/services?category=${encodeURIComponent(category)}`}
+                  className="transition-colors hover:text-[#F3B2C8]"
+                >
+                  {category}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div>
+            <h3 className="mb-4 text-sm font-semibold text-white">
+              Contact Information
+            </h3>
+
+            <div className="flex flex-col gap-4 text-xs text-white/65">
+              <p className="flex items-center gap-3">
+                <Mail size={15} className="shrink-0 text-[#F3B2C8]" />
+                hello@wedplan.com
               </p>
 
-              <Link
-                href="/services?category=Wedding%20Venues"
-                className="transition-colors hover:text-[#F3B2C8]"
-              >
-                Wedding Venues
-              </Link>
+              <p className="flex items-center gap-3">
+                <Phone size={15} className="shrink-0 text-[#F3B2C8]" />
+                +880 1XXX-XXXXXX
+              </p>
 
-              <Link
-                href="/services?category=Decoration%20%26%20Florist"
-                className="transition-colors hover:text-[#F3B2C8]"
-              >
-                Decoration & Florist
-              </Link>
+              <p className="flex items-center gap-3">
+                <MapPin size={15} className="shrink-0 text-[#F3B2C8]" />
+                Bangladesh
+              </p>
             </div>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="flex flex-col items-center justify-between gap-2 pt-5 text-center text-[11px] text-white/55 sm:flex-row sm:text-left">
+        <div className="flex flex-col items-center justify-between gap-3 pt-5 text-center text-[11px] text-white/55 sm:flex-row sm:text-left">
           <p>© 2026 WedPlan. All rights reserved.</p>
 
           <p className="flex items-center gap-1.5">
