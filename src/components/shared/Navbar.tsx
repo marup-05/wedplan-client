@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -55,7 +54,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-10 md:flex">
+        <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
 
@@ -63,7 +62,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative py-2 text-sm font-medium transition-colors duration-200 ${
+                className={`relative py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? "text-[#D96F96]"
                     : "text-[#66525E] hover:text-[#D96F96]"
@@ -77,6 +76,22 @@ export function Navbar() {
               </Link>
             );
           })}
+
+          <Link
+            href="/sign-in"
+            className={`text-sm font-semibold transition-colors hover:text-[#D96F96] ${
+              pathname === "/sign-in" ? "text-[#D96F96]" : "text-[#49333F]"
+            }`}
+          >
+            Sign In
+          </Link>
+
+          <Link
+            href="/sign-up"
+            className="rounded-full bg-[#E88BAA] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D96F96]"
+          >
+            Get Started
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -112,6 +127,22 @@ export function Navbar() {
                 </Link>
               );
             })}
+
+            <Link
+              href="/sign-in"
+              onClick={() => setIsOpen(false)}
+              className="rounded-lg px-4 py-3 text-sm font-semibold text-[#49333F] hover:bg-[#F5E8EC]"
+            >
+              Sign In
+            </Link>
+
+            <Link
+              href="/sign-up"
+              onClick={() => setIsOpen(false)}
+              className="mt-1 rounded-full bg-[#E88BAA] px-5 py-3 text-center text-sm font-semibold text-white hover:bg-[#D96F96]"
+            >
+              Get Started
+            </Link>
           </div>
         </div>
       )}
