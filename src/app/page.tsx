@@ -1,6 +1,7 @@
 
 import { FeaturedServices } from "@/components/home/FeaturedServices";
 import { Hero } from "@/components/home/Hero";
+import { HowItWorks } from "@/components/home/HowItWorks";
 import { ServiceCategories } from "@/components/home/ServiceCategories";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
 
@@ -13,6 +14,7 @@ export default function Home() {
       <FeaturedServices />
       <ServiceCategories />
       <WhyChooseUs />
+      <HowItWorks />
         
       </main>
     </>

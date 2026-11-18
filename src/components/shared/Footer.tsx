@@ -49,12 +49,12 @@ export function Footer() {
             </h3>
 
             <div className="flex flex-col gap-2 text-xs text-white/65">
-              <Link
-                href="/services?category=Photography%20%26%20Videography"
+              <p
+                // href="/services?category=Photography%20%26%20Videography"
                 className="transition-colors hover:text-[#F3B2C8]"
               >
                 Photography & Videography
-              </Link>
+              </p>
 
               <Link
                 href="/services?category=Wedding%20Venues"
