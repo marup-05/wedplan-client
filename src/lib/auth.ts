@@ -7,7 +7,7 @@ const db = client.db("wedplan");
 
 export const auth = betterAuth({
   emailAndPassword: {
-    enabled: true,
+    enabled: true,  
   },
   socialProviders: {
     google: {
