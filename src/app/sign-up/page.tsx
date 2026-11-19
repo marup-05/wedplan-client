@@ -175,7 +175,7 @@ export default function SignUpPage() {
         <div>
           <label className="mb-1.5 block text-sm font-medium text-[#49333F]">
             Profile Image{" "}
-            <span className="font-normal text-[#987B88]">(Optional)</span>
+            <span className="font-normal text-[#987B88]">(Require)</span>
           </label>
 
           <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#E8B5C7] bg-[#FFF9F6] p-3 transition hover:bg-[#FDF0F4]">
@@ -222,7 +222,7 @@ export default function SignUpPage() {
         <button
           type="button"
           disabled
-          className="h-12 w-full rounded-full bg-[#E88BAA] text-sm font-semibold text-white transition hover:bg-[#D96F96] disabled:cursor-not-allowed"
+          className="h-12 w-full rounded-full bg-[#E88BAA] text-sm font-semibold text-white transition hover:bg-[#D96F96]"
         >
           Create Account
         </button>
@@ -232,7 +232,7 @@ export default function SignUpPage() {
       <button
         type="button"
         disabled
-        className="mt-5 flex h-11 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] text-sm font-semibold text-[#49333F] transition hover:bg-[#FFF9F6] disabled:cursor-not-allowed"
+        className="mt-5 flex h-11 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] text-sm font-semibold text-[#49333F] transition hover:bg-[#FFF9F6]"
       >
         <FcGoogle size={21} />
         Continue with Google
