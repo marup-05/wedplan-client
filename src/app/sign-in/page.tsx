@@ -1,8 +1,70 @@
+
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { Eye, EyeOff } from "lucide-react";
 import { AuthLayout } from "@/components/auth/AuthLayout";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignInPage() {
+  const router = useRouter();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const result = await authClient.signIn.email({
+        email,
+        password,
+        callbackURL: "/",
+      });
+
+      if (result.error) {
+        setError(result.error.message || "Invalid email or password.");
+        return;
+      }
+
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Something went wrong."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    setError("");
+
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch {
+      setError("Google login failed. Please try again.");
+      setGoogleLoading(false);
+    }
+  };
+
   return (
     <AuthLayout>
       <div className="text-center">
@@ -25,7 +87,7 @@ export default function SignInPage() {
         <div className="h-px flex-1 bg-[#EADDE1]" />
       </div>
 
-      <form className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label
             htmlFor="email"
@@ -52,14 +114,25 @@ export default function SignInPage() {
             Password
           </label>
 
-          <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Enter your password"
-            required
-            className="h-12 w-full rounded-lg border border-[#EADDE1] bg-white px-4 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
-          />
+          <div className="relative">
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              required
+              className="h-12 w-full rounded-lg border border-[#EADDE1] bg-white px-4 pr-12 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-3 flex items-center text-[#987B88]"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
         <div className="flex justify-end">
@@ -68,23 +141,31 @@ export default function SignInPage() {
           </span>
         </div>
 
+        {error && <p className="text-sm text-red-600">{error}</p>}
+
         <button
-          type="button"
-          disabled
-          className="h-12 w-full rounded-full bg-[#E88BAA] text-sm font-semibold text-white transition hover:bg-[#D96F96] disabled:cursor-not-allowed"
+          type="submit"
+          disabled={loading}
+          className="h-12 w-full rounded-full bg-[#E88BAA] text-sm font-semibold text-white transition hover:bg-[#D96F96] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </button>
       </form>
 
-      {/* Google Login - Below Form */}
+      <div className="my-5 flex items-center gap-4">
+        <div className="h-px flex-1 bg-[#EADDE1]" />
+        <span className="text-xs text-[#987B88]">or</span>
+        <div className="h-px flex-1 bg-[#EADDE1]" />
+      </div>
+
       <button
         type="button"
-        disabled
-        className="mt-5 flex h-12 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] text-sm font-semibold text-[#49333F] transition hover:bg-[#FFF9F6] disabled:cursor-not-allowed"
+        onClick={handleGoogleSignIn}
+        disabled={googleLoading}
+        className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] text-sm font-semibold text-[#49333F] transition hover:bg-[#FFF9F6] disabled:opacity-60"
       >
         <FcGoogle size={21} />
-        Continue with Google
+        {googleLoading ? "Redirecting..." : "Continue with Google"}
       </button>
 
       <p className="mt-7 text-center text-sm text-[#987B88]">

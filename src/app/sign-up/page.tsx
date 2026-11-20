@@ -1,19 +1,112 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
-import { Heart, Store, Upload, UserRound } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Heart,
+  Store,
+  Upload,
+  UserRound,
+} from "lucide-react";
 import { AuthLayout } from "@/components/auth/AuthLayout";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignUpPage() {
+  const router = useRouter();
+
   const [role, setRole] = useState("customer");
   const [imagePreview, setImagePreview] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleImageChange = (file: File | undefined) => {
     if (file) {
+      setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      let imageUrl: string | undefined;
+
+      if (imageFile) {
+        const imageData = new FormData();
+        imageData.append("image", imageFile);
+
+        const uploadResponse = await fetch(
+          `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+          {
+            method: "POST",
+            body: imageData,
+          }
+        );
+
+        const uploadResult = await uploadResponse.json();
+
+        if (!uploadResponse.ok || !uploadResult.success) {
+          throw new Error("Image upload failed. Please try again.");
+        }
+
+        imageUrl = uploadResult.data.url;
+      }
+
+      const result = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        ...(imageUrl && { image: imageUrl }),
+        role,
+        callbackURL: "/",
+      });
+
+      if (result.error) {
+        setError(result.error.message || "Account creation failed.");
+        return;
+      }
+
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Something went wrong."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    setGoogleLoading(true);
+    setError("");
+
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch {
+      setError("Google sign up failed. Please try again.");
+      setGoogleLoading(false);
     }
   };
 
@@ -33,7 +126,6 @@ export default function SignUpPage() {
         </p>
       </div>
 
-      {/* Account Role */}
       <div className="mt-6">
         <p className="mb-2 text-sm font-medium text-[#49333F]">
           Choose Account Type
@@ -50,15 +142,12 @@ export default function SignUpPage() {
             }`}
           >
             <Heart size={20} className="text-[#D96F96]" />
-
             <p className="mt-2 text-sm font-semibold text-[#49333F]">
               Customer
             </p>
-
             <p className="mt-1 text-[11px] leading-5 text-[#987B88]">
               Discover wedding services and plan your special day.
             </p>
-
             <span
               className={`mt-2 block text-[10px] font-semibold ${
                 role === "customer" ? "text-[#D96F96]" : "text-transparent"
@@ -78,15 +167,12 @@ export default function SignUpPage() {
             }`}
           >
             <Store size={20} className="text-[#D96F96]" />
-
             <p className="mt-2 text-sm font-semibold text-[#49333F]">
               Vendor
             </p>
-
             <p className="mt-1 text-[11px] leading-5 text-[#987B88]">
               Showcase services and manage customer bookings.
             </p>
-
             <span
               className={`mt-2 block text-[10px] font-semibold ${
                 role === "vendor" ? "text-[#D96F96]" : "text-transparent"
@@ -104,18 +190,11 @@ export default function SignUpPage() {
         <div className="h-px flex-1 bg-[#EADDE1]" />
       </div>
 
-      <form className="space-y-4">
-        <input type="hidden" name="role" value={role} />
-
-        {/* Full Name */}
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label
-            htmlFor="name"
-            className="mb-1.5 block text-sm font-medium text-[#49333F]"
-          >
+          <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-[#49333F]">
             Full Name
           </label>
-
           <input
             id="name"
             name="name"
@@ -126,15 +205,10 @@ export default function SignUpPage() {
           />
         </div>
 
-        {/* Email */}
         <div>
-          <label
-            htmlFor="email"
-            className="mb-1.5 block text-sm font-medium text-[#49333F]"
-          >
+          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-[#49333F]">
             Email Address
           </label>
-
           <input
             id="email"
             name="email"
@@ -145,37 +219,43 @@ export default function SignUpPage() {
           />
         </div>
 
-        {/* Password */}
         <div>
-          <label
-            htmlFor="password"
-            className="mb-1.5 block text-sm font-medium text-[#49333F]"
-          >
+          <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-[#49333F]">
             Password
           </label>
 
-          <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Create a password"
-            required
-            minLength={6}
-            pattern="(?=.*[a-z])(?=.*[A-Z]).{6,}"
-            title="At least 6 characters, one uppercase and one lowercase letter"
-            className="h-11 w-full rounded-lg border border-[#EADDE1] px-4 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
-          />
+          <div className="relative">
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Create a password"
+              required
+              minLength={6}
+              pattern="(?=.*[a-z])(?=.*[A-Z]).{6,}"
+              title="At least 6 characters, one uppercase and one lowercase letter"
+              className="h-11 w-full rounded-lg border border-[#EADDE1] px-4 pr-12 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-3 flex items-center text-[#987B88]"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
           <p className="mt-1.5 text-[11px] text-[#987B88]">
             Minimum 6 characters, including uppercase and lowercase letters.
           </p>
         </div>
 
-        {/* Profile Image */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-[#49333F]">
             Profile Image{" "}
-            <span className="font-normal text-[#987B88]">(Require)</span>
+            <span className="font-normal text-[#987B88]">(Optional)</span>
           </label>
 
           <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#E8B5C7] bg-[#FFF9F6] p-3 transition hover:bg-[#FDF0F4]">
@@ -198,7 +278,6 @@ export default function SignUpPage() {
               <p className="text-xs font-semibold text-[#49333F]">
                 {imagePreview ? "Image selected" : "Upload profile image"}
               </p>
-
               <p className="mt-1 text-[10px] text-[#987B88]">
                 JPG, PNG or WEBP
               </p>
@@ -208,34 +287,38 @@ export default function SignUpPage() {
 
             <input
               type="file"
-              name="profileImage"
               accept="image/png,image/jpeg,image/webp"
               className="hidden"
-              onChange={(event) =>
-                handleImageChange(event.target.files?.[0])
-              }
+              onChange={(event) => handleImageChange(event.target.files?.[0])}
             />
           </label>
         </div>
 
-        {/* Create Account */}
+        {error && <p className="text-sm text-red-600">{error}</p>}
+
         <button
-          type="button"
-          disabled
-          className="h-12 w-full rounded-full bg-[#E88BAA] text-sm font-semibold text-white transition hover:bg-[#D96F96]"
+          type="submit"
+          disabled={loading}
+          className="h-12 w-full rounded-full bg-[#E88BAA] text-sm font-semibold text-white transition hover:bg-[#D96F96] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Create Account
+          {loading ? "Creating Account..." : "Create Account"}
         </button>
       </form>
 
-      {/* Google Sign Up - Below Form */}
+      <div className="my-5 flex items-center gap-4">
+        <div className="h-px flex-1 bg-[#EADDE1]" />
+        <span className="text-xs text-[#987B88]">or</span>
+        <div className="h-px flex-1 bg-[#EADDE1]" />
+      </div>
+
       <button
         type="button"
-        disabled
-        className="mt-5 flex h-11 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] text-sm font-semibold text-[#49333F] transition hover:bg-[#FFF9F6]"
+        onClick={handleGoogleSignUp}
+        disabled={googleLoading}
+        className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] text-sm font-semibold text-[#49333F] transition hover:bg-[#FFF9F6] disabled:opacity-60"
       >
         <FcGoogle size={21} />
-        Continue with Google
+        {googleLoading ? "Redirecting..." : "Continue with Google"}
       </button>
 
       <p className="mt-5 text-center text-sm text-[#987B88]">
