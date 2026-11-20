@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -39,7 +39,7 @@ function RoseLogo() {
   );
 }
 
-export function Navbar() {
+function NavbarContent() {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -205,5 +205,13 @@ export function Navbar() {
         </div>
       )}
     </header>
+  );
+}
+
+export function Navbar() {
+  return (
+    <Suspense fallback={<div className="h-16" />}>
+      <NavbarContent />
+    </Suspense>
   );
 }
