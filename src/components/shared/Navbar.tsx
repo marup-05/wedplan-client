@@ -1,14 +1,22 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Browse Services", href: "/services" },
 ];
+
+const roleLinks: Record<string, { name: string; href: string }> = {
+  vendor: { name: "Vendor Hub", href: "/dashboard/vendor" },
+  customer: { name: "My Wedding", href: "/dashboard/customer" },
+  admin: { name: "Admin Console", href: "/dashboard/admin" },
+};
 
 function RoseLogo() {
   return (
@@ -33,71 +41,107 @@ function RoseLogo() {
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+
+  const { data: session, isPending } = authClient.useSession();
+
+  const user = session?.user as
+    | { name?: string; role?: string }
+    | undefined;
+
+  const dashboardLink = user?.role
+    ? roleLinks[user.role.toLowerCase()]
+    : null;
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    setIsOpen(false);
+    router.push("/");
+    router.refresh();
+  };
+
+  const links = dashboardLink
+    ? [...navLinks, dashboardLink]
+    : navLinks;
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#F0E3E7] bg-[#FFF9F6]">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 md:px-8">
-        {/* Logo */}
+      <nav className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center px-5 py-3 md:grid-cols-3 md:px-8">
+
+        {/* Logo - Left */}
         <Link
           href="/"
           onClick={() => setIsOpen(false)}
-          className="flex items-center gap-2.5"
+          className="flex items-center gap-2.5 justify-self-start"
         >
           <span className="text-[#E477A0]">
             <RoseLogo />
           </span>
-
           <span className="font-logo text-3xl font-semibold tracking-tight text-[#49333F]">
             WedPlan
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+        {/* Desktop Navigation - Center */}
+        <div className="hidden items-center justify-center gap-8 md:flex">
+          {links.map((link) => {
+            const isActive =
+              pathname === link.href ||
+              (link.href !== "/" && pathname.startsWith(link.href + "/"));
 
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative py-2 text-sm font-medium transition-colors ${
+                className={`relative whitespace-nowrap py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? "text-[#D96F96]"
                     : "text-[#66525E] hover:text-[#D96F96]"
                 }`}
               >
                 {link.name}
-
                 {isActive && (
                   <span className="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-[#E88BAA]" />
                 )}
               </Link>
             );
           })}
+        </div>
 
-          <Link
-            href="/sign-in"
-            className={`text-sm font-semibold transition-colors hover:text-[#D96F96] ${
-              pathname === "/sign-in" ? "text-[#D96F96]" : "text-[#49333F]"
-            }`}
-          >
-            Sign In
-          </Link>
-
-          <Link
-            href="/sign-up"
-            className="rounded-full bg-[#E88BAA] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D96F96]"
-          >
-            Get Started
-          </Link>
+        {/* Right Side */}
+        <div className="hidden items-center justify-self-end gap-5 md:flex">
+          {!isPending && (
+            user ? (
+              <button
+                onClick={handleSignOut}
+                className="text-sm font-semibold text-[#49333F] transition-colors hover:text-[#D96F96]"
+              >
+                Sign Out
+              </button>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  className="text-sm font-semibold text-[#49333F] hover:text-[#D96F96]"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="rounded-full bg-[#E88BAA] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D96F96]"
+                >
+                  Get Started
+                </Link>
+              </>
+            )
+          )}
         </div>
 
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="rounded-lg p-2 text-[#49333F] transition-colors hover:bg-[#F5E8EC] md:hidden"
+          className="justify-self-end rounded-lg p-2 text-[#49333F] transition-colors hover:bg-[#F5E8EC] md:hidden"
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
         >
@@ -109,8 +153,10 @@ export function Navbar() {
       {isOpen && (
         <div className="border-t border-[#F0E3E7] bg-[#FFF9F6] px-5 py-4 md:hidden">
           <div className="flex flex-col gap-2">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+            {links.map((link) => {
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/" && pathname.startsWith(link.href + "/"));
 
               return (
                 <Link
@@ -128,21 +174,33 @@ export function Navbar() {
               );
             })}
 
-            <Link
-              href="/sign-in"
-              onClick={() => setIsOpen(false)}
-              className="rounded-lg px-4 py-3 text-sm font-semibold text-[#49333F] hover:bg-[#F5E8EC]"
-            >
-              Sign In
-            </Link>
-
-            <Link
-              href="/sign-up"
-              onClick={() => setIsOpen(false)}
-              className="mt-1 rounded-full bg-[#E88BAA] px-5 py-3 text-center text-sm font-semibold text-white hover:bg-[#D96F96]"
-            >
-              Get Started
-            </Link>
+            {!isPending && (
+              user ? (
+                <button
+                  onClick={handleSignOut}
+                  className="rounded-lg px-4 py-3 text-left text-sm font-semibold text-[#49333F] hover:bg-[#F5E8EC]"
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <>
+                  <Link
+                    href="/sign-in"
+                    onClick={() => setIsOpen(false)}
+                    className="rounded-lg px-4 py-3 text-sm font-semibold text-[#49333F] hover:bg-[#F5E8EC]"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    onClick={() => setIsOpen(false)}
+                    className="mt-1 rounded-full bg-[#E88BAA] px-5 py-3 text-center text-sm font-semibold text-white hover:bg-[#D96F96]"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )
+            )}
           </div>
         </div>
       )}
