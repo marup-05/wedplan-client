@@ -17,6 +17,12 @@ import {
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { authClient } from "@/lib/auth-client";
 
+const dashboardPaths: Record<string, string> = {
+  vendor: "/dashboard/vendor",
+  customer: "/dashboard/customer",
+  admin: "/dashboard/admin",
+};
+
 export default function SignUpPage() {
   const router = useRouter();
 
@@ -55,10 +61,7 @@ export default function SignUpPage() {
 
         const uploadResponse = await fetch(
           `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
-          {
-            method: "POST",
-            body: imageData,
-          }
+          { method: "POST", body: imageData }
         );
 
         const uploadResult = await uploadResponse.json();
@@ -76,7 +79,6 @@ export default function SignUpPage() {
         password,
         ...(imageUrl && { image: imageUrl }),
         role,
-        callbackURL: "/",
       });
 
       if (result.error) {
@@ -84,12 +86,16 @@ export default function SignUpPage() {
         return;
       }
 
-      router.push("/");
+      const { data: session } = await authClient.getSession();
+      const sessionRole = (session?.user as { role?: string } | undefined)?.role;
+      router.replace(
+        dashboardPaths[sessionRole?.toLowerCase() || ""] ||
+        dashboardPaths[role] ||
+        "/"
+      );
       router.refresh();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Something went wrong."
-      );
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -102,7 +108,7 @@ export default function SignUpPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: "/auth/redirect",
       });
     } catch {
       setError("Google sign up failed. Please try again.");
@@ -116,11 +122,9 @@ export default function SignUpPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#D96F96]">
           Start Your Journey
         </p>
-
         <h1 className="mt-2 font-logo text-4xl font-semibold text-[#49333F] sm:text-5xl">
           Create Account
         </h1>
-
         <p className="mt-2 text-sm text-[#987B88]">
           Join WedPlan and make your wedding journey special.
         </p>
@@ -142,17 +146,11 @@ export default function SignUpPage() {
             }`}
           >
             <Heart size={20} className="text-[#D96F96]" />
-            <p className="mt-2 text-sm font-semibold text-[#49333F]">
-              Customer
-            </p>
+            <p className="mt-2 text-sm font-semibold text-[#49333F]">Customer</p>
             <p className="mt-1 text-[11px] leading-5 text-[#987B88]">
               Discover wedding services and plan your special day.
             </p>
-            <span
-              className={`mt-2 block text-[10px] font-semibold ${
-                role === "customer" ? "text-[#D96F96]" : "text-transparent"
-              }`}
-            >
+            <span className={`mt-2 block text-[10px] font-semibold ${role === "customer" ? "text-[#D96F96]" : "text-transparent"}`}>
               Selected
             </span>
           </button>
@@ -167,17 +165,11 @@ export default function SignUpPage() {
             }`}
           >
             <Store size={20} className="text-[#D96F96]" />
-            <p className="mt-2 text-sm font-semibold text-[#49333F]">
-              Vendor
-            </p>
+            <p className="mt-2 text-sm font-semibold text-[#49333F]">Vendor</p>
             <p className="mt-1 text-[11px] leading-5 text-[#987B88]">
               Showcase services and manage customer bookings.
             </p>
-            <span
-              className={`mt-2 block text-[10px] font-semibold ${
-                role === "vendor" ? "text-[#D96F96]" : "text-transparent"
-              }`}
-            >
+            <span className={`mt-2 block text-[10px] font-semibold ${role === "vendor" ? "text-[#D96F96]" : "text-transparent"}`}>
               Selected
             </span>
           </button>
@@ -223,7 +215,6 @@ export default function SignUpPage() {
           <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-[#49333F]">
             Password
           </label>
-
           <div className="relative">
             <input
               id="password"
@@ -236,7 +227,6 @@ export default function SignUpPage() {
               title="At least 6 characters, one uppercase and one lowercase letter"
               className="h-11 w-full rounded-lg border border-[#EADDE1] px-4 pr-12 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
             />
-
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -246,7 +236,6 @@ export default function SignUpPage() {
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-
           <p className="mt-1.5 text-[11px] text-[#987B88]">
             Minimum 6 characters, including uppercase and lowercase letters.
           </p>
@@ -254,10 +243,8 @@ export default function SignUpPage() {
 
         <div>
           <label className="mb-1.5 block text-sm font-medium text-[#49333F]">
-            Profile Image{" "}
-            <span className="font-normal text-[#987B88]">(Optional)</span>
+            Profile Image <span className="font-normal text-[#987B88]">(Optional)</span>
           </label>
-
           <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#E8B5C7] bg-[#FFF9F6] p-3 transition hover:bg-[#FDF0F4]">
             {imagePreview ? (
               <Image
@@ -278,13 +265,10 @@ export default function SignUpPage() {
               <p className="text-xs font-semibold text-[#49333F]">
                 {imagePreview ? "Image selected" : "Upload profile image"}
               </p>
-              <p className="mt-1 text-[10px] text-[#987B88]">
-                JPG, PNG or WEBP
-              </p>
+              <p className="mt-1 text-[10px] text-[#987B88]">JPG, PNG or WEBP</p>
             </div>
 
             <Upload size={18} className="text-[#D96F96]" />
-
             <input
               type="file"
               accept="image/png,image/jpeg,image/webp"
@@ -323,10 +307,7 @@ export default function SignUpPage() {
 
       <p className="mt-5 text-center text-sm text-[#987B88]">
         Already have an account?{" "}
-        <Link
-          href="/sign-in"
-          className="font-semibold text-[#D96F96] hover:underline"
-        >
+        <Link href="/sign-in" className="font-semibold text-[#D96F96] hover:underline">
           Sign In
         </Link>
       </p>

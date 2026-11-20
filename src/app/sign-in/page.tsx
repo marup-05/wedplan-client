@@ -9,6 +9,12 @@ import { Eye, EyeOff } from "lucide-react";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { authClient } from "@/lib/auth-client";
 
+const dashboardPaths: Record<string, string> = {
+  vendor: "/dashboard/vendor",
+  customer: "/dashboard/customer",
+  admin: "/dashboard/admin",
+};
+
 export default function SignInPage() {
   const router = useRouter();
 
@@ -16,6 +22,13 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const redirectByRole = async () => {
+    const { data: session } = await authClient.getSession();
+    const role = (session?.user as { role?: string } | undefined)?.role;
+    router.replace(dashboardPaths[role?.toLowerCase() || ""] || "/");
+    router.refresh();
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -28,23 +41,16 @@ export default function SignInPage() {
     setError("");
 
     try {
-      const result = await authClient.signIn.email({
-        email,
-        password,
-        callbackURL: "/",
-      });
+      const result = await authClient.signIn.email({ email, password });
 
       if (result.error) {
         setError(result.error.message || "Invalid email or password.");
         return;
       }
 
-      router.push("/");
-      router.refresh();
+      await redirectByRole();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Something went wrong."
-      );
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -57,7 +63,7 @@ export default function SignInPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: "/auth/redirect",
       });
     } catch {
       setError("Google login failed. Please try again.");
@@ -71,11 +77,9 @@ export default function SignInPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#D96F96]">
           Welcome Back
         </p>
-
         <h1 className="mt-3 font-logo text-4xl font-semibold text-[#49333F] sm:text-5xl">
           Sign In
         </h1>
-
         <p className="mt-3 text-sm text-[#987B88]">
           Welcome back! Please enter your details.
         </p>
@@ -89,13 +93,9 @@ export default function SignInPage() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label
-            htmlFor="email"
-            className="mb-2 block text-sm font-medium text-[#49333F]"
-          >
+          <label htmlFor="email" className="mb-2 block text-sm font-medium text-[#49333F]">
             Email Address
           </label>
-
           <input
             id="email"
             name="email"
@@ -107,13 +107,9 @@ export default function SignInPage() {
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="mb-2 block text-sm font-medium text-[#49333F]"
-          >
+          <label htmlFor="password" className="mb-2 block text-sm font-medium text-[#49333F]">
             Password
           </label>
-
           <div className="relative">
             <input
               id="password"
@@ -123,7 +119,6 @@ export default function SignInPage() {
               required
               className="h-12 w-full rounded-lg border border-[#EADDE1] bg-white px-4 pr-12 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
             />
-
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -170,10 +165,7 @@ export default function SignInPage() {
 
       <p className="mt-7 text-center text-sm text-[#987B88]">
         Don&apos;t have an account?{" "}
-        <Link
-          href="/sign-up"
-          className="font-semibold text-[#D96F96] hover:underline"
-        >
+        <Link href="/sign-up" className="font-semibold text-[#D96F96] hover:underline">
           Get Started
         </Link>
       </p>
