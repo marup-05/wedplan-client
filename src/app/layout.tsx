@@ -1,7 +1,9 @@
+
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Plus_Jakarta_Sans } from "next/font/google";
 import { Navbar } from "@/components/shared/Navbar";
 import { Footer } from "@/components/shared/Footer";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const jakartaSans = Plus_Jakarta_Sans({
@@ -35,6 +37,8 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

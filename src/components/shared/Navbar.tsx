@@ -4,7 +4,15 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  LayoutDashboard,
+  UserRound,
+  LogOut,
+} from "lucide-react";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 const navLinks = [
@@ -18,72 +26,180 @@ const roleLinks: Record<string, { name: string; href: string }> = {
   admin: { name: "Admin Console", href: "/dashboard/admin" },
 };
 
-function RoseLogo() {
-  return (
-    <svg
-      viewBox="0 0 100 120"
-      className="h-10 w-9 shrink-0"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
+type User = {
+  name?: string;
+  email?: string;
+  image?: string;
+  role?: string;
+};
+
+function getInitial(user: User) {
+  return (user.name?.trim()?.[0] || user.email?.trim()?.[0] || "U").toUpperCase();
+}
+
+function UserAvatar({
+  user,
+  size = "h-11 w-11",
+}: {
+  user: User;
+  size?: string;
+}) {
+  return user.image ? (
+    <img
+      src={user.image}
+      alt={user.name || "Profile"}
+      className={`${size} rounded-full object-cover`}
+    />
+  ) : (
+    <span
+      className={`${size} flex shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] font-semibold text-[#D96F96]`}
     >
-      <path d="M48 55 C28 49 23 29 38 18 C45 7 64 11 69 23 C83 20 91 36 81 47 C77 58 62 64 50 62 C37 60 30 51 34 40 C37 29 51 26 59 34 C67 42 59 53 50 52 C43 50 43 43 49 40" />
-      <path d="M32 45 C17 39 17 25 29 18 M43 15 C47 4 64 5 71 16 M70 26 C84 22 91 35 84 46 M78 48 C76 62 62 68 51 61" />
-      <path d="M48 59 C47 77 43 95 27 110 M48 76 C35 69 21 64 13 51 C29 51 42 57 48 76 Z" />
-      <path d="M43 89 C56 70 72 66 87 69 C78 83 62 91 43 89 Z" />
-      <path d="M23 59 C29 65 36 70 43 73 M79 72 C67 76 56 83 48 91" />
-    </svg>
+      {getInitial(user)}
+    </span>
+  );
+}
+
+function ProfileMenu({
+  user,
+  onLogout,
+  onNavigate,
+}: {
+  user: User;
+  onLogout: () => void;
+  onNavigate: () => void;
+}) {
+  const role = user.role?.toLowerCase() || "customer";
+  const dashboard = roleLinks[role];
+
+  return (
+    <div className="absolute right-0 top-full z-50 mt-3 w-64 overflow-hidden rounded-2xl border border-[#F0E3E7] bg-white p-2 shadow-xl shadow-[#49333F]/10">
+      <div className="flex items-center gap-3 rounded-xl bg-[#FFF5F7] p-3">
+        <UserAvatar user={user} />
+
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-[#49333F]">
+            {user.name || "WedPlan User"}
+          </p>
+          <p className="mt-0.5 text-xs lowercase text-[#D96F96]">{role}</p>
+        </div>
+      </div>
+
+      <div className="mt-2 space-y-1">
+        {dashboard && (
+          <Link
+            href={dashboard.href}
+            onClick={onNavigate}
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#66525E] transition hover:bg-[#FFF3F7] hover:text-[#D96F96]"
+          >
+            <LayoutDashboard size={17} />
+            Dashboard
+          </Link>
+        )}
+
+        <Link
+          href="/profile-settings"
+          onClick={onNavigate}
+          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#66525E] transition hover:bg-[#FFF3F7] hover:text-[#D96F96]"
+        >
+          <UserRound size={17} />
+          Profile Settings
+        </Link>
+      </div>
+
+      <div className="my-2 border-t border-[#F0E3E7]" />
+
+      <button
+        onClick={onLogout}
+        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-500 transition hover:bg-red-50"
+      >
+        <LogOut size={17} />
+        Logout
+      </button>
+    </div>
   );
 }
 
 function NavbarContent() {
   const pathname = usePathname();
   const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const { data: session, isPending } = authClient.useSession();
 
-  const user = session?.user as
-    | { name?: string; role?: string }
-    | undefined;
+  const user = session?.user as User | undefined;
 
   const dashboardLink = user?.role
     ? roleLinks[user.role.toLowerCase()]
     : null;
 
+  const links = dashboardLink ? [...navLinks, dashboardLink] : navLinks;
+
   const handleSignOut = async () => {
-    await authClient.signOut();
-    setIsOpen(false);
-    router.push("/");
-    router.refresh();
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+
+    try {
+      const result = await authClient.signOut();
+
+      if (result.error) {
+        toast.error(result.error.message || "Logout failed. Please try again.");
+        return;
+      }
+
+      setProfileOpen(false);
+      setIsOpen(false);
+
+      router.replace("/");
+      router.refresh();
+
+      toast.success("You have been logged out successfully!");
+    } catch {
+      toast.error("Logout failed. Please try again.");
+    } finally {
+      setLoggingOut(false);
+    }
   };
 
-  const links = dashboardLink
-    ? [...navLinks, dashboardLink]
-    : navLinks;
+  const closeMenus = () => {
+    setProfileOpen(false);
+    setIsOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#F0E3E7] bg-[#FFF9F6]">
       <nav className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center px-5 py-3 md:grid-cols-3 md:px-8">
-
-        {/* Logo - Left */}
         <Link
           href="/"
-          onClick={() => setIsOpen(false)}
+          onClick={closeMenus}
           className="flex items-center gap-2.5 justify-self-start"
         >
           <span className="text-[#E477A0]">
-            <RoseLogo />
+            <svg
+              viewBox="0 0 100 120"
+              className="h-10 w-9 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M48 55 C28 49 23 29 38 18 C45 7 64 11 69 23 C83 20 91 36 81 47 C77 58 62 64 50 62 C37 60 30 51 34 40 C37 29 51 26 59 34 C67 42 59 53 50 52 C43 50 43 43 49 40" />
+              <path d="M32 45 C17 39 17 25 29 18 M43 15 C47 4 64 5 71 16 M70 26 C84 22 91 35 84 46 M78 48 C76 62 62 68 51 61" />
+              <path d="M48 59 C47 77 43 95 27 110 M48 76 C35 69 21 64 13 51 C29 51 42 57 48 76 Z" />
+              <path d="M43 89 C56 70 72 66 87 69 C78 83 62 91 43 89 Z" />
+              <path d="M23 59 C29 65 36 70 43 73 M79 72 C67 76 56 83 48 91" />
+            </svg>
           </span>
           <span className="font-logo text-3xl font-semibold tracking-tight text-[#49333F]">
             WedPlan
           </span>
         </Link>
 
-        {/* Desktop Navigation - Center */}
         <div className="hidden items-center justify-center gap-8 md:flex">
           {links.map((link) => {
             const isActive =
@@ -109,16 +225,33 @@ function NavbarContent() {
           })}
         </div>
 
-        {/* Right Side */}
         <div className="hidden items-center justify-self-end gap-5 md:flex">
-          {!isPending && (
-            user ? (
-              <button
-                onClick={handleSignOut}
-                className="text-sm font-semibold text-[#49333F] transition-colors hover:text-[#D96F96]"
-              >
-                Sign Out
-              </button>
+          {!isPending &&
+            (user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center gap-2 rounded-full border border-[#F0E3E7] bg-white p-1.5 pr-3 transition hover:border-[#E8B5C7]"
+                  aria-expanded={profileOpen}
+                  aria-label="Open profile menu"
+                >
+                  <UserAvatar user={user} size="h-9 w-9" />
+                  <ChevronDown
+                    size={16}
+                    className={`text-[#987B88] transition ${
+                      profileOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {profileOpen && (
+                  <ProfileMenu
+                    user={user}
+                    onLogout={handleSignOut}
+                    onNavigate={() => setProfileOpen(false)}
+                  />
+                )}
+              </div>
             ) : (
               <>
                 <Link
@@ -134,11 +267,9 @@ function NavbarContent() {
                   Get Started
                 </Link>
               </>
-            )
-          )}
+            ))}
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="justify-self-end rounded-lg p-2 text-[#49333F] transition-colors hover:bg-[#F5E8EC] md:hidden"
@@ -149,7 +280,6 @@ function NavbarContent() {
         </button>
       </nav>
 
-      {/* Mobile Navigation */}
       {isOpen && (
         <div className="border-t border-[#F0E3E7] bg-[#FFF9F6] px-5 py-4 md:hidden">
           <div className="flex flex-col gap-2">
@@ -162,7 +292,7 @@ function NavbarContent() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeMenus}
                   className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-[#F5E8EC] text-[#D96F96]"
@@ -174,33 +304,67 @@ function NavbarContent() {
               );
             })}
 
-            {!isPending && (
-              user ? (
-                <button
-                  onClick={handleSignOut}
-                  className="rounded-lg px-4 py-3 text-left text-sm font-semibold text-[#49333F] hover:bg-[#F5E8EC]"
-                >
-                  Sign Out
-                </button>
+            {!isPending &&
+              (user ? (
+                <>
+                  <div className="my-2 border-t border-[#F0E3E7]" />
+
+                  <div className="flex items-center gap-3 rounded-xl bg-white p-3">
+                    <UserAvatar user={user} size="h-10 w-10" />
+                    <div>
+                      <p className="text-sm font-semibold text-[#49333F]">
+                        {user.name || "WedPlan User"}
+                      </p>
+                      <p className="text-xs lowercase text-[#D96F96]">
+                        {user.role || "customer"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {dashboardLink && (
+                    <Link
+                      href={dashboardLink.href}
+                      onClick={closeMenus}
+                      className="rounded-lg px-4 py-3 text-sm text-[#66525E] hover:bg-[#F5E8EC]"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
+
+                  <Link
+                    href="/profile-settings"
+                    onClick={closeMenus}
+                    className="rounded-lg px-4 py-3 text-sm text-[#66525E] hover:bg-[#F5E8EC]"
+                  >
+                    Profile Settings
+                  </Link>
+
+                  <button
+                    onClick={handleSignOut}
+                    disabled={loggingOut}
+                    className="rounded-lg px-4 py-3 text-left text-sm font-semibold text-red-500 hover:bg-red-50 disabled:opacity-60"
+                  >
+                    {loggingOut ? "Logging out..." : "Logout"}
+                  </button>
+                </>
               ) : (
                 <>
                   <Link
                     href="/sign-in"
-                    onClick={() => setIsOpen(false)}
+                    onClick={closeMenus}
                     className="rounded-lg px-4 py-3 text-sm font-semibold text-[#49333F] hover:bg-[#F5E8EC]"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/sign-up"
-                    onClick={() => setIsOpen(false)}
+                    onClick={closeMenus}
                     className="mt-1 rounded-full bg-[#E88BAA] px-5 py-3 text-center text-sm font-semibold text-white hover:bg-[#D96F96]"
                   >
                     Get Started
                   </Link>
                 </>
-              )
-            )}
+              ))}
           </div>
         </div>
       )}

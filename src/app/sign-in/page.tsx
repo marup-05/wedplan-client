@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { authClient } from "@/lib/auth-client";
 
@@ -21,11 +22,11 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const redirectByRole = async () => {
     const { data: session } = await authClient.getSession();
     const role = (session?.user as { role?: string } | undefined)?.role;
+
     router.replace(dashboardPaths[role?.toLowerCase() || ""] || "/");
     router.refresh();
   };
@@ -38,19 +39,21 @@ export default function SignInPage() {
     const password = formData.get("password") as string;
 
     setLoading(true);
-    setError("");
 
     try {
       const result = await authClient.signIn.email({ email, password });
 
       if (result.error) {
-        setError(result.error.message || "Invalid email or password.");
+        toast.error(result.error.message || "Invalid email or password.");
         return;
       }
 
+      toast.success("Successfully signed in!");
       await redirectByRole();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      toast.error(
+        err instanceof Error ? err.message : "Something went wrong."
+      );
     } finally {
       setLoading(false);
     }
@@ -58,15 +61,20 @@ export default function SignInPage() {
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
-    setError("");
 
     try {
-      await authClient.signIn.social({
+      const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/auth/redirect",
+        callbackURL: "/auth/redirect?from=signin",
+        errorCallbackURL: "/auth/redirect?from=signin",
       });
+
+      if (result.error) {
+        toast.error(result.error.message || "Google login failed.");
+        setGoogleLoading(false);
+      }
     } catch {
-      setError("Google login failed. Please try again.");
+      toast.error("Google login failed. Please try again.");
       setGoogleLoading(false);
     }
   };
@@ -135,8 +143,6 @@ export default function SignInPage() {
             Forgot password?
           </span>
         </div>
-
-        {error && <p className="text-sm text-red-600">{error}</p>}
 
         <button
           type="submit"
