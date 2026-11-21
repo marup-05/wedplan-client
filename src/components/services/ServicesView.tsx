@@ -1,5 +1,7 @@
+
 "use client";
-import { useMemo, useState } from "react";
+
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -10,6 +12,10 @@ import {
   ArrowUpDown,
   X,
 } from "lucide-react";
+import Image from "next/image";
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 const categories = [
   "All",
@@ -21,72 +27,25 @@ const categories = [
   "Wedding Fashion",
 ];
 
-const services = [
-  {
-    id: "1",
-    name: "Elegant Wedding Photography",
-    category: "Photography & Videography",
-    location: "Dhaka",
-    price: 850,
-    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800",
-    vendor: "Dream Moments Studio",
-    rating: "4.9",
-  },
-  {
-    id: "2",
-    name: "Luxury Garden Wedding Venue",
-    category: "Wedding Venues",
-    location: "Chittagong",
-    price: 2500,
-    image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800",
-    vendor: "Royal Garden Events",
-    rating: "4.8",
-  },
-  {
-    id: "3",
-    name: "Premium Floral Decoration",
-    category: "Decoration & Florist",
-    location: "Dhaka",
-    price: 1200,
-    image: "https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=800",
-    vendor: "Bloom Wedding Decor",
-    rating: "4.9",
-  },
-  {
-    id: "4",
-    name: "Luxury Wedding Catering",
-    category: "Catering Services",
-    location: "Sylhet",
-    price: 1800,
-    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800",
-    vendor: "Royal Feast Catering",
-    rating: "4.7",
-  },
-  {
-    id: "5",
-    name: "Bridal Makeup Package",
-    category: "Makeup & Styling",
-    location: "Dhaka",
-    price: 650,
-    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800",
-    vendor: "Glamour Bridal Studio",
-    rating: "4.9",
-  },
-  {
-    id: "6",
-    name: "Luxury Bridal Collection",
-    category: "Wedding Fashion",
-    location: "Chittagong",
-    price: 950,
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800",
-    vendor: "Elegance Fashion House",
-    rating: "4.8",
-  },
-];
+type Service = {
+  _id: string;
+  serviceName: string;
+  category: string;
+  description: string;
+  location: string;
+  price: number;
+  images: string[];
+  status: string;
+  isActive: boolean;
+};
 
 export function ServicesView() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "All";
+
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState(
@@ -95,11 +54,47 @@ export function ServicesView() {
   const [location, setLocation] = useState("");
   const [sort, setSort] = useState("default");
 
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(`${API_URL}/services`, {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load services");
+        }
+
+        const data = await response.json();
+
+        setServices(
+          Array.isArray(data)
+            ? data.filter(
+                (service: Service) =>
+                  service.status === "Approved" && service.isActive === true,
+              )
+            : [],
+        );
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Something went wrong",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   const filteredServices = useMemo(() => {
     const result = services.filter((service) => {
-      const matchesSearch = service.name
-        .toLowerCase()
-        .includes(search.toLowerCase());
+      const matchesSearch =
+        service.serviceName.toLowerCase().includes(search.toLowerCase()) ||
+        service.description.toLowerCase().includes(search.toLowerCase());
 
       const matchesCategory =
         category === "All" || service.category === category;
@@ -112,15 +107,15 @@ export function ServicesView() {
     });
 
     if (sort === "low-to-high") {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => Number(a.price) - Number(b.price));
     }
 
     if (sort === "high-to-low") {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => Number(b.price) - Number(a.price));
     }
 
     return result;
-  }, [search, category, location, sort]);
+  }, [services, search, category, location, sort]);
 
   const clearFilters = () => {
     setSearch("");
@@ -131,7 +126,6 @@ export function ServicesView() {
 
   return (
     <main className="min-h-screen bg-[#FFF9F6]">
-      {/* Page Header */}
       <section className="border-b border-[#F0E3E7] bg-white px-5 py-14 text-center md:py-20">
         <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#D96F96]">
           Find Your Perfect Match
@@ -142,16 +136,14 @@ export function ServicesView() {
         </h1>
 
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#987B88] md:text-base">
-          Discover trusted wedding professionals and find everything you need to
-          create your perfect celebration.
+          Discover trusted wedding professionals and find everything you need
+          to create your perfect celebration.
         </p>
       </section>
 
-      {/* Search and Filters */}
       <section className="mx-auto max-w-7xl px-5 pt-10 md:px-8">
         <div className="rounded-2xl border border-[#F0E3E7] bg-white p-5 shadow-sm md:p-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {/* Search */}
             <div className="relative">
               <Search
                 size={18}
@@ -166,7 +158,6 @@ export function ServicesView() {
               />
             </div>
 
-            {/* Category */}
             <div className="relative">
               <SlidersHorizontal
                 size={17}
@@ -185,7 +176,6 @@ export function ServicesView() {
               </select>
             </div>
 
-            {/* Location */}
             <div className="relative">
               <MapPin
                 size={18}
@@ -200,7 +190,6 @@ export function ServicesView() {
               />
             </div>
 
-            {/* Sorting */}
             <div className="relative">
               <ArrowUpDown
                 size={17}
@@ -230,7 +219,6 @@ export function ServicesView() {
         </div>
       </section>
 
-      {/* Services */}
       <section className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
         <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
@@ -251,17 +239,51 @@ export function ServicesView() {
           </p>
         </div>
 
-        {filteredServices.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <div
+                key={item}
+                className="animate-pulse overflow-hidden rounded-2xl bg-white"
+              >
+                <div className="h-60 bg-[#EADDE1]" />
+                <div className="space-y-3 p-5">
+                  <div className="h-4 w-1/2 rounded bg-[#EADDE1]" />
+                  <div className="h-5 w-3/4 rounded bg-[#EADDE1]" />
+                  <div className="h-10 rounded bg-[#EADDE1]" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="rounded-2xl border border-red-200 bg-white px-5 py-16 text-center">
+            <h3 className="text-xl font-semibold text-[#49333F]">
+              Failed to Load Services
+            </h3>
+            <p className="mt-2 text-sm text-red-500">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-5 rounded-full bg-[#E88BAA] px-6 py-3 text-sm font-semibold text-white"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : filteredServices.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredServices.map((service) => (
               <article
-                key={service.id}
+                key={service._id}
                 className="group overflow-hidden rounded-2xl border border-[#F0E3E7] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="relative h-60 overflow-hidden">
-                  <img
-                    src={service.image}
-                    alt={service.name}
+                  <Image
+                    src={
+                      service.images?.[0] ||
+                      "https://images.unsplash.com/photo-1519741497674-611481863552?w=800"
+                    }
+                    alt={service.serviceName}
+                    width={800}
+                    height={600}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
 
@@ -279,15 +301,10 @@ export function ServicesView() {
                 </div>
 
                 <div className="p-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs text-[#987B88]">{service.vendor}</p>
-                    <span className="text-xs font-semibold text-[#49333F]">
-                      ★ {service.rating}
-                    </span>
-                  </div>
+                  <p className="text-xs text-[#987B88]">Wedding Vendor</p>
 
                   <h3 className="mt-3 line-clamp-1 text-lg font-semibold text-[#49333F]">
-                    {service.name}
+                    {service.serviceName}
                   </h3>
 
                   <p className="mt-2 flex items-center gap-1.5 text-xs text-[#987B88]">
@@ -301,12 +318,12 @@ export function ServicesView() {
                         Starting from
                       </p>
                       <p className="mt-1 text-xl font-bold text-[#D96F96]">
-                        ${service.price.toLocaleString("en-US")}
+                        ${Number(service.price).toLocaleString("en-US")}
                       </p>
                     </div>
 
                     <Link
-                      href={`/services/${service.id}`}
+                      href={`/services/${service._id}`}
                       className="rounded-full bg-[#E88BAA] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#D96F96]"
                     >
                       View Details

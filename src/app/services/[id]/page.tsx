@@ -1,178 +1,145 @@
 
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import {   
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSession } from "@/lib/auth-client";
+import {
   ArrowLeft,
   MapPin,
-  Star,
-  ShieldCheck,
-  CalendarDays,       
+  CalendarDays,
   Heart,
+  ShieldCheck,
   CheckCircle2,
+  Loader2,
+  Star,
 } from "lucide-react";
-          
-const services = [
-  {
-    id: "1",             
-    name: "Elegant Wedding Photography",
-    category: "Photography & Videography",             
-    description:
-      "Capture every beautiful moment of your special day with our professional wedding photography team. We focus on natural emotions, elegant portraits, and timeless memories that you will cherish forever.",       
-    price: 850,
-    location: "Dhaka, Bangladesh",
-    vendor: "Dream Moments Studio",         
-    vendorDescription:
-      "Professional wedding photography and cinematography team creating beautiful wedding memories.",
-    rating: "4.9",
-    reviews: 124,        
-    images: [
-      "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200",
-      "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800",     
-      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800",
-    ],
-    approved: true,
-    active: true,
-  },
-  {
-    id: "2",
-    name: "Luxury Garden Wedding Venue",
-    category: "Wedding Venues",
-    description:
-      "Celebrate your wedding in a beautiful garden venue with elegant decoration, spacious arrangements, and a memorable atmosphere for your special guests.",
-    price: 2500,
-    location: "Chittagong, Bangladesh",
-    vendor: "Royal Garden Events",
-    vendorDescription:
-      "Premium wedding venue and event management service.",
-    rating: "4.8",
-    reviews: 98,
-    images: [
-      "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200",
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800",
-      "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800",
-    ],
-    approved: true,
-    active: true,
-  },
-  {
-    id: "3",
-    name: "Premium Floral Decoration",
-    category: "Decoration & Florist",
-    description:
-      "Transform your wedding venue with stunning floral arrangements, beautiful stage decoration, and carefully selected flowers to create a romantic atmosphere.",
-    price: 1200,
-    location: "Dhaka, Bangladesh",
-    vendor: "Bloom Wedding Decor",
-    vendorDescription:
-      "Creative wedding decorators specializing in floral designs and elegant event styling.",
-    rating: "4.9",
-    reviews: 86,
-    images: [
-      "https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=1200",
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
-      "https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=800",
-    ],
-    approved: true,
-    active: true,
-  },
-  {
-    id: "4",
-    name: "Luxury Wedding Catering",
-    category: "Catering Services",
-    description:
-      "Make your celebration unforgettable with delicious food, professional catering arrangements, and carefully planned menus for your wedding guests.",
-    price: 1800,
-    location: "Sylhet, Bangladesh",
-    vendor: "Royal Feast Catering",
-    vendorDescription:
-      "Professional catering team offering premium wedding dining experiences.",
-    rating: "4.7",
-    reviews: 72,
-    images: [
-      "https://images.unsplash.com/photo-1555244162-803834f70033?w=1200",
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800",
-      "https://images.unsplash.com/photo-1515003197210-e0cd7184f8b5?w=800",
-    ],
-    approved: true,
-    active: true,
-  },
-  {
-    id: "5",
-    name: "Bridal Makeup Package",
-    category: "Makeup & Styling",
-    description:
-      "Look and feel your best on your wedding day with professional bridal makeup, personalized styling, and a beautiful finishing touch.",
-    price: 650,
-    location: "Dhaka, Bangladesh",
-    vendor: "Glamour Bridal Studio",
-    vendorDescription:
-      "Professional bridal makeup artists focused on elegant and personalized looks.",
-    rating: "4.9",
-    reviews: 110,
-    images: [
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1200",
-      "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800",
-      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800",
-    ],
-    approved: true,
-    active: true,
-  },
-  {
-    id: "6",
-    name: "Luxury Bridal Collection",
-    category: "Wedding Fashion",
-    description:
-      "Discover elegant bridal fashion with beautiful designs, premium fabrics, and carefully crafted outfits for your special celebration.",
-    price: 950,
-    location: "Chittagong, Bangladesh",
-    vendor: "Elegance Fashion House",
-    vendorDescription:
-      "Bridal fashion specialists offering elegant wedding collections.",
-    rating: "4.8",
-    reviews: 64,
-    images: [
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200",
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800",
-      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800",
-    ],
-    approved: true,
-    active: true,
-  },
-];
+import { toast } from "sonner";
 
-type ServiceDetailsPageProps = {
-  params: Promise<{
-    id: string;
-  }>;
+const API_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+
+type Service = {
+  _id: string;
+  vendorId: string;
+  serviceName: string;
+  category: string;
+  description: string;
+  price: number;
+  location: string;
+  images: string[];
+  status: string;
+  isActive: boolean;
 };
 
-export default async function ServiceDetailsPage({
-  params,
-}: ServiceDetailsPageProps) {
-  const { id } = await params;
+export default function ServiceDetailsPage() {
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const { data: session, isPending: sessionLoading } = useSession();
 
-  const service = services.find((item) => item.id === id);
+  const [service, setService] = useState<Service | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  if (!service || !service.approved || !service.active) {
+  const [eventDate, setEventDate] = useState("");
+  const [eventLocation, setEventLocation] = useState("");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        const response = await fetch(`${API_URL}/services/${id}`);
+        if (!response.ok) throw new Error("Service not found");
+
+        const data = await response.json();
+        setService(data);
+      } catch {
+        setService(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchService();
+  }, [id]);
+
+  const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!session?.user) {
+      toast.error("Please sign in to book this service.");
+      router.push("/sign-in");
+      return;
+    }
+
+    if (session.user.role !== "customer") {
+      toast.error("Only customers can book services.");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const response = await fetch(`${API_URL}/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          serviceId: service?._id,
+          vendorId: service?.vendorId,
+          customerId: session.user.id,
+          eventDate,
+          eventLocation,
+          message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Booking failed");
+      }
+
+      toast.success("Booking request sent successfully!");
+      setEventDate("");
+      setEventLocation("");
+      setMessage("");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading || sessionLoading) {
     return (
-      <main className="flex min-h-[75vh] items-center justify-center bg-[#FFF9F6] px-5 py-16">
+      <main className="flex min-h-[70vh] items-center justify-center bg-[#FFF9F6]">
+        <Loader2 className="animate-spin text-[#D96F96]" size={32} />
+      </main>
+    );
+  }
+
+  if (!service) {
+    return (
+      <main className="flex min-h-[75vh] items-center justify-center bg-[#FFF9F6] px-5">
         <div className="max-w-md text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F5E8EC] text-[#D96F96]">
             <Heart size={30} />
           </div>
-
-          <h1 className="mt-6 font-logo text-4xl font-semibold text-[#49333F]">
+          <h1 className="mt-6 font-logo text-3xl font-semibold text-[#49333F]">
             Service Not Found
           </h1>
-
           <p className="mt-3 text-sm leading-7 text-[#987B88]">
-            This service may no longer be available or the service
-            link is invalid. Explore other wedding services instead.
+            This service may no longer be available.
           </p>
-
           <Link
             href="/services"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#E88BAA] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#D96F96]"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#E88BAA] px-6 py-3 text-sm font-semibold text-white hover:bg-[#D96F96]"
           >
             <ArrowLeft size={16} />
             Browse Services
@@ -182,168 +149,218 @@ export default async function ServiceDetailsPage({
     );
   }
 
+  const images = service.images?.filter(Boolean) || [];
+
   return (
     <main className="min-h-screen bg-[#FFF9F6]">
-      {/* Breadcrumb */}
-      <div className="mx-auto max-w-7xl px-5 pt-8 md:px-8">
+      <div className="mx-auto max-w-7xl px-5 pt-7 md:px-8">
         <Link
           href="/services"
-          className="inline-flex items-center gap-2 text-sm font-medium text-[#987B88] transition hover:text-[#D96F96]"
+          className="inline-flex items-center gap-2 text-sm font-medium text-[#987B88] hover:text-[#D96F96]"
         >
           <ArrowLeft size={17} />
           Back to Services
         </Link>
       </div>
 
-      <div className="mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-10">
-        {/* Image Gallery */}
-        <section className="grid grid-cols-1 gap-3 overflow-hidden rounded-2xl md:h-[480px] md:grid-cols-2">
-          {/* Main Image */}
-          <div className="relative h-[300px] overflow-hidden md:h-full">
-            <Image
-              src={service.images[0]}
-              alt={service.name}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
-            />
-          </div>
+      <div className="mx-auto max-w-7xl px-5 py-7 md:px-8">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px]">
+          {/* Service Information */}
+          <div>
+            {/* Small Image Gallery */}
+            <div className="flex flex-col gap-3 sm:flex-row">
+              {images.length > 0 ? (
+                <>
+                  <div className="relative h-[220px] w-full overflow-hidden rounded-xl sm:w-[65%]">
+                    <Image
+                      src={images[0]}
+                      alt={service.serviceName}
+                      fill
+                      priority
+                      unoptimized
+                      sizes="(max-width: 640px) 100vw, 450px"
+                      className="object-cover"
+                    />
+                  </div>
 
-          {/* Additional Images */}
-          <div className="grid grid-cols-1 grid-rows-2 gap-3 md:min-h-0">
-            {service.images.slice(1, 3).map((image, index) => (
-              <div
-                key={index}
-                className="relative min-h-[180px] overflow-hidden md:min-h-0"
-              >
-                <Image
-                  src={image}
-                  alt={`${service.name} image ${index + 2}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 25vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Service Information */}
-        <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <span className="inline-flex rounded-full bg-[#F5E8EC] px-4 py-2 text-xs font-semibold text-[#D96F96]">
-              {service.category}
-            </span>
-
-            <h1 className="mt-5 font-logo text-4xl font-semibold leading-tight text-[#49333F] sm:text-5xl">
-              {service.name}
-            </h1>
-
-            <div className="mt-5 flex flex-wrap items-center gap-5 text-sm text-[#987B88]">
-              <span className="flex items-center gap-2">
-                <MapPin size={17} />
-                {service.location}
-              </span>
-
-              <span className="flex items-center gap-2">
-                <Star
-                  size={17}
-                  className="fill-[#E8B45B] text-[#E8B45B]"
-                />
-                <strong className="text-[#49333F]">
-                  {service.rating}
-                </strong>
-                ({service.reviews} reviews)
-              </span>
-            </div>
-
-            {/* Description */}
-            <div className="mt-10 border-t border-[#F0E3E7] pt-8">
-              <h2 className="font-logo text-3xl font-semibold text-[#49333F]">
-                About This Service
-              </h2>
-
-              <p className="mt-4 text-sm leading-8 text-[#806C77]">
-                {service.description}
-              </p>
-            </div>
-
-            {/* Vendor Information */}
-            <div className="mt-10 border-t border-[#F0E3E7] pt-8">
-              <h2 className="font-logo text-3xl font-semibold text-[#49333F]">
-                About the Vendor
-              </h2>
-
-              <div className="mt-5 flex items-start gap-4 rounded-2xl border border-[#F0E3E7] bg-white p-5">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] text-xl font-bold text-[#D96F96]">
-                  {service.vendor.charAt(0)}
+                  <div className="flex gap-3 sm:w-[35%] sm:flex-col">
+                    {images.slice(1, 3).map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative h-[100px] flex-1 overflow-hidden rounded-xl sm:h-[103px] sm:w-full"
+                      >
+                        <Image
+                          src={image}
+                          alt={`${service.serviceName} ${index + 2}`}
+                          fill
+                          unoptimized
+                          sizes="200px"
+                          className="object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="flex h-[180px] w-full items-center justify-center rounded-xl bg-[#F5E8EC] text-sm text-[#987B88]">
+                  No images available
                 </div>
+              )}
+            </div>
 
-                <div>
-                  <h3 className="font-semibold text-[#49333F]">
-                    {service.vendor}
-                  </h3>
+            {/* Service Details */}
+            <div className="mt-7">
+              <span className="inline-flex rounded-full bg-[#F5E8EC] px-4 py-2 text-xs font-semibold text-[#D96F96]">
+                {service.category}
+              </span>
 
-                  <p className="mt-2 text-sm leading-6 text-[#987B88]">
-                    {service.vendorDescription}
-                  </p>
+              <h1 className="mt-4 font-logo text-3xl font-semibold leading-tight text-[#49333F] sm:text-4xl">
+                {service.serviceName}
+              </h1>
 
-                  <p className="mt-3 flex items-center gap-2 text-xs font-medium text-[#4D9A78]">
-                    <ShieldCheck size={15} />
-                    Verified Vendor
-                  </p>
+              <div className="mt-4 flex flex-wrap items-center gap-5 text-sm text-[#987B88]">
+                <span className="flex items-center gap-2">
+                  <MapPin size={17} />
+                  {service.location}
+                </span>
+              </div>
+
+              <div className="mt-8 border-t border-[#F0E3E7] pt-7">
+                <h2 className="font-logo text-2xl font-semibold text-[#49333F]">
+                  About This Service
+                </h2>
+                <p className="mt-3 text-sm leading-8 text-[#806C77]">
+                  {service.description}
+                </p>
+              </div>
+
+              <div className="mt-8 border-t border-[#F0E3E7] pt-7">
+                <h2 className="font-logo text-2xl font-semibold text-[#49333F]">
+                  Service Benefits
+                </h2>
+
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  <div className="flex items-center gap-3 text-sm text-[#66525E]">
+                    <CheckCircle2 size={18} className="text-[#D96F96]" />
+                    Professional wedding vendor
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-[#66525E]">
+                    <CheckCircle2 size={18} className="text-[#D96F96]" />
+                    Personalized service
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-[#66525E]">
+                    <ShieldCheck size={18} className="text-[#D96F96]" />
+                    Approved service
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Booking Card */}
-          <aside>
-            <div className="sticky top-24 rounded-2xl border border-[#F0E3E7] bg-white p-6 shadow-sm">
+          {/* Booking Form - Right Side */}
+          <aside className="lg:sticky lg:top-24">
+            <div className="rounded-2xl border border-[#F0E3E7] bg-white p-5 shadow-sm sm:p-6">
               <p className="text-xs font-medium text-[#987B88]">
                 Starting from
               </p>
 
               <p className="mt-2 text-3xl font-bold text-[#D96F96]">
-                ${service.price.toLocaleString("en-US")}
+                ${Number(service.price).toLocaleString("en-US")}
               </p>
 
-              <p className="mt-1 text-xs text-[#987B88]">
-                Contact vendor for package details
+              <div className="my-5 border-t border-[#F0E3E7]" />
+
+              <h2 className="font-logo text-2xl font-semibold text-[#49333F]">
+                Book This Service
+              </h2>
+
+              <p className="mt-2 text-xs leading-6 text-[#987B88]">
+                Send a booking request to this service vendor.
               </p>
 
-              <div className="my-6 border-t border-[#F0E3E7]" />
-
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 text-sm text-[#66525E]">
-                  <CheckCircle2 size={17} className="text-[#D96F96]" />
-                  Professional wedding vendor
+              {!session?.user ? (
+                <div className="mt-5">
+                  <Link
+                    href="/sign-in"
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#E88BAA] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#D96F96]"
+                  >
+                    <CalendarDays size={17} />
+                    Sign In to Book
+                  </Link>
+                  <p className="mt-3 text-center text-xs text-[#987B88]">
+                    Sign in with your customer account to book.
+                  </p>
                 </div>
+              ) : session.user.role !== "customer" ? (
+                <p className="mt-5 rounded-xl bg-[#FFF4E8] p-4 text-sm text-[#987B88]">
+                  Only customer accounts can book a service.
+                </p>
+              ) : (
+                <form onSubmit={handleBooking} className="mt-5 space-y-4">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#66525E]">
+                      Event Date
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      min={new Date().toISOString().split("T")[0]}
+                      value={eventDate}
+                      onChange={(e) => setEventDate(e.target.value)}
+                      className="w-full rounded-xl border border-[#F0E3E7] bg-[#FFFCFB] px-4 py-3 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                    />
+                  </div>
 
-                <div className="flex items-center gap-3 text-sm text-[#66525E]">
-                  <CheckCircle2 size={17} className="text-[#D96F96]" />
-                  Personalized service
-                </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#66525E]">
+                      Event Location
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={eventLocation}
+                      onChange={(e) => setEventLocation(e.target.value)}
+                      placeholder="Enter event location"
+                      className="w-full rounded-xl border border-[#F0E3E7] bg-[#FFFCFB] px-4 py-3 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                    />
+                  </div>
 
-                <div className="flex items-center gap-3 text-sm text-[#66525E]">
-                  <CheckCircle2 size={17} className="text-[#D96F96]" />
-                  Booking request available
-                </div>
-              </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#66525E]">
+                      Additional Message
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Write any additional details..."
+                      className="w-full resize-none rounded-xl border border-[#F0E3E7] bg-[#FFFCFB] px-4 py-3 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                    />
+                  </div>
 
-              <Link
-                href="/sign-in"
-                className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-[#E88BAA] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#D96F96]"
-              >
-                <CalendarDays size={17} />
-                Sign In to Book
-              </Link>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#E88BAA] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#D96F96] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 size={17} className="animate-spin" />
+                        Sending Request...
+                      </>
+                    ) : (
+                      <>
+                        <CalendarDays size={17} />
+                        Book Service
+                      </>
+                    )}
+                  </button>
 
-              <p className="mt-4 text-center text-xs leading-6 text-[#987B88]">
-                Sign in with your customer account to send a booking
-                request to this vendor.
-              </p>
+                  <p className="text-center text-xs leading-5 text-[#987B88]">
+                    Your booking request will be sent with Pending status.
+                  </p>
+                </form>
+              )}
             </div>
           </aside>
         </div>
