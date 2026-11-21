@@ -9,6 +9,17 @@ import { Pencil, Trash2, Plus, RefreshCw, MapPin } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 const API_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
@@ -33,8 +44,9 @@ export default function MyServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState("");
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  // Initial data loading
   useEffect(() => {
     if (!userId) return;
 
@@ -77,7 +89,6 @@ export default function MyServicesPage() {
     };
   }, [userId]);
 
-  // Refresh and reload services
   const loadServices = useCallback(async () => {
     if (!userId) return;
 
@@ -102,12 +113,10 @@ export default function MyServicesPage() {
     }
   }, [userId]);
 
-  // Delete service
-  const deleteService = async (id: string) => {
-    if (!userId) return;
+  const deleteService = async () => {
+    if (!userId || !selectedService) return;
 
-    if (!confirm("Are you sure you want to delete this service?")) return;
-
+    const id = selectedService._id;
     setProcessing(id);
 
     try {
@@ -124,6 +133,8 @@ export default function MyServicesPage() {
       }
 
       toast.success("Service deleted successfully");
+      setDeleteDialogOpen(false);
+      setSelectedService(null);
       await loadServices();
     } catch (error) {
       toast.error(
@@ -134,7 +145,6 @@ export default function MyServicesPage() {
     }
   };
 
-  // Toggle service availability
   const toggleAvailability = async (service: Service) => {
     if (!userId) return;
 
@@ -183,20 +193,20 @@ export default function MyServicesPage() {
 
   if (loading) {
     return (
-      <div className="py-20 text-center text-sm text-[#987B88]">
+      <div className="py-16 text-center text-xs text-[#987B88]">
         Loading your services...
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-[#49333F]">
+          <h2 className="text-lg font-bold text-[#49333F]">
             My Services
           </h2>
-          <p className="mt-1 text-sm text-[#987B88]">
+          <p className="mt-1 text-xs text-[#987B88]">
             Manage your submitted wedding services.
           </p>
         </div>
@@ -204,140 +214,193 @@ export default function MyServicesPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={loadServices}
-            className="rounded-xl border border-[#EEDFE5] bg-white p-2.5 text-[#987B88] hover:text-[#D96F96]"
+            className="rounded-lg border border-[#EEDFE5] bg-white p-2 text-[#987B88] hover:text-[#D96F96]"
             title="Refresh"
             aria-label="Refresh services"
           >
-            <RefreshCw size={17} />
+            <RefreshCw size={15} />
           </button>
 
           <Link
             href="/dashboard/vendor/services/new"
-            className="flex items-center gap-2 rounded-xl bg-[#E477A0] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#D96F96]"
+            className="flex items-center gap-1.5 rounded-lg bg-[#E477A0] px-3 py-2 text-xs font-semibold text-white hover:bg-[#D96F96]"
           >
-            <Plus size={17} />
+            <Plus size={15} />
             Add Service
           </Link>
         </div>
       </div>
 
       {services.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#EEDFE5] bg-white px-5 py-16 text-center">
-          <h3 className="font-semibold text-[#49333F]">
+        <div className="rounded-xl border border-dashed border-[#EEDFE5] bg-white px-5 py-12 text-center">
+          <h3 className="text-sm font-semibold text-[#49333F]">
             No services yet
           </h3>
 
-          <p className="mt-2 text-sm text-[#987B88]">
+          <p className="mt-2 text-xs text-[#987B88]">
             Add your first wedding service to get started.
           </p>
 
           <Link
             href="/dashboard/vendor/services/new"
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#E477A0] px-5 py-2.5 text-sm font-semibold text-white"
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#E477A0] px-4 py-2 text-xs font-semibold text-white"
           >
-            <Plus size={16} />
+            <Plus size={14} />
             Create Service
           </Link>
         </div>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="space-y-2.5">
           {services.map((service) => (
             <article
               key={service._id}
-              className="overflow-hidden rounded-2xl border border-[#F0E2E7] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+              className="flex min-w-0 items-center gap-3 rounded-xl border border-[#F0E2E7] bg-white p-2.5 shadow-sm transition hover:shadow-md sm:gap-4 sm:p-3"
             >
-              <div className="relative h-48 w-full bg-[#FFF5F8]">
+              <div className="relative h-[62px] w-[62px] shrink-0 overflow-hidden rounded-lg bg-[#FFF5F8] sm:h-[72px] sm:w-[72px]">
                 <Image
                   src={service.images?.[0] || "/placeholder.png"}
                   alt={service.serviceName}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  sizes="72px"
                   className="object-cover"
                 />
-
-                <span
-                  className={`absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-semibold ${statusStyle(service.status)}`}
-                >
-                  {service.status}
-                </span>
               </div>
 
-              <div className="space-y-3 p-4">
-                <div>
-                  <p className="text-xs font-medium text-[#D96F96]">
-                    {service.category}
-                  </p>
-
-                  <h3 className="mt-1 line-clamp-1 text-base font-bold text-[#49333F]">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <h3 className="max-w-full truncate text-xs font-bold text-[#49333F] sm:text-sm">
                     {service.serviceName}
                   </h3>
 
-                  <p className="mt-1 flex items-center gap-1 text-xs text-[#987B88]">
-                    <MapPin size={14} />
-                    {service.location}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between border-t border-[#F0E2E7] pt-3">
-                  <div>
-                    <p className="text-xs text-[#987B88]">
-                      Service Price
-                    </p>
-                    <p className="mt-1 text-lg font-bold text-[#D96F96]">
-                      ${service.price.toLocaleString("en-US")}
-                    </p>
-                  </div>
-
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      service.isActive
-                        ? "bg-green-50 text-green-700"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-semibold ${statusStyle(
+                      service.status
+                    )}`}
                   >
-                    {service.isActive ? "Active" : "Inactive"}
+                    {service.status}
                   </span>
                 </div>
 
-                <div className="flex gap-2 border-t border-[#F0E2E7] pt-3">
-                  {service.status === "Approved" && (
-                    <button
-                      disabled={processing === service._id}
-                      onClick={() => toggleAvailability(service)}
-                      className="flex-1 rounded-lg border border-[#EEDFE5] px-3 py-2 text-xs font-semibold text-[#765D68] hover:bg-[#FFF5F8] disabled:opacity-50"
-                    >
-                      {processing === service._id
-                        ? "Processing..."
-                        : service.isActive
-                          ? "Deactivate"
-                          : "Activate"}
-                    </button>
-                  )}
+                <p className="mt-0.5 truncate text-[10px] text-[#D96F96]">
+                  {service.category}
+                </p>
+
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <p className="flex items-center gap-1 text-[10px] text-[#987B88]">
+                    <MapPin size={11} />
+                    <span className="max-w-[110px] truncate">
+                      {service.location}
+                    </span>
+                  </p>
+
+                  <p className="text-[11px] font-bold text-[#D96F96]">
+                    ${service.price.toLocaleString("en-US")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex shrink-0 items-center gap-2">
+                {/* Active toggle */}
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="text-[10px] font-medium text-[#987B88]">
+                    Active
+                  </span>
 
                   <button
+                    type="button"
+                    role="switch"
+                    aria-checked={service.isActive}
+                    aria-label={`Turn ${
+                      service.isActive ? "off" : "on"
+                    } ${service.serviceName}`}
+                    disabled={processing === service._id}
+                    onClick={() => toggleAvailability(service)}
+                    className={`relative inline-flex h-5 w-9 shrink-0 appearance-none items-center rounded-full p-0 transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                      service.isActive ? "bg-red-500" : "bg-gray-300"
+                    }`}
+                  >
+                    <span
+                      className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
+                        service.isActive
+                          ? "translate-x-4"
+                          : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Edit and Delete */}
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
                     onClick={() =>
                       router.push(
                         `/dashboard/vendor/services/${service._id}/edit`
                       )
                     }
-                    className="rounded-lg border border-[#EEDFE5] p-2.5 text-[#D96F96] hover:bg-[#FFF5F8]"
+                    className="rounded-md border border-[#EEDFE5] p-1.5 text-[#D96F96] transition hover:bg-[#FFF5F8]"
                     title="Edit service"
                     aria-label="Edit service"
                   >
-                    <Pencil size={16} />
+                    <Pencil size={12} />
                   </button>
 
                   <button
+                    type="button"
                     disabled={processing === service._id}
-                    onClick={() => deleteService(service._id)}
-                    className="rounded-lg border border-red-100 p-2.5 text-red-500 hover:bg-red-50 disabled:opacity-50"
+                    onClick={() => {
+                      setSelectedService(service);
+                      setDeleteDialogOpen(true);
+                    }}
+                    className="rounded-md border border-red-100 p-1.5 text-red-500 transition hover:bg-red-50 disabled:opacity-50"
                     title="Delete service"
                     aria-label="Delete service"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={12} />
                   </button>
                 </div>
               </div>
+
+              {/* Delete Confirmation */}
+              <AlertDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+              >
+                <AlertDialogContent className="rounded-xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-[#49333F]">
+                      Delete Service?
+                    </AlertDialogTitle>
+
+                    <AlertDialogDescription className="text-[#987B88]">
+                      Are you sure you want to delete{" "}
+                      <span className="font-semibold text-[#49333F]">
+                        {selectedService?.serviceName}
+                      </span>
+                      ? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel
+                      disabled={processing === selectedService?._id}
+                      className="rounded-lg"
+                    >
+                      Cancel
+                    </AlertDialogCancel>
+
+                    <AlertDialogAction
+                      disabled={processing === selectedService?._id}
+                      onClick={deleteService}
+                      className="rounded-lg bg-red-500 text-white hover:bg-red-600"
+                    >
+                      {processing === selectedService?._id
+                        ? "Deleting..."
+                        : "Delete"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </article>
           ))}
         </div>
