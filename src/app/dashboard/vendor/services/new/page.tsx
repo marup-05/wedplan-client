@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ImagePlus, Loader2, UploadCloud } from "lucide-react";
+import { ImagePlus, Loader2, UploadCloud, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -32,25 +32,48 @@ export default function AddServicePage() {
     location: "",
   });
 
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleImage = (selected: File | undefined) => {
-    if (!selected) return;
+  const handleImage = (selectedFiles: FileList | null) => {
+    if (!selectedFiles) return;
 
-    if (!["image/jpeg", "image/png", "image/webp"].includes(selected.type)) {
-      toast.error("Only JPG, PNG and WEBP images are allowed.");
+    const newFiles = Array.from(selectedFiles);
+    const validFiles: File[] = [];
+
+    for (const file of newFiles) {
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        toast.error(`${file.name}: Only JPG, PNG and WEBP are allowed.`);
+        continue;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.name}: Image size must be under 5MB.`);
+        continue;
+      }
+
+      validFiles.push(file);
+    }
+
+    if (files.length + validFiles.length > 5) {
+      toast.error("You can upload maximum 5 images.");
       return;
     }
 
-    if (selected.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be under 5MB.");
-      return;
-    }
+    setFiles((prev) => [...prev, ...validFiles]);
 
-    setFile(selected);
-    setPreview(URL.createObjectURL(selected));
+    setPreviews((prev) => [
+      ...prev,
+      ...validFiles.map((file) => URL.createObjectURL(file)),
+    ]);
+  };
+
+  const removeImage = (index: number) => {
+    URL.revokeObjectURL(previews[index]);
+
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,30 +84,36 @@ export default function AddServicePage() {
       return;
     }
 
-    if (!file) {
-      toast.error("Please upload a service image.");
+    if (files.length === 0) {
+      toast.error("Please upload at least one service image.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const imageData = new FormData();
-      imageData.append("image", file);
+      const images = await Promise.all(
+        files.map(async (file) => {
+          const imageData = new FormData();
+          imageData.append("image", file);
 
-      const uploadResponse = await fetch(
-        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
-        {
-          method: "POST",
-          body: imageData,
-        }
+          const uploadResponse = await fetch(
+            `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+            {
+              method: "POST",
+              body: imageData,
+            }
+          );
+
+          const uploadResult = await uploadResponse.json();
+
+          if (!uploadResponse.ok || !uploadResult.success) {
+            throw new Error(`Image upload failed: ${file.name}`);
+          }
+
+          return uploadResult.data.url;
+        })
       );
-
-      const uploadResult = await uploadResponse.json();
-
-      if (!uploadResponse.ok || !uploadResult.success) {
-        throw new Error("Image upload failed.");
-      }
 
       const response = await fetch(`${API_URL}/services`, {
         method: "POST",
@@ -95,7 +124,7 @@ export default function AddServicePage() {
           ...form,
           price: Number(form.price),
           vendorId: session.user.id,
-          images: [uploadResult.data.url],
+          images,
         }),
       });
 
@@ -225,44 +254,75 @@ export default function AddServicePage() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#49333F]">
-            Service Image *
-          </label>
+        <div className="space-y-3">
+          <div>
+            <label className="text-sm font-semibold text-[#49333F]">
+              Service Images * (Maximum 5)
+            </label>
+            <p className="mt-1 text-xs text-[#987B88]">
+              JPG, PNG or WEBP · Max 5MB per image
+            </p>
+          </div>
 
-          <label className="flex min-h-44 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-[#EEDFE5] bg-[#FFFAFC] p-4 text-center hover:border-[#E477A0]">
-            {preview ? (
-              <Image
-                width={600}
-                height={240}
-                src={preview}
-                alt="Service preview"
-                unoptimized
-                className="max-h-52 rounded-lg object-cover"
-              />
-            ) : (
-              <>
-                <ImagePlus size={32} className="text-[#D96F96]" />
-                <span className="mt-3 text-sm font-semibold text-[#49333F]">
-                  Upload service image
-                </span>
-                <span className="mt-1 text-xs text-[#987B88]">
-                  JPG, PNG or WEBP · Max 5MB
-                </span>
-              </>
-            )}
+          <label className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#EEDFE5] bg-[#FFFAFC] p-5 text-center transition hover:border-[#E477A0]">
+            <ImagePlus size={32} className="text-[#D96F96]" />
+
+            <span className="mt-3 text-sm font-semibold text-[#49333F]">
+              Click to upload images
+            </span>
+
+            <span className="mt-1 text-xs text-[#987B88]">
+              You can select multiple images or add more later
+            </span>
 
             <input
               type="file"
               accept="image/png,image/jpeg,image/webp"
+              multiple
+              disabled={files.length >= 5}
               className="hidden"
-              onChange={(e) => handleImage(e.target.files?.[0])}
+              onChange={(e) => {
+                handleImage(e.target.files);
+                e.target.value = "";
+              }}
             />
           </label>
 
-          {file && (
-            <p className="text-xs text-[#987B88]">{file.name}</p>
+          {previews.length > 0 && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {previews.map((preview, index) => (
+                <div
+                  key={preview}
+                  className="relative overflow-hidden rounded-xl border border-[#EEDFE5] p-2"
+                >
+                  <Image
+                    width={300}
+                    height={200}
+                    src={preview}
+                    alt={`Service image ${index + 1}`}
+                    unoptimized
+                    className="h-32 w-full rounded-lg object-cover"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute right-3 top-3 rounded-full bg-white p-1.5 text-red-500 shadow hover:bg-red-50"
+                  >
+                    <X size={16} />
+                  </button>
+
+                  <p className="mt-2 truncate text-xs text-[#987B88]">
+                    {files[index].name}
+                  </p>
+                </div>
+              ))}
+            </div>
           )}
+
+          <p className="text-xs text-[#987B88]">
+            {files.length}/5 images selected
+          </p>
         </div>
 
         <div className="rounded-xl bg-[#FFF5F8] p-4 text-sm text-[#765D68]">
@@ -281,7 +341,7 @@ export default function AddServicePage() {
           ) : (
             <UploadCloud size={18} />
           )}
-          {loading ? "Submitting..." : "Submit Service"}
+          {loading ? "Uploading Images & Submitting..." : "Submit Service"}
         </button>
       </form>
     </div>

@@ -1,10 +1,12 @@
 
 import { betterAuth } from "better-auth";
-import { MongoClient } from "mongodb";
+import { APIError } from "better-auth/api";
+import { MongoClient, ObjectId } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
 const client = new MongoClient(process.env.BETTER_AUTH_DB_URI as string);
 const db = client.db("wedPlan");
+const users = db.collection("user");
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
@@ -40,6 +42,24 @@ export const auth = betterAuth({
               role: user.role === "vendor" ? "vendor" : "customer",
             },
           };
+        },
+      },
+    },
+
+    session: {
+      create: {
+        before: async (session) => {
+          const user = await users.findOne({
+            _id: new ObjectId(session.userId),
+          });
+
+          if (user?.isBlocked === true) {
+            throw new APIError("FORBIDDEN", {
+              message: "Your account has been blocked by the admin.",
+            });
+          }
+
+          return { data: session };
         },
       },
     },
