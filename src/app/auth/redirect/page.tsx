@@ -44,7 +44,9 @@ export default function AuthRedirectPage() {
       session.user as { role?: string }
     ).role?.toLowerCase();
 
-    if (!dashboardPaths[role || ""]) {
+    const dashboardPath = role ? dashboardPaths[role] : undefined;
+
+    if (!dashboardPath) {
       toast.error("Invalid user role. Please contact support.");
       router.replace("/");
       return;
@@ -56,7 +58,7 @@ export default function AuthRedirectPage() {
         : "Successfully signed in with Google!"
     );
 
-    router.replace(dashboardPaths[role]);
+    router.replace(dashboardPath);
     router.refresh();
   }, [session, isPending, router]);
 
