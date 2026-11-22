@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth-client";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 import {
   ArrowLeft,
   MapPin,
@@ -16,9 +17,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 type Service = {
   _id: string;
@@ -46,7 +44,6 @@ export default function ServiceDetailsPage() {
   const [eventLocation, setEventLocation] = useState("");
   const [message, setMessage] = useState("");
 
-  // Protect service details page
   useEffect(() => {
     if (!sessionLoading && !session?.user) {
       toast.error("Please sign in to view service details.");
@@ -54,7 +51,6 @@ export default function ServiceDetailsPage() {
     }
   }, [session, sessionLoading, router]);
 
-  // Fetch service only after successful login
   useEffect(() => {
     if (sessionLoading || !session?.user || !id) return;
 
@@ -101,6 +97,7 @@ export default function ServiceDetailsPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(await getAuthHeaders()),
         },
         body: JSON.stringify({
           serviceId: service?._id,
@@ -124,7 +121,7 @@ export default function ServiceDetailsPage() {
       setMessage("");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error ? error.message : "Something went wrong"
       );
     } finally {
       setSubmitting(false);
