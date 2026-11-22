@@ -9,6 +9,10 @@ const client = new MongoClient(process.env.BETTER_AUTH_DB_URI as string);
 const db = client.db("wedPlan");
 const users = db.collection("user");
 
+client.connect().catch((error) => {
+  console.error("MongoDB connection failed:", error);
+});
+
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
