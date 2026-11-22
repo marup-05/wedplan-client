@@ -15,9 +15,7 @@ import {
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 
 type Booking = {
   _id: string;
@@ -95,8 +93,11 @@ export default function CustomerBookingDetailsPage() {
         setLoading(true);
         setError("");
 
+        const headers = await getAuthHeaders();
+
         const response = await fetch(
-          `${API_URL}/customer/${customerId}/bookings/${bookingId}`
+          `${API_URL}/customer/bookings/${bookingId}`,
+          { headers }
         );
 
         const result = await response.json();
@@ -132,9 +133,14 @@ export default function CustomerBookingDetailsPage() {
     try {
       setCancelling(true);
 
+      const headers = await getAuthHeaders();
+
       const response = await fetch(
-        `${API_URL}/customer/${customerId}/bookings/${booking._id}/cancel`,
-        { method: "PATCH" }
+        `${API_URL}/customer/bookings/${booking._id}/cancel`,
+        {
+          method: "PATCH",
+          headers,
+        }
       );
 
       const result = await response.json();
@@ -288,7 +294,7 @@ export default function CustomerBookingDetailsPage() {
 
           <div className="mt-4 flex items-center gap-3">
             {booking.vendor?.image ? (
-              <Image 
+              <Image
                 src={booking.vendor.image}
                 alt="Vendor"
                 width={44}

@@ -13,6 +13,7 @@ import {
   House,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { getAuthHeaders } from "@/lib/api";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
@@ -45,7 +46,6 @@ const navItems = [
   },
 ];
 
-// PlanBadge component declared outside VendorSidebar
 function PlanBadge({ plan }: { plan: string }) {
   return (
     <span
@@ -68,16 +68,17 @@ export function VendorSidebar() {
   const [plan, setPlan] = useState("Free");
 
   useEffect(() => {
-    const userId = session?.user?.id;
-
-    if (!userId) return;
+    if (!session?.user?.id) return;
 
     let cancelled = false;
 
     const fetchSubscription = async () => {
       try {
+        const headers = await getAuthHeaders();
+
         const response = await fetch(
-          `${API_URL}/vendor/${userId}/subscription`
+          `${API_URL}/vendor/subscription`,
+          { headers }
         );
 
         if (!response.ok) {
@@ -91,7 +92,7 @@ export function VendorSidebar() {
         }
       } catch (error) {
         if (!cancelled) {
-          console.error(error);
+          console.error("Subscription error:", error);
         }
       }
     };

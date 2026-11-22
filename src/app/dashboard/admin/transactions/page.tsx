@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -10,10 +9,8 @@ import {
   Store,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 type Transaction = {
   _id: string;
@@ -50,9 +47,9 @@ export default function AdminTransactionsPage() {
       }
 
       try {
-        const response = await fetch(
-          `${API_URL}/admin/${adminId}/transactions`
-        );
+        const response = await fetch(`${API_URL}/admin/transactions`, {
+          headers: await getAuthHeaders(false),
+        });
 
         const data = await response.json();
 
@@ -77,7 +74,6 @@ export default function AdminTransactionsPage() {
     [adminId]
   );
 
-  // Initial data fetching
   useEffect(() => {
     if (!adminId) return;
 
@@ -85,9 +81,9 @@ export default function AdminTransactionsPage() {
 
     const loadTransactions = async () => {
       try {
-        const response = await fetch(
-          `${API_URL}/admin/${adminId}/transactions`
-        );
+        const response = await fetch(`${API_URL}/admin/transactions`, {
+          headers: await getAuthHeaders(false),
+        });
 
         const data = await response.json();
 

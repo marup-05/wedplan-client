@@ -12,8 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { API_URL, getAuthHeaders } from "@/lib/api";
 
 type DashboardData = {
   totalServices: number;
@@ -23,29 +22,77 @@ type DashboardData = {
   subscriptionPlan: string;
 };
 
+const initialDashboardData: DashboardData = {
+  totalServices: 0,
+  activeServices: 0,
+  pendingRequests: 0,
+  acceptedBookings: 0,
+  subscriptionPlan: "Free",
+};
+
 export default function VendorDashboardPage() {
-  const { data: session } = authClient.useSession();
-  const [data, setData] = useState<DashboardData>({
-    totalServices: 0,
-    activeServices: 0,
-    pendingRequests: 0,
-    acceptedBookings: 0,
-    subscriptionPlan: "Free",
-  });
-  const [loading, setLoading] = useState(true);
+  const { data: session, isPending } = authClient.useSession();
+
+  const [data, setData] = useState<DashboardData>(
+    initialDashboardData,
+  );
+
+  const [fetching, setFetching] = useState(false);
+  const [fetchCompleted, setFetchCompleted] = useState(false);
+
+  const userId = session?.user?.id;
 
   useEffect(() => {
-    if (!session?.user?.id) return;
+    if (isPending || !userId) return;
 
-    fetch(`${API_URL}/vendor/${session.user.id}/dashboard`)
-      .then(async (res) => {
-        const result = await res.json();
-        if (!res.ok) throw new Error(result.message || "Dashboard load failed");
-        setData(result);
-      })
-      .catch((error) => console.error("Dashboard error:", error))
-      .finally(() => setLoading(false));
-  }, [session?.user?.id]);
+    let isMounted = true;
+
+    const fetchDashboard = async () => {
+      try {
+        setFetching(true);
+
+        const headers = await getAuthHeaders();
+
+        const response = await fetch(`${API_URL}/vendor/dashboard`, {
+          headers,
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "Dashboard load failed");
+        }
+
+        if (isMounted) {
+          setData({
+            totalServices: result.totalServices ?? 0,
+            activeServices: result.activeServices ?? 0,
+            pendingRequests: result.pendingRequests ?? 0,
+            acceptedBookings: result.acceptedBookings ?? 0,
+            subscriptionPlan: result.subscriptionPlan ?? "Free",
+          });
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("Dashboard error:", error);
+        }
+      } finally {
+        if (isMounted) {
+          setFetching(false);
+          setFetchCompleted(true);
+        }
+      }
+    };
+
+    void fetchDashboard();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId, isPending]);
+
+  const loading =
+    isPending || (!!userId && (!fetchCompleted || fetching));
 
   const stats = [
     {
@@ -80,9 +127,11 @@ export default function VendorDashboardPage() {
         <p className="text-xs font-medium text-[#D96F96]">
           Vendor Dashboard
         </p>
+
         <h2 className="mt-1.5 text-xl font-bold text-[#49333F] md:text-2xl">
           Welcome to your workspace!
         </h2>
+
         <p className="mt-1.5 text-xs text-[#987B88]">
           Manage your wedding services and booking requests from here.
         </p>
@@ -101,7 +150,11 @@ export default function VendorDashboardPage() {
                 <div className="rounded-lg bg-[#FCECF2] p-2 text-[#D96F96]">
                   <Icon size={17} />
                 </div>
-                <ArrowUpRight size={15} className="text-[#C5AAB5]" />
+
+                <ArrowUpRight
+                  size={15}
+                  className="text-[#C5AAB5]"
+                />
               </div>
 
               <h3 className="mt-3 text-xs font-medium text-[#987B88]">
@@ -130,8 +183,11 @@ export default function VendorDashboardPage() {
             <h3 className="text-sm font-semibold text-[#49333F]">
               Your Current Plan
             </h3>
+
             <p className="text-xs text-[#987B88]">
-              {loading ? "Loading..." : `${data.subscriptionPlan} Plan`}
+              {loading
+                ? "Loading..."
+                : `${data.subscriptionPlan} Plan`}
             </p>
           </div>
         </div>

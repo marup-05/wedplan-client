@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -13,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -24,9 +24,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 type User = {
   _id: string;
@@ -70,7 +67,10 @@ export default function ManageUsersPage() {
         if (role !== "All") params.set("role", role.toLowerCase());
 
         const response = await fetch(
-          `${API_URL}/admin/${adminId}/users?${params.toString()}`
+          `${API_URL}/admin/users?${params.toString()}`,
+          {
+            headers: await getAuthHeaders(false),
+          }
         );
 
         const data = await response.json();
@@ -92,44 +92,48 @@ export default function ManageUsersPage() {
     [adminId, search, role]
   );
 
-  // Initial fetch and search/role filter fetch
   useEffect(() => {
     if (!adminId) return;
 
     let cancelled = false;
 
-    const params = new URLSearchParams();
+    const loadUsers = async () => {
+      try {
+        const params = new URLSearchParams();
 
-    if (search.trim()) params.set("search", search.trim());
-    if (role !== "All") params.set("role", role.toLowerCase());
+        if (search.trim()) params.set("search", search.trim());
+        if (role !== "All") params.set("role", role.toLowerCase());
 
-    fetch(`${API_URL}/admin/${adminId}/users?${params.toString()}`)
-      .then(async (response) => {
+        const response = await fetch(
+          `${API_URL}/admin/users?${params.toString()}`,
+          {
+            headers: await getAuthHeaders(false),
+          }
+        );
+
         const data = await response.json();
 
         if (!response.ok) {
           throw new Error(data.message || "Failed to load users");
         }
 
-        return data;
-      })
-      .then((data) => {
         if (!cancelled) {
           setUsers(Array.isArray(data) ? data : data.users || []);
         }
-      })
-      .catch((error: unknown) => {
+      } catch (error: unknown) {
         if (!cancelled) {
           toast.error(
             error instanceof Error ? error.message : "Could not load users"
           );
         }
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) {
           setLoading(false);
         }
-      });
+      }
+    };
+
+    void loadUsers();
 
     return () => {
       cancelled = true;
@@ -144,7 +148,10 @@ export default function ManageUsersPage() {
 
     try {
       const response = await fetch(
-        `${API_URL}/admin/${adminId}/users/${user._id}`
+        `${API_URL}/admin/users/${user._id}`,
+        {
+          headers: await getAuthHeaders(false),
+        }
       );
 
       const data = await response.json();
@@ -170,10 +177,10 @@ export default function ManageUsersPage() {
 
     try {
       const response = await fetch(
-        `${API_URL}/admin/${adminId}/users/${selectedUser._id}/status`,
+        `${API_URL}/admin/users/${selectedUser._id}/status`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: await getAuthHeaders(),
           body: JSON.stringify({
             isBlocked: !selectedUser.isBlocked,
           }),

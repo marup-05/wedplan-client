@@ -40,15 +40,23 @@ export default function AuthRedirectPage() {
 
     handled.current = true;
 
+    const role = (
+      session.user as { role?: string }
+    ).role?.toLowerCase();
+
+    if (!dashboardPaths[role || ""]) {
+      toast.error("Invalid user role. Please contact support.");
+      router.replace("/");
+      return;
+    }
+
     toast.success(
       from === "signup"
         ? "Your account has been created successfully!"
         : "Successfully signed in with Google!"
     );
 
-    const role = (session.user as { role?: string }).role;
-
-    router.replace(dashboardPaths[role?.toLowerCase() || ""] || "/");
+    router.replace(dashboardPaths[role]);
     router.refresh();
   }, [session, isPending, router]);
 

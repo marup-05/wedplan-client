@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import {
   Search,
   MapPin,
@@ -39,22 +39,34 @@ type Service = {
   isActive: boolean;
 };
 
+type SortOption = "default" | "low-to-high" | "high-to-low";
+
 export function ServicesView() {
   const searchParams = useSearchParams();
-  const initialCategory = searchParams.get("category") || "All";
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const urlCategory = searchParams.get("category") || "All";
+
+  const validUrlCategory = categories.includes(urlCategory)
+    ? urlCategory
+    : "All";
 
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState(
-    categories.includes(initialCategory) ? initialCategory : "All",
-  );
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [location, setLocation] = useState("");
-  const [sort, setSort] = useState("default");
+  const [sort, setSort] = useState<SortOption>("default");
+
+  // URL category takes priority until the user manually selects a category.
+  const category = selectedCategory ?? validUrlCategory;
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchServices = async () => {
       try {
         setLoading(true);
@@ -62,44 +74,62 @@ export function ServicesView() {
 
         const response = await fetch(`${API_URL}/services`, {
           cache: "no-store",
+          signal: controller.signal,
         });
 
         if (!response.ok) {
           throw new Error("Failed to load services");
         }
 
-        const data = await response.json();
+        const data: unknown = await response.json();
+
+        const serviceList: Service[] = Array.isArray(data)
+          ? (data as Service[])
+          : [];
 
         setServices(
-          Array.isArray(data)
-            ? data.filter(
-                (service: Service) =>
-                  service.status === "Approved" && service.isActive === true,
-              )
-            : [],
+          serviceList.filter(
+            (service) =>
+              service.status === "Approved" &&
+              service.isActive === true,
+          ),
         );
       } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+
         setError(
           err instanceof Error ? err.message : "Something went wrong",
         );
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchServices();
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   const filteredServices = useMemo(() => {
     const result = services.filter((service) => {
+      const serviceName = service.serviceName || "";
+      const description = service.description || "";
+      const serviceLocation = service.location || "";
+
       const matchesSearch =
-        service.serviceName.toLowerCase().includes(search.toLowerCase()) ||
-        service.description.toLowerCase().includes(search.toLowerCase());
+        serviceName.toLowerCase().includes(search.toLowerCase()) ||
+        description.toLowerCase().includes(search.toLowerCase());
 
       const matchesCategory =
         category === "All" || service.category === category;
 
-      const matchesLocation = service.location
+      const matchesLocation = serviceLocation
         .toLowerCase()
         .includes(location.toLowerCase());
 
@@ -117,11 +147,17 @@ export function ServicesView() {
     return result;
   }, [services, search, category, location, sort]);
 
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
+  };
+
   const clearFilters = () => {
     setSearch("");
-    setCategory("All");
+    setSelectedCategory("All");
     setLocation("");
     setSort("default");
+
+    router.replace(pathname);
   };
 
   return (
@@ -149,6 +185,7 @@ export function ServicesView() {
                 size={18}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88]"
               />
+
               <input
                 type="text"
                 placeholder="Search services..."
@@ -163,9 +200,10 @@ export function ServicesView() {
                 size={17}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88]"
               />
+
               <select
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => handleCategoryChange(e.target.value)}
                 className="h-12 w-full appearance-none rounded-xl border border-[#F0E3E7] bg-[#FFF9F6] pl-11 pr-4 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
               >
                 {categories.map((item) => (
@@ -181,6 +219,7 @@ export function ServicesView() {
                 size={18}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88]"
               />
+
               <input
                 type="text"
                 placeholder="Search location..."
@@ -195,9 +234,12 @@ export function ServicesView() {
                 size={17}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88]"
               />
+
               <select
                 value={sort}
-                onChange={(e) => setSort(e.target.value)}
+                onChange={(e) =>
+                  setSort(e.target.value as SortOption)
+                }
                 className="h-12 w-full appearance-none rounded-xl border border-[#F0E3E7] bg-[#FFF9F6] pl-11 pr-4 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
               >
                 <option value="default">Sort by: Default</option>
@@ -225,6 +267,7 @@ export function ServicesView() {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D96F96]">
               Our Collection
             </p>
+
             <h2 className="mt-2 font-logo text-3xl font-semibold text-[#49333F] md:text-4xl">
               Wedding Services
             </h2>
@@ -247,6 +290,7 @@ export function ServicesView() {
                 className="animate-pulse overflow-hidden rounded-2xl bg-white"
               >
                 <div className="h-60 bg-[#EADDE1]" />
+
                 <div className="space-y-3 p-5">
                   <div className="h-4 w-1/2 rounded bg-[#EADDE1]" />
                   <div className="h-5 w-3/4 rounded bg-[#EADDE1]" />
@@ -260,7 +304,9 @@ export function ServicesView() {
             <h3 className="text-xl font-semibold text-[#49333F]">
               Failed to Load Services
             </h3>
+
             <p className="mt-2 text-sm text-red-500">{error}</p>
+
             <button
               onClick={() => window.location.reload()}
               className="mt-5 rounded-full bg-[#E88BAA] px-6 py-3 text-sm font-semibold text-white"
@@ -301,7 +347,9 @@ export function ServicesView() {
                 </div>
 
                 <div className="p-5">
-                  <p className="text-xs text-[#987B88]">Wedding Vendor</p>
+                  <p className="text-xs text-[#987B88]">
+                    Wedding Vendor
+                  </p>
 
                   <h3 className="mt-3 line-clamp-1 text-lg font-semibold text-[#49333F]">
                     {service.serviceName}
@@ -317,6 +365,7 @@ export function ServicesView() {
                       <p className="text-[11px] text-[#987B88]">
                         Starting from
                       </p>
+
                       <p className="mt-1 text-xl font-bold text-[#D96F96]">
                         ${Number(service.price).toLocaleString("en-US")}
                       </p>

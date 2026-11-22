@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 import {
   CalendarDays,
@@ -12,9 +13,6 @@ import {
   X,
   RefreshCw,
 } from "lucide-react";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL;
 
 type Booking = {
   _id: string;
@@ -53,9 +51,9 @@ export default function VendorBookingsPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `${API_URL}/vendor/${userId}/bookings`
-      );
+      const response = await fetch(`${API_URL}/vendor/bookings`, {
+        headers: await getAuthHeaders(),
+      });
 
       const data = await response.json();
 
@@ -88,9 +86,9 @@ export default function VendorBookingsPage() {
       }
 
       try {
-        const response = await fetch(
-          `${API_URL}/vendor/${userId}/bookings`
-        );
+        const response = await fetch(`${API_URL}/vendor/bookings`, {
+          headers: await getAuthHeaders(),
+        });
 
         const data = await response.json();
 
@@ -133,10 +131,10 @@ export default function VendorBookingsPage() {
 
     try {
       const response = await fetch(
-        `${API_URL}/vendor/${userId}/bookings/${bookingId}/status`,
+        `${API_URL}/vendor/bookings/${bookingId}/status`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: await getAuthHeaders(),
           body: JSON.stringify({ status }),
         }
       );

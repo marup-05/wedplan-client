@@ -4,11 +4,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const categories = [
   "Photography & Videography",
@@ -36,12 +35,22 @@ export default function EditServicePage() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
 
+  
   useEffect(() => {
     if (!session?.user?.id) return;
 
-    fetch(`${API_URL}/vendor/${session.user.id}/services`)
-      .then((res) => res.json())
-      .then((services) => {
+    const fetchService = async () => {
+      try {
+        const response = await fetch(`${API_URL}/vendor/services`, {
+          headers: await getAuthHeaders(),
+        });
+
+        const services = await response.json();
+
+        if (!response.ok) {
+          throw new Error(services.message || "Could not load service");
+        }
+
         const service = services.find(
           (item: { _id: string }) => item._id === params.id
         );
@@ -61,10 +70,16 @@ export default function EditServicePage() {
           images: service.images || [],
         });
         setPreview(service.images?.[0] || "");
-      })
-      .catch(() => toast.error("Could not load service"))
-      .finally(() => setLoading(false));
+      } catch {
+        toast.error("Could not load service");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchService();
   }, [session?.user?.id, params.id, router]);
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,12 +109,11 @@ export default function EditServicePage() {
 
       const response = await fetch(`${API_URL}/services/${params.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: await getAuthHeaders(),
         body: JSON.stringify({
           ...form,
           price: Number(form.price),
           images,
-          vendorId: session.user.id,
         }),
       });
 

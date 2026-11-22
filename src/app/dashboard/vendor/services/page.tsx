@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pencil, Trash2, Plus, RefreshCw, MapPin } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 
 import {
@@ -19,9 +20,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 type Service = {
   _id: string;
@@ -54,9 +52,9 @@ export default function MyServicesPage() {
 
     const fetchServices = async () => {
       try {
-        const response = await fetch(
-          `${API_URL}/vendor/${userId}/services`
-        );
+        const response = await fetch(`${API_URL}/vendor/services`, {
+          headers: await getAuthHeaders(),
+        });
 
         const data = await response.json();
 
@@ -93,9 +91,9 @@ export default function MyServicesPage() {
     if (!userId) return;
 
     try {
-      const response = await fetch(
-        `${API_URL}/vendor/${userId}/services`
-      );
+      const response = await fetch(`${API_URL}/vendor/services`, {
+        headers: await getAuthHeaders(),
+      });
 
       const data = await response.json();
 
@@ -122,8 +120,7 @@ export default function MyServicesPage() {
     try {
       const response = await fetch(`${API_URL}/services/${id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vendorId: userId }),
+        headers: await getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -155,9 +152,8 @@ export default function MyServicesPage() {
         `${API_URL}/services/${service._id}/availability`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: await getAuthHeaders(),
           body: JSON.stringify({
-            vendorId: userId,
             isActive: !service.isActive,
           }),
         }
@@ -300,7 +296,6 @@ export default function MyServicesPage() {
               </div>
 
               <div className="flex shrink-0 items-center gap-2">
-                {/* Active toggle */}
                 <div className="flex shrink-0 items-center gap-2">
                   <span className="text-[10px] font-medium text-[#987B88]">
                     Active
@@ -329,7 +324,6 @@ export default function MyServicesPage() {
                   </button>
                 </div>
 
-                {/* Edit and Delete */}
                 <div className="flex shrink-0 items-center gap-1">
                   <button
                     type="button"
@@ -361,7 +355,6 @@ export default function MyServicesPage() {
                 </div>
               </div>
 
-              {/* Delete Confirmation */}
               <AlertDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}

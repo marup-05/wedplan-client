@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -14,6 +13,7 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -25,9 +25,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 type Service = {
   _id: string;
@@ -81,7 +78,10 @@ export default function ManageServicesPage() {
         if (category !== "All") params.set("category", category);
 
         const response = await fetch(
-          `${API_URL}/admin/${adminId}/services?${params.toString()}`
+          `${API_URL}/admin/services?${params.toString()}`,
+          {
+            headers: await getAuthHeaders(false),
+          }
         );
 
         const data = await response.json();
@@ -103,7 +103,6 @@ export default function ManageServicesPage() {
     [adminId, search, status, category]
   );
 
-  // Initial fetch and filter-based fetching
   useEffect(() => {
     if (!adminId) return;
 
@@ -118,7 +117,10 @@ export default function ManageServicesPage() {
         if (category !== "All") params.set("category", category);
 
         const response = await fetch(
-          `${API_URL}/admin/${adminId}/services?${params.toString()}`
+          `${API_URL}/admin/services?${params.toString()}`,
+          {
+            headers: await getAuthHeaders(false),
+          }
         );
 
         const data = await response.json();
@@ -166,10 +168,10 @@ export default function ManageServicesPage() {
 
     try {
       const response = await fetch(
-        `${API_URL}/admin/${adminId}/services/${service._id}/status`,
+        `${API_URL}/admin/services/${service._id}/status`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: await getAuthHeaders(),
           body: JSON.stringify({ status: nextStatus }),
         }
       );
@@ -203,8 +205,11 @@ export default function ManageServicesPage() {
 
     try {
       const response = await fetch(
-        `${API_URL}/admin/${adminId}/services/${selectedService._id}`,
-        { method: "DELETE" }
+        `${API_URL}/admin/services/${selectedService._id}`,
+        {
+          method: "DELETE",
+          headers: await getAuthHeaders(false),
+        }
       );
 
       const data = await response.json();

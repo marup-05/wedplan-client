@@ -14,7 +14,6 @@ import {
   ShieldCheck,
   CheckCircle2,
   Loader2,
-  Star,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -47,11 +46,27 @@ export default function ServiceDetailsPage() {
   const [eventLocation, setEventLocation] = useState("");
   const [message, setMessage] = useState("");
 
+  // Protect service details page
   useEffect(() => {
+    if (!sessionLoading && !session?.user) {
+      toast.error("Please sign in to view service details.");
+      router.replace("/sign-in");
+    }
+  }, [session, sessionLoading, router]);
+
+  // Fetch service only after successful login
+  useEffect(() => {
+    if (sessionLoading || !session?.user || !id) return;
+
     const fetchService = async () => {
       try {
+        setLoading(true);
+
         const response = await fetch(`${API_URL}/services/${id}`);
-        if (!response.ok) throw new Error("Service not found");
+
+        if (!response.ok) {
+          throw new Error("Service not found");
+        }
 
         const data = await response.json();
         setService(data);
@@ -62,8 +77,8 @@ export default function ServiceDetailsPage() {
       }
     };
 
-    if (id) fetchService();
-  }, [id]);
+    fetchService();
+  }, [id, session, sessionLoading]);
 
   const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -116,7 +131,7 @@ export default function ServiceDetailsPage() {
     }
   };
 
-  if (loading || sessionLoading) {
+  if (sessionLoading || !session?.user || loading) {
     return (
       <main className="flex min-h-[70vh] items-center justify-center bg-[#FFF9F6]">
         <Loader2 className="animate-spin text-[#D96F96]" size={32} />
@@ -131,12 +146,15 @@ export default function ServiceDetailsPage() {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F5E8EC] text-[#D96F96]">
             <Heart size={30} />
           </div>
+
           <h1 className="mt-6 font-logo text-3xl font-semibold text-[#49333F]">
             Service Not Found
           </h1>
+
           <p className="mt-3 text-sm leading-7 text-[#987B88]">
             This service may no longer be available.
           </p>
+
           <Link
             href="/services"
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#E88BAA] px-6 py-3 text-sm font-semibold text-white hover:bg-[#D96F96]"
@@ -165,9 +183,7 @@ export default function ServiceDetailsPage() {
 
       <div className="mx-auto max-w-7xl px-5 py-7 md:px-8">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px]">
-          {/* Service Information */}
           <div>
-            {/* Small Image Gallery */}
             <div className="flex flex-col gap-3 sm:flex-row">
               {images.length > 0 ? (
                 <>
@@ -208,7 +224,6 @@ export default function ServiceDetailsPage() {
               )}
             </div>
 
-            {/* Service Details */}
             <div className="mt-7">
               <span className="inline-flex rounded-full bg-[#F5E8EC] px-4 py-2 text-xs font-semibold text-[#D96F96]">
                 {service.category}
@@ -229,6 +244,7 @@ export default function ServiceDetailsPage() {
                 <h2 className="font-logo text-2xl font-semibold text-[#49333F]">
                   About This Service
                 </h2>
+
                 <p className="mt-3 text-sm leading-8 text-[#806C77]">
                   {service.description}
                 </p>
@@ -244,10 +260,12 @@ export default function ServiceDetailsPage() {
                     <CheckCircle2 size={18} className="text-[#D96F96]" />
                     Professional wedding vendor
                   </div>
+
                   <div className="flex items-center gap-3 text-sm text-[#66525E]">
                     <CheckCircle2 size={18} className="text-[#D96F96]" />
                     Personalized service
                   </div>
+
                   <div className="flex items-center gap-3 text-sm text-[#66525E]">
                     <ShieldCheck size={18} className="text-[#D96F96]" />
                     Approved service
@@ -257,7 +275,6 @@ export default function ServiceDetailsPage() {
             </div>
           </div>
 
-          {/* Booking Form - Right Side */}
           <aside className="lg:sticky lg:top-24">
             <div className="rounded-2xl border border-[#F0E3E7] bg-white p-5 shadow-sm sm:p-6">
               <p className="text-xs font-medium text-[#987B88]">
@@ -278,20 +295,7 @@ export default function ServiceDetailsPage() {
                 Send a booking request to this service vendor.
               </p>
 
-              {!session?.user ? (
-                <div className="mt-5">
-                  <Link
-                    href="/sign-in"
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#E88BAA] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#D96F96]"
-                  >
-                    <CalendarDays size={17} />
-                    Sign In to Book
-                  </Link>
-                  <p className="mt-3 text-center text-xs text-[#987B88]">
-                    Sign in with your customer account to book.
-                  </p>
-                </div>
-              ) : session.user.role !== "customer" ? (
+              {session.user.role !== "customer" ? (
                 <p className="mt-5 rounded-xl bg-[#FFF4E8] p-4 text-sm text-[#987B88]">
                   Only customer accounts can book a service.
                 </p>
@@ -301,6 +305,7 @@ export default function ServiceDetailsPage() {
                     <label className="mb-2 block text-sm font-medium text-[#66525E]">
                       Event Date
                     </label>
+
                     <input
                       type="date"
                       required
@@ -315,6 +320,7 @@ export default function ServiceDetailsPage() {
                     <label className="mb-2 block text-sm font-medium text-[#66525E]">
                       Event Location
                     </label>
+
                     <input
                       type="text"
                       required
@@ -329,6 +335,7 @@ export default function ServiceDetailsPage() {
                     <label className="mb-2 block text-sm font-medium text-[#66525E]">
                       Additional Message
                     </label>
+
                     <textarea
                       rows={3}
                       value={message}

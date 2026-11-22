@@ -14,9 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 
 type Booking = {
   _id: string;
@@ -86,9 +84,11 @@ export default function CustomerBookingsPage() {
   const requestBookings = useCallback(async (): Promise<Booking[]> => {
     if (!customerId) return [];
 
-    const response = await fetch(
-      `${API_URL}/customer/${customerId}/bookings`
-    );
+    const headers = await getAuthHeaders();
+
+    const response = await fetch(`${API_URL}/customer/bookings`, {
+      headers,
+    });
 
     const result = await response.json();
 
@@ -99,7 +99,6 @@ export default function CustomerBookingsPage() {
     return Array.isArray(result) ? result : result.bookings || [];
   }, [customerId]);
 
-  // Initial loading
   useEffect(() => {
     if (!customerId) return;
 
@@ -135,7 +134,6 @@ export default function CustomerBookingsPage() {
     };
   }, [customerId, requestBookings]);
 
-  // Manual reload
   const fetchBookings = useCallback(async () => {
     if (!customerId) return;
 
@@ -157,16 +155,20 @@ export default function CustomerBookingsPage() {
     }
   }, [customerId, requestBookings]);
 
-  // Cancel booking
   const handleCancel = async () => {
     if (!selectedBooking || !customerId) return;
 
     try {
       setCancelling(true);
 
+      const headers = await getAuthHeaders();
+
       const response = await fetch(
-        `${API_URL}/customer/${customerId}/bookings/${selectedBooking._id}/cancel`,
-        { method: "PATCH" }
+        `${API_URL}/customer/bookings/${selectedBooking._id}/cancel`,
+        {
+          method: "PATCH",
+          headers,
+        }
       );
 
       const result = await response.json();
@@ -195,8 +197,6 @@ export default function CustomerBookingsPage() {
 
   return (
     <div className="w-full space-y-5">
-
-      {/* Page Heading */}
       <div className="border-b border-[#EAE5E5] pb-4">
         <h1 className="font-serif text-2xl font-bold text-[#272326]">
           My Bookings
@@ -207,7 +207,6 @@ export default function CustomerBookingsPage() {
         </p>
       </div>
 
-      {/* Error */}
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
           {error}
@@ -221,7 +220,6 @@ export default function CustomerBookingsPage() {
         </div>
       )}
 
-      {/* Loading */}
       {loading ? (
         <div className="flex min-h-40 items-center justify-center rounded-xl border border-[#EEE9E9] bg-white">
           <Loader2
@@ -230,7 +228,6 @@ export default function CustomerBookingsPage() {
           />
         </div>
       ) : bookings.length === 0 ? (
-        /* Empty State */
         <div className="flex min-h-56 flex-col items-center justify-center rounded-xl border border-[#EEE9E9] bg-white px-5 text-center">
           <div className="rounded-full bg-[#FCECF2] p-4 text-[#963348]">
             <CalendarCheck size={28} />
@@ -253,7 +250,6 @@ export default function CustomerBookingsPage() {
           </Link>
         </div>
       ) : (
-        /* Booking List */
         <div className="space-y-3">
           {bookings.map((booking) => {
             const image = booking.service?.images?.[0];
@@ -264,8 +260,6 @@ export default function CustomerBookingsPage() {
                 className="rounded-xl border border-[#EAE5E5] bg-white px-3 py-3 shadow-sm transition hover:shadow-md sm:px-4"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-
-                  {/* Service Image */}
                   <div className="h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-[#FFF5F8]">
                     {image ? (
                       <Image
@@ -283,7 +277,6 @@ export default function CustomerBookingsPage() {
                     )}
                   </div>
 
-                  {/* Booking Information */}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-serif text-sm font-bold text-[#292326]">
@@ -302,21 +295,14 @@ export default function CustomerBookingsPage() {
                       </span>
                     </p>
 
-                    {/* Date and Location */}
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
                       <p className="flex items-center gap-1 text-[10px] text-[#81777D]">
-                        <CalendarDays
-                          size={12}
-                          className="shrink-0"
-                        />
+                        <CalendarDays size={12} className="shrink-0" />
                         Event: {formatDate(booking.eventDate)}
                       </p>
 
                       <p className="flex items-center gap-1 text-[10px] text-[#81777D]">
-                        <MapPin
-                          size={12}
-                          className="shrink-0"
-                        />
+                        <MapPin size={12} className="shrink-0" />
                         <span className="max-w-36 truncate">
                           {booking.eventLocation || "Location not available"}
                         </span>
@@ -328,7 +314,6 @@ export default function CustomerBookingsPage() {
                     </div>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
                     <Link
                       href={`/dashboard/customer/bookings/${booking._id}`}
@@ -348,7 +333,6 @@ export default function CustomerBookingsPage() {
                       </button>
                     )}
                   </div>
-
                 </div>
               </div>
             );
@@ -356,7 +340,6 @@ export default function CustomerBookingsPage() {
         </div>
       )}
 
-      {/* Cancel Confirmation Modal */}
       {selectedBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl">

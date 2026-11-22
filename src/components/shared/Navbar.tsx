@@ -1,9 +1,8 @@
-
 "use client";
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   Menu,
   X,
@@ -14,6 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -34,7 +34,11 @@ type User = {
 };
 
 function getInitial(user: User) {
-  return (user.name?.trim()?.[0] || user.email?.trim()?.[0] || "U").toUpperCase();
+  return (
+    user.name?.trim()?.[0] ||
+    user.email?.trim()?.[0] ||
+    "U"
+  ).toUpperCase();
 }
 
 function UserAvatar({
@@ -45,10 +49,13 @@ function UserAvatar({
   size?: string;
 }) {
   return user.image ? (
-    <img
+    <Image
       src={user.image}
       alt={user.name || "Profile"}
+      width={44}
+      height={44}
       className={`${size} rounded-full object-cover`}
+      unoptimized
     />
   ) : (
     <span
@@ -63,10 +70,12 @@ function ProfileMenu({
   user,
   onLogout,
   onNavigate,
+  loggingOut,
 }: {
   user: User;
   onLogout: () => void;
   onNavigate: () => void;
+  loggingOut: boolean;
 }) {
   const role = user.role?.toLowerCase() || "customer";
   const dashboard = roleLinks[role];
@@ -110,10 +119,11 @@ function ProfileMenu({
 
       <button
         onClick={onLogout}
-        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-500 transition hover:bg-red-50"
+        disabled={loggingOut}
+        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-500 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
       >
         <LogOut size={17} />
-        Logout
+        {loggingOut ? "Logging out..." : "Logout"}
       </button>
     </div>
   );
@@ -121,7 +131,6 @@ function ProfileMenu({
 
 function NavbarContent() {
   const pathname = usePathname();
-  const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -131,9 +140,7 @@ function NavbarContent() {
 
   const user = session?.user as User | undefined;
 
-  const dashboardLink = user?.role
-    ? roleLinks[user.role.toLowerCase()]
-    : null;
+  const dashboardLink = user?.role ? roleLinks[user.role.toLowerCase()] : null;
 
   const links = dashboardLink ? [...navLinks, dashboardLink] : navLinks;
 
@@ -147,19 +154,18 @@ function NavbarContent() {
 
       if (result.error) {
         toast.error(result.error.message || "Logout failed. Please try again.");
+        setLoggingOut(false);
         return;
       }
 
       setProfileOpen(false);
       setIsOpen(false);
 
-      router.replace("/");
-      router.refresh();
-
       toast.success("You have been logged out successfully!");
+
+      window.location.href = "/";
     } catch {
       toast.error("Logout failed. Please try again.");
-    } finally {
       setLoggingOut(false);
     }
   };
@@ -195,6 +201,7 @@ function NavbarContent() {
               <path d="M23 59 C29 65 36 70 43 73 M79 72 C67 76 56 83 48 91" />
             </svg>
           </span>
+
           <span className="font-logo text-3xl font-semibold tracking-tight text-[#49333F]">
             WedPlan
           </span>
@@ -217,6 +224,7 @@ function NavbarContent() {
                 }`}
               >
                 {link.name}
+
                 {isActive && (
                   <span className="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-[#E88BAA]" />
                 )}
@@ -236,6 +244,7 @@ function NavbarContent() {
                   aria-label="Open profile menu"
                 >
                   <UserAvatar user={user} size="h-9 w-9" />
+
                   <ChevronDown
                     size={16}
                     className={`text-[#987B88] transition ${
@@ -249,6 +258,7 @@ function NavbarContent() {
                     user={user}
                     onLogout={handleSignOut}
                     onNavigate={() => setProfileOpen(false)}
+                    loggingOut={loggingOut}
                   />
                 )}
               </div>
@@ -260,6 +270,7 @@ function NavbarContent() {
                 >
                   Sign In
                 </Link>
+
                 <Link
                   href="/sign-up"
                   className="rounded-full bg-[#E88BAA] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D96F96]"
@@ -311,10 +322,12 @@ function NavbarContent() {
 
                   <div className="flex items-center gap-3 rounded-xl bg-white p-3">
                     <UserAvatar user={user} size="h-10 w-10" />
+
                     <div>
                       <p className="text-sm font-semibold text-[#49333F]">
                         {user.name || "WedPlan User"}
                       </p>
+
                       <p className="text-xs lowercase text-[#D96F96]">
                         {user.role || "customer"}
                       </p>
@@ -356,6 +369,7 @@ function NavbarContent() {
                   >
                     Sign In
                   </Link>
+
                   <Link
                     href="/sign-up"
                     onClick={closeMenus}

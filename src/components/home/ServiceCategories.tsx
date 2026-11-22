@@ -1,8 +1,19 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
-const categories = [
+interface ServiceCategory {
+  name: string;
+  description: string;
+  image: string;
+}
+
+interface Service {
+  category: string;
+}
+
+const categories: ServiceCategory[] = [
   {
     name: "Photography & Videography",
     description: "Capture every beautiful moment.",
@@ -41,7 +52,62 @@ const categories = [
   },
 ];
 
-export function ServiceCategories() {
+async function getServiceCategories(): Promise<string[]> {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/services`,
+      { cache: "no-store" },
+    );
+
+    if (!response.ok) return [];
+
+    const data: unknown = await response.json();
+
+    let services: Service[] = [];
+
+    if (Array.isArray(data)) {
+      services = data as Service[];
+    } else if (
+      typeof data === "object" &&
+      data !== null
+    ) {
+      const responseData = data as {
+        services?: unknown;
+        data?: unknown;
+      };
+
+      const result =
+        responseData.services ?? responseData.data;
+
+      if (Array.isArray(result)) {
+        services = result as Service[];
+      }
+    }
+
+    const serviceCategories: string[] = services
+      .map((service) => service.category)
+      .filter(
+        (category): category is string =>
+          typeof category === "string" && category.trim().length > 0,
+      );
+
+    return [...new Set<string>(serviceCategories)];
+  } catch {
+    return [];
+  }
+}
+
+export async function ServiceCategories() {
+  const availableCategories = await getServiceCategories();
+
+  const activeCategories = categories.filter((category) =>
+    availableCategories.some(
+      (availableCategory) =>
+        availableCategory.trim().toLowerCase() ===
+        category.name.toLowerCase(),
+    ),
+  );
+
   return (
     <section className="bg-[#FDF7F5] px-5 py-20 md:px-8 md:py-24">
       <div className="mx-auto max-w-6xl">
@@ -60,41 +126,49 @@ export function ServiceCategories() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <Link
-              key={category.name}
-              href={`/services?category=${encodeURIComponent(category.name)}`}
-              className="group relative h-64 overflow-hidden rounded-2xl"
-            >
-              <Image
-                src={category.image}
-                alt={category.name}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+        {activeCategories.length > 0 ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {activeCategories.map((category) => (
+              <Link
+                key={category.name}
+                href={`/services?category=${encodeURIComponent(category.name)}`}
+                className="group relative h-64 overflow-hidden rounded-2xl"
+              >
+                <Image
+                  src={category.image}
+                  alt={category.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5">
-                <div className="pr-3">
-                  <h3 className="text-lg font-semibold text-white">
-                    {category.name}
-                  </h3>
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5">
+                  <div className="pr-3">
+                    <h3 className="text-lg font-semibold text-white">
+                      {category.name}
+                    </h3>
 
-                  <p className="mt-1 text-xs text-white/80">
-                    {category.description}
-                  </p>
+                    <p className="mt-1 text-xs text-white/80">
+                      {category.description}
+                    </p>
+                  </div>
+
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-[#743443] transition-colors group-hover:bg-[#E88BAA] group-hover:text-white">
+                    <ArrowUpRight size={18} />
+                  </span>
                 </div>
-
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-[#743443] transition-colors group-hover:bg-[#E88BAA] group-hover:text-white">
-                  <ArrowUpRight size={18} />
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-[#EAE1E3] bg-white py-12 text-center">
+            <p className="text-sm text-[#743443]">
+              No service categories available right now.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

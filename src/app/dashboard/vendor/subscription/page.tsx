@@ -5,28 +5,66 @@ import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { Check, Crown, Sparkles } from "lucide-react";
-
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { API_URL, getAuthHeaders } from "@/lib/api";
 
 export default function VendorSubscriptionPage() {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
+
   const [plan, setPlan] = useState("Free");
-  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
+  const [fetchCompleted, setFetchCompleted] = useState(false);
+
+  const userId = session?.user?.id;
 
   useEffect(() => {
-    if (!session?.user?.id) return;
+    if (isPending || !userId) return;
 
-    fetch(`${API_URL}/vendor/${session.user.id}/subscription`)
-      .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Could not load plan");
-        setPlan(data.plan || "Free");
-      })
-      .catch((error) =>
-        toast.error(error.message || "Could not load subscription")
-      )
-      .finally(() => setLoading(false));
-  }, [session?.user?.id]);
+    let isMounted = true;
+
+    const fetchSubscription = async () => {
+      try {
+        setFetching(true);
+
+        const headers = await getAuthHeaders();
+
+        const response = await fetch(`${API_URL}/vendor/subscription`, {
+          headers,
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Could not load plan");
+        }
+
+        if (isMounted) {
+          setPlan(data.plan || "Free");
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error instanceof Error
+              ? error.message
+              : "Could not load subscription"
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setFetching(false);
+          setFetchCompleted(true);
+        }
+      }
+    };
+
+    void fetchSubscription();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId, isPending]);
+
+  const loading =
+    isPending || (!!userId && (!fetchCompleted || fetching));
 
   const features = [
     "Vendor Dashboard Access",
@@ -37,7 +75,10 @@ export default function VendorSubscriptionPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-[#49333F]">Choose Your Plan</h2>
+        <h2 className="text-xl font-bold text-[#49333F]">
+          Choose Your Plan
+        </h2>
+
         <p className="mt-1 text-sm text-[#987B88]">
           Grow your wedding business with the right subscription.
         </p>
@@ -57,7 +98,10 @@ export default function VendorSubscriptionPage() {
             }`}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-[#49333F]">Free Plan</h3>
+              <h3 className="text-lg font-bold text-[#49333F]">
+                Free Plan
+              </h3>
+
               {plan === "Free" && (
                 <span className="rounded-full bg-[#FCECF2] px-3 py-1 text-xs font-bold text-[#D96F96]">
                   Current Plan
@@ -65,7 +109,10 @@ export default function VendorSubscriptionPage() {
               )}
             </div>
 
-            <p className="mt-4 text-3xl font-bold text-[#49333F]">Free</p>
+            <p className="mt-4 text-3xl font-bold text-[#49333F]">
+              Free
+            </p>
+
             <p className="mt-2 text-sm text-[#987B88]">
               Get started with your wedding business.
             </p>
@@ -116,7 +163,10 @@ export default function VendorSubscriptionPage() {
               )}
             </div>
 
-            <p className="mt-4 text-3xl font-bold text-[#49333F]">Premium</p>
+            <p className="mt-4 text-3xl font-bold text-[#49333F]">
+              Premium
+            </p>
+
             <p className="mt-2 text-sm text-[#987B88]">
               Unlock more opportunities for your business.
             </p>
@@ -150,6 +200,7 @@ export default function VendorSubscriptionPage() {
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#E477A0] px-4 py-3 text-sm font-semibold text-white hover:bg-[#D96F96] disabled:cursor-not-allowed disabled:bg-amber-500"
               >
                 <Sparkles size={17} />
+
                 {plan === "Premium"
                   ? "Premium Activated"
                   : "Upgrade to Premium"}

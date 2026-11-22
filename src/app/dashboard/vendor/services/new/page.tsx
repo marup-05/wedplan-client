@@ -5,11 +5,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus, Loader2, UploadCloud, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 import { toast } from "sonner";
 import Image from "next/image";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 const categories = [
   "Photography & Videography",
@@ -117,13 +115,10 @@ export default function AddServicePage() {
 
       const response = await fetch(`${API_URL}/services`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: await getAuthHeaders(),
         body: JSON.stringify({
           ...form,
           price: Number(form.price),
-          vendorId: session.user.id,
           images,
         }),
       });

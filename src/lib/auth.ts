@@ -1,6 +1,7 @@
 
 import { betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
+import { jwt } from "better-auth/plugins";
 import { MongoClient, ObjectId } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
@@ -28,6 +29,12 @@ export const auth = betterAuth({
         required: true,
         defaultValue: "customer",
         input: true,
+      },
+      isBlocked: {
+        type: "boolean",
+        required: false,
+        defaultValue: false,
+        input: false,
       },
     },
   },
@@ -71,4 +78,6 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+
+  plugins: [jwt()],
 });

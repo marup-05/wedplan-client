@@ -13,9 +13,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 
 type DashboardStats = {
   totalUsers: number;
@@ -82,64 +80,38 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchDashboard = useCallback(
-    async (isRefresh = false) => {
-      if (!adminId) return;
+  // API request function: এখানে কোনো React state update নেই
+  const loadDashboardData = useCallback(async () => {
+    const headers = await getAuthHeaders();
 
-      if (isRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
+    const response = await fetch(`${API_URL}/admin/dashboard`, {
+      headers,
+    });
 
-      try {
-        const response = await fetch(
-          `${API_URL}/admin/${adminId}/dashboard`
-        );
+    const data = await response.json();
 
-        const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to load dashboard");
+    }
 
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to load dashboard");
-        }
+    return data as DashboardStats;
+  }, []);
 
-        setStats(data);
-      } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : "Could not load dashboard"
-        );
-      } finally {
-        setLoading(false);
-        setRefreshing(false);
-      }
-    },
-    [adminId]
-  );
-
+  // Initial dashboard data
   useEffect(() => {
     if (!adminId) return;
 
-    let cancelled = false;
+    let isMounted = true;
 
-    const loadDashboard = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch(
-          `${API_URL}/admin/${adminId}/dashboard`
-        );
+        const data = await loadDashboardData();
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to load dashboard");
-        }
-
-        if (!cancelled) {
+        if (isMounted) {
           setStats(data);
         }
       } catch (error) {
-        if (!cancelled) {
+        if (isMounted) {
           toast.error(
             error instanceof Error
               ? error.message
@@ -147,18 +119,37 @@ export default function AdminDashboardPage() {
           );
         }
       } finally {
-        if (!cancelled) {
+        if (isMounted) {
           setLoading(false);
         }
       }
     };
 
-    void loadDashboard();
+    void loadData();
 
     return () => {
-      cancelled = true;
+      isMounted = false;
     };
-  }, [adminId]);
+  }, [adminId, loadDashboardData]);
+
+  // Manual refresh
+  const handleRefresh = async () => {
+    setRefreshing(true);
+
+    try {
+      const data = await loadDashboardData();
+      setStats(data);
+      toast.success("Dashboard refreshed successfully");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Could not refresh dashboard"
+      );
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -174,8 +165,8 @@ export default function AdminDashboardPage() {
 
         <button
           type="button"
-          onClick={() => fetchDashboard(true)}
-          disabled={refreshing || loading}
+          onClick={handleRefresh}
+          disabled={refreshing || loading || !adminId}
           className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] bg-white px-3 py-2 text-xs font-semibold text-[#765D68] transition hover:bg-[#FFF5F8] disabled:opacity-50"
         >
           <RefreshCw

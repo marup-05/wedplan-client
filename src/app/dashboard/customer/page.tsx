@@ -12,9 +12,7 @@ import {
   CalendarCheck,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+import { API_URL, getAuthHeaders } from "@/lib/api";
 
 type DashboardData = {
   totalBookings: number;
@@ -37,9 +35,7 @@ export default function CustomerDashboardPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const customerId = session?.user?.id;
-
-    if (!customerId) return;
+    if (!session?.user?.id) return;
 
     let cancelled = false;
 
@@ -48,9 +44,11 @@ export default function CustomerDashboardPage() {
         setLoading(true);
         setError("");
 
-        const response = await fetch(
-          `${API_URL}/customer/${customerId}/dashboard`
-        );
+        const headers = await getAuthHeaders();
+
+        const response = await fetch(`${API_URL}/customer/dashboard`, {
+          headers,
+        });
 
         const result = await response.json();
 
