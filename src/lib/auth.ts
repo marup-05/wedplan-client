@@ -5,13 +5,18 @@ import { jwt } from "better-auth/plugins";
 import { MongoClient, ObjectId } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
-const client = new MongoClient(process.env.BETTER_AUTH_DB_URI as string);
+const globalForMongo = globalThis as typeof globalThis & {
+  mongoClient?: MongoClient;
+};
+
+const client =
+  globalForMongo.mongoClient ??
+  new MongoClient(process.env.BETTER_AUTH_DB_URI as string);
+
+globalForMongo.mongoClient = client;
+
 const db = client.db("wedPlan");
 const users = db.collection("user");
-
-client.connect().catch((error) => {
-  console.error("MongoDB connection failed:", error);
-});
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
