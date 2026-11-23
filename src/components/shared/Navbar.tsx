@@ -10,10 +10,13 @@ import {
   LayoutDashboard,
   UserRound,
   LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -66,6 +69,29 @@ function UserAvatar({
   );
 }
 
+function ThemeToggle({ mobile = false }: { mobile?: boolean }) {
+  const { theme, setTheme } = useTheme();
+
+  const isDark = theme === "dark";
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+      title={`Switch to ${isDark ? "light" : "dark"} mode`}
+      className={
+        mobile
+          ? "flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-[#66525E] transition hover:bg-[#F5E8EC] dark:text-gray-200 dark:hover:bg-white/10"
+          : "flex h-10 w-10 items-center justify-center rounded-full border border-[#F0E3E7] bg-white text-[#66525E] transition hover:border-[#E8B5C7] hover:text-[#D96F96] dark:border-white/10 dark:bg-[#25232B] dark:text-gray-200 dark:hover:bg-white/10"
+      }
+    >
+      {isDark ? <Sun size={19} /> : <Moon size={19} />}
+      {mobile && <span>{isDark ? "Light Mode" : "Dark Mode"}</span>}
+    </button>
+  );
+}
+
 function ProfileMenu({
   user,
   onLogout,
@@ -81,15 +107,17 @@ function ProfileMenu({
   const dashboard = roleLinks[role];
 
   return (
-    <div className="absolute right-0 top-full z-50 mt-3 w-64 overflow-hidden rounded-2xl border border-[#F0E3E7] bg-white p-2 shadow-xl shadow-[#49333F]/10">
-      <div className="flex items-center gap-3 rounded-xl bg-[#FFF5F7] p-3">
+    <div className="absolute right-0 top-full z-50 mt-3 w-64 overflow-hidden rounded-2xl border border-[#F0E3E7] bg-white p-2 shadow-xl shadow-[#49333F]/10 dark:border-white/10 dark:bg-[#1D1C24] dark:shadow-black/30">
+      <div className="flex items-center gap-3 rounded-xl bg-[#FFF5F7] p-3 dark:bg-white/5">
         <UserAvatar user={user} />
 
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-[#49333F]">
+          <p className="truncate text-sm font-semibold text-[#49333F] dark:text-gray-100">
             {user.name || "WedPlan User"}
           </p>
-          <p className="mt-0.5 text-xs lowercase text-[#D96F96]">{role}</p>
+          <p className="mt-0.5 text-xs lowercase text-[#D96F96]">
+            {role}
+          </p>
         </div>
       </div>
 
@@ -98,7 +126,7 @@ function ProfileMenu({
           <Link
             href={dashboard.href}
             onClick={onNavigate}
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#66525E] transition hover:bg-[#FFF3F7] hover:text-[#D96F96]"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#66525E] transition hover:bg-[#FFF3F7] hover:text-[#D96F96] dark:text-gray-300 dark:hover:bg-white/10"
           >
             <LayoutDashboard size={17} />
             Dashboard
@@ -108,19 +136,19 @@ function ProfileMenu({
         <Link
           href="/profile-settings"
           onClick={onNavigate}
-          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#66525E] transition hover:bg-[#FFF3F7] hover:text-[#D96F96]"
+          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#66525E] transition hover:bg-[#FFF3F7] hover:text-[#D96F96] dark:text-gray-300 dark:hover:bg-white/10"
         >
           <UserRound size={17} />
           Profile Settings
         </Link>
       </div>
 
-      <div className="my-2 border-t border-[#F0E3E7]" />
+      <div className="my-2 border-t border-[#F0E3E7] dark:border-white/10" />
 
       <button
         onClick={onLogout}
         disabled={loggingOut}
-        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-500 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-500 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-red-500/10"
       >
         <LogOut size={17} />
         {loggingOut ? "Logging out..." : "Logout"}
@@ -140,9 +168,13 @@ function NavbarContent() {
 
   const user = session?.user as User | undefined;
 
-  const dashboardLink = user?.role ? roleLinks[user.role.toLowerCase()] : null;
+  const dashboardLink = user?.role
+    ? roleLinks[user.role.toLowerCase()]
+    : null;
 
-  const links = dashboardLink ? [...navLinks, dashboardLink] : navLinks;
+  const links = dashboardLink
+    ? [...navLinks, dashboardLink]
+    : navLinks;
 
   const handleSignOut = async () => {
     if (loggingOut) return;
@@ -153,7 +185,9 @@ function NavbarContent() {
       const result = await authClient.signOut();
 
       if (result.error) {
-        toast.error(result.error.message || "Logout failed. Please try again.");
+        toast.error(
+          result.error.message || "Logout failed. Please try again."
+        );
         setLoggingOut(false);
         return;
       }
@@ -176,7 +210,7 @@ function NavbarContent() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#F0E3E7] bg-[#FFF9F6]">
+    <header className="sticky top-0 z-50 border-b border-[#F0E3E7] bg-[#FFF9F6] dark:border-white/10 dark:bg-[#15141B]">
       <nav className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center px-5 py-3 md:grid-cols-3 md:px-8">
         <Link
           href="/"
@@ -202,7 +236,7 @@ function NavbarContent() {
             </svg>
           </span>
 
-          <span className="font-logo text-3xl font-semibold tracking-tight text-[#49333F]">
+          <span className="font-logo text-3xl font-semibold tracking-tight text-[#49333F] dark:text-white">
             WedPlan
           </span>
         </Link>
@@ -211,7 +245,8 @@ function NavbarContent() {
           {links.map((link) => {
             const isActive =
               pathname === link.href ||
-              (link.href !== "/" && pathname.startsWith(link.href + "/"));
+              (link.href !== "/" &&
+                pathname.startsWith(link.href + "/"));
 
             return (
               <Link
@@ -220,7 +255,7 @@ function NavbarContent() {
                 className={`relative whitespace-nowrap py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? "text-[#D96F96]"
-                    : "text-[#66525E] hover:text-[#D96F96]"
+                    : "text-[#66525E] hover:text-[#D96F96] dark:text-gray-300"
                 }`}
               >
                 {link.name}
@@ -233,13 +268,15 @@ function NavbarContent() {
           })}
         </div>
 
-        <div className="hidden items-center justify-self-end gap-5 md:flex">
+        <div className="hidden items-center justify-self-end gap-4 md:flex">
+          <ThemeToggle />
+
           {!isPending &&
             (user ? (
               <div className="relative">
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center gap-2 rounded-full border border-[#F0E3E7] bg-white p-1.5 pr-3 transition hover:border-[#E8B5C7]"
+                  className="flex items-center gap-2 rounded-full border border-[#F0E3E7] bg-white p-1.5 pr-3 transition hover:border-[#E8B5C7] dark:border-white/10 dark:bg-[#25232B]"
                   aria-expanded={profileOpen}
                   aria-label="Open profile menu"
                 >
@@ -266,7 +303,7 @@ function NavbarContent() {
               <>
                 <Link
                   href="/sign-in"
-                  className="text-sm font-semibold text-[#49333F] hover:text-[#D96F96]"
+                  className="text-sm font-semibold text-[#49333F] hover:text-[#D96F96] dark:text-gray-200"
                 >
                   Sign In
                 </Link>
@@ -283,7 +320,7 @@ function NavbarContent() {
 
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="justify-self-end rounded-lg p-2 text-[#49333F] transition-colors hover:bg-[#F5E8EC] md:hidden"
+          className="justify-self-end rounded-lg p-2 text-[#49333F] transition-colors hover:bg-[#F5E8EC] dark:text-gray-200 dark:hover:bg-white/10 md:hidden"
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
         >
@@ -292,12 +329,13 @@ function NavbarContent() {
       </nav>
 
       {isOpen && (
-        <div className="border-t border-[#F0E3E7] bg-[#FFF9F6] px-5 py-4 md:hidden">
+        <div className="border-t border-[#F0E3E7] bg-[#FFF9F6] px-5 py-4 dark:border-white/10 dark:bg-[#15141B] md:hidden">
           <div className="flex flex-col gap-2">
             {links.map((link) => {
               const isActive =
                 pathname === link.href ||
-                (link.href !== "/" && pathname.startsWith(link.href + "/"));
+                (link.href !== "/" &&
+                  pathname.startsWith(link.href + "/"));
 
               return (
                 <Link
@@ -306,8 +344,8 @@ function NavbarContent() {
                   onClick={closeMenus}
                   className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-[#F5E8EC] text-[#D96F96]"
-                      : "text-[#66525E] hover:bg-[#F5E8EC] hover:text-[#D96F96]"
+                      ? "bg-[#F5E8EC] text-[#D96F96] dark:bg-white/10"
+                      : "text-[#66525E] hover:bg-[#F5E8EC] hover:text-[#D96F96] dark:text-gray-300 dark:hover:bg-white/10"
                   }`}
                 >
                   {link.name}
@@ -315,16 +353,18 @@ function NavbarContent() {
               );
             })}
 
+            <ThemeToggle mobile />
+
             {!isPending &&
               (user ? (
                 <>
-                  <div className="my-2 border-t border-[#F0E3E7]" />
+                  <div className="my-2 border-t border-[#F0E3E7] dark:border-white/10" />
 
-                  <div className="flex items-center gap-3 rounded-xl bg-white p-3">
+                  <div className="flex items-center gap-3 rounded-xl bg-white p-3 dark:bg-white/5">
                     <UserAvatar user={user} size="h-10 w-10" />
 
                     <div>
-                      <p className="text-sm font-semibold text-[#49333F]">
+                      <p className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
                         {user.name || "WedPlan User"}
                       </p>
 
@@ -338,7 +378,7 @@ function NavbarContent() {
                     <Link
                       href={dashboardLink.href}
                       onClick={closeMenus}
-                      className="rounded-lg px-4 py-3 text-sm text-[#66525E] hover:bg-[#F5E8EC]"
+                      className="rounded-lg px-4 py-3 text-sm text-[#66525E] hover:bg-[#F5E8EC] dark:text-gray-300 dark:hover:bg-white/10"
                     >
                       Dashboard
                     </Link>
@@ -347,7 +387,7 @@ function NavbarContent() {
                   <Link
                     href="/profile-settings"
                     onClick={closeMenus}
-                    className="rounded-lg px-4 py-3 text-sm text-[#66525E] hover:bg-[#F5E8EC]"
+                    className="rounded-lg px-4 py-3 text-sm text-[#66525E] hover:bg-[#F5E8EC] dark:text-gray-300 dark:hover:bg-white/10"
                   >
                     Profile Settings
                   </Link>
@@ -355,7 +395,7 @@ function NavbarContent() {
                   <button
                     onClick={handleSignOut}
                     disabled={loggingOut}
-                    className="rounded-lg px-4 py-3 text-left text-sm font-semibold text-red-500 hover:bg-red-50 disabled:opacity-60"
+                    className="rounded-lg px-4 py-3 text-left text-sm font-semibold text-red-500 hover:bg-red-50 disabled:opacity-60 dark:hover:bg-red-500/10"
                   >
                     {loggingOut ? "Logging out..." : "Logout"}
                   </button>
@@ -365,7 +405,7 @@ function NavbarContent() {
                   <Link
                     href="/sign-in"
                     onClick={closeMenus}
-                    className="rounded-lg px-4 py-3 text-sm font-semibold text-[#49333F] hover:bg-[#F5E8EC]"
+                    className="rounded-lg px-4 py-3 text-sm font-semibold text-[#49333F] hover:bg-[#F5E8EC] dark:text-gray-200 dark:hover:bg-white/10"
                   >
                     Sign In
                   </Link>
