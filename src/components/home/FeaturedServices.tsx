@@ -13,6 +13,10 @@ type Service = {
   location: string;
   description: string;
   images: string[];
+  vendor?: {
+    name?: string;
+    image?: string;
+  };
 };
 
 const categories = [
@@ -142,13 +146,24 @@ export async function FeaturedServices() {
 
                   {/* Vendor */}
                   <div className="mt-3 flex items-center gap-2 border-t border-[#F0E7E9] dark:border-white/10 pt-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 text-xs font-bold text-[#743443] dark:text-gray-100">
-                      W
-                    </div>
+                    {service.vendor?.image ? (
+                      <Image
+                        src={service.vendor.image}
+                        alt={service.vendor.name || "Vendor"}
+                        width={32}
+                        height={32}
+                        unoptimized
+                        className="h-8 w-8 shrink-0 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 text-xs font-bold text-[#743443] dark:text-gray-100">
+                        {service.vendor?.name?.trim()?.[0]?.toUpperCase() || "W"}
+                      </div>
+                    )}
 
                     <div>
                       <p className="text-xs font-semibold text-[#49333F] dark:text-gray-100">
-                        Wedding Vendor
+                        {service.vendor?.name || "Wedding Vendor"}
                       </p>
                       <p className="text-[10px] text-[#987B88] dark:text-gray-400">
                         Service Provider

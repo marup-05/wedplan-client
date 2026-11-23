@@ -26,7 +26,7 @@ export function Footer() {
   return (
     <footer className="bg-[#49333F] dark:bg-[#15141B] px-5 py-9 text-white md:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-8 border-b border-white/15 pb-7 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 border-b border-white/15 dark:border-white/25 pb-7 sm:grid-cols-2 lg:grid-cols-4">
 
           {/* Brand */}
           <div>
