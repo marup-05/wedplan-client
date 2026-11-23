@@ -63,7 +63,7 @@ export default function AuthRedirectPage() {
   }, [session, isPending, router]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FFF9F6]">
+    <div className="flex min-h-screen items-center justify-center bg-[#FFF9F6] dark:bg-[#15141B]">
       <p className="text-sm font-medium text-[#D96F96]">
         Redirecting to your dashboard...
       </p>

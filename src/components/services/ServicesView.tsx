@@ -161,29 +161,29 @@ export function ServicesView() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FFF9F6]">
-      <section className="border-b border-[#F0E3E7] bg-white px-5 py-14 text-center md:py-20">
+    <main className="min-h-screen bg-[#FFF9F6] dark:bg-[#15141B]">
+      <section className="border-b border-[#F0E3E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-5 py-14 text-center md:py-20">
         <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#D96F96]">
           Find Your Perfect Match
         </p>
 
-        <h1 className="mt-4 font-logo text-4xl font-semibold text-[#49333F] sm:text-5xl md:text-6xl">
+        <h1 className="mt-4 font-logo text-4xl font-semibold text-[#49333F] dark:text-gray-100 sm:text-5xl md:text-6xl">
           Explore Wedding Services
         </h1>
 
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#987B88] md:text-base">
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#987B88] dark:text-gray-400 md:text-base">
           Discover trusted wedding professionals and find everything you need
           to create your perfect celebration.
         </p>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pt-10 md:px-8">
-        <div className="rounded-2xl border border-[#F0E3E7] bg-white p-5 shadow-sm md:p-6">
+        <div className="rounded-2xl border border-[#F0E3E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-5 shadow-sm md:p-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div className="relative">
               <Search
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88] dark:text-gray-400"
               />
 
               <input
@@ -191,20 +191,20 @@ export function ServicesView() {
                 placeholder="Search services..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="h-12 w-full rounded-xl border border-[#F0E3E7] bg-[#FFF9F6] pl-11 pr-4 text-sm text-[#49333F] outline-none transition focus:border-[#E88BAA]"
+                className="h-12 w-full rounded-xl border border-[#F0E3E7] dark:border-white/10 bg-[#FFF9F6] dark:bg-[#25232B] pl-11 pr-4 text-sm text-[#49333F] dark:text-gray-100 outline-none transition focus:border-[#E88BAA]"
               />
             </div>
 
             <div className="relative">
               <SlidersHorizontal
                 size={17}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88] dark:text-gray-400"
               />
 
               <select
                 value={category}
                 onChange={(e) => handleCategoryChange(e.target.value)}
-                className="h-12 w-full appearance-none rounded-xl border border-[#F0E3E7] bg-[#FFF9F6] pl-11 pr-4 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                className="h-12 w-full appearance-none rounded-xl border border-[#F0E3E7] dark:border-white/10 bg-[#FFF9F6] dark:bg-[#25232B] pl-11 pr-4 text-sm text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E88BAA]"
               >
                 {categories.map((item) => (
                   <option key={item} value={item}>
@@ -217,7 +217,7 @@ export function ServicesView() {
             <div className="relative">
               <MapPin
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88] dark:text-gray-400"
               />
 
               <input
@@ -225,14 +225,14 @@ export function ServicesView() {
                 placeholder="Search location..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="h-12 w-full rounded-xl border border-[#F0E3E7] bg-[#FFF9F6] pl-11 pr-4 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                className="h-12 w-full rounded-xl border border-[#F0E3E7] dark:border-white/10 bg-[#FFF9F6] dark:bg-[#25232B] pl-11 pr-4 text-sm text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E88BAA]"
               />
             </div>
 
             <div className="relative">
               <ArrowUpDown
                 size={17}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#987B88] dark:text-gray-400"
               />
 
               <select
@@ -240,7 +240,7 @@ export function ServicesView() {
                 onChange={(e) =>
                   setSort(e.target.value as SortOption)
                 }
-                className="h-12 w-full appearance-none rounded-xl border border-[#F0E3E7] bg-[#FFF9F6] pl-11 pr-4 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                className="h-12 w-full appearance-none rounded-xl border border-[#F0E3E7] dark:border-white/10 bg-[#FFF9F6] dark:bg-[#25232B] pl-11 pr-4 text-sm text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E88BAA]"
               >
                 <option value="default">Sort by: Default</option>
                 <option value="low-to-high">Price: Low to High</option>
@@ -252,7 +252,7 @@ export function ServicesView() {
           <div className="mt-4 flex justify-end">
             <button
               onClick={clearFilters}
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#D96F96] transition hover:text-[#49333F]"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#D96F96] transition hover:text-[#49333F] dark:hover:text-gray-100"
             >
               <X size={14} />
               Clear all filters
@@ -268,14 +268,14 @@ export function ServicesView() {
               Our Collection
             </p>
 
-            <h2 className="mt-2 font-logo text-3xl font-semibold text-[#49333F] md:text-4xl">
+            <h2 className="mt-2 font-logo text-3xl font-semibold text-[#49333F] dark:text-gray-100 md:text-4xl">
               Wedding Services
             </h2>
           </div>
 
-          <p className="text-sm text-[#987B88]">
+          <p className="text-sm text-[#987B88] dark:text-gray-400">
             Showing{" "}
-            <span className="font-semibold text-[#49333F]">
+            <span className="font-semibold text-[#49333F] dark:text-gray-100">
               {filteredServices.length}
             </span>{" "}
             services
@@ -287,25 +287,25 @@ export function ServicesView() {
             {[1, 2, 3, 4, 5, 6].map((item) => (
               <div
                 key={item}
-                className="animate-pulse overflow-hidden rounded-2xl bg-white"
+                className="animate-pulse overflow-hidden rounded-2xl bg-white dark:bg-[#1D1C24]"
               >
-                <div className="h-60 bg-[#EADDE1]" />
+                <div className="h-60 bg-[#EADDE1] dark:bg-white/10" />
 
                 <div className="space-y-3 p-5">
-                  <div className="h-4 w-1/2 rounded bg-[#EADDE1]" />
-                  <div className="h-5 w-3/4 rounded bg-[#EADDE1]" />
-                  <div className="h-10 rounded bg-[#EADDE1]" />
+                  <div className="h-4 w-1/2 rounded bg-[#EADDE1] dark:bg-white/10" />
+                  <div className="h-5 w-3/4 rounded bg-[#EADDE1] dark:bg-white/10" />
+                  <div className="h-10 rounded bg-[#EADDE1] dark:bg-white/10" />
                 </div>
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="rounded-2xl border border-red-200 bg-white px-5 py-16 text-center">
-            <h3 className="text-xl font-semibold text-[#49333F]">
+          <div className="rounded-2xl border border-red-200 dark:border-red-500/30 bg-white dark:bg-[#1D1C24] px-5 py-16 text-center">
+            <h3 className="text-xl font-semibold text-[#49333F] dark:text-gray-100">
               Failed to Load Services
             </h3>
 
-            <p className="mt-2 text-sm text-red-500">{error}</p>
+            <p className="mt-2 text-sm text-red-500 dark:text-red-400">{error}</p>
 
             <button
               onClick={() => window.location.reload()}
@@ -319,7 +319,7 @@ export function ServicesView() {
             {filteredServices.map((service) => (
               <article
                 key={service._id}
-                className="group overflow-hidden rounded-2xl border border-[#F0E3E7] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                className="group overflow-hidden rounded-2xl border border-[#F0E3E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] transition duration-300 hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="relative h-60 overflow-hidden">
                   <Image
@@ -347,22 +347,22 @@ export function ServicesView() {
                 </div>
 
                 <div className="p-5">
-                  <p className="text-xs text-[#987B88]">
+                  <p className="text-xs text-[#987B88] dark:text-gray-400">
                     Wedding Vendor
                   </p>
 
-                  <h3 className="mt-3 line-clamp-1 text-lg font-semibold text-[#49333F]">
+                  <h3 className="mt-3 line-clamp-1 text-lg font-semibold text-[#49333F] dark:text-gray-100">
                     {service.serviceName}
                   </h3>
 
-                  <p className="mt-2 flex items-center gap-1.5 text-xs text-[#987B88]">
+                  <p className="mt-2 flex items-center gap-1.5 text-xs text-[#987B88] dark:text-gray-400">
                     <MapPin size={14} />
                     {service.location}
                   </p>
 
-                  <div className="mt-5 flex items-center justify-between border-t border-[#F0E3E7] pt-4">
+                  <div className="mt-5 flex items-center justify-between border-t border-[#F0E3E7] dark:border-white/10 pt-4">
                     <div>
-                      <p className="text-[11px] text-[#987B88]">
+                      <p className="text-[11px] text-[#987B88] dark:text-gray-400">
                         Starting from
                       </p>
 
@@ -383,16 +383,16 @@ export function ServicesView() {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-[#E8CBD5] bg-white px-5 py-16 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#F5E8EC] text-[#D96F96]">
+          <div className="rounded-2xl border border-dashed border-[#E8CBD5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-5 py-16 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 text-[#D96F96]">
               <Search size={24} />
             </div>
 
-            <h3 className="mt-5 text-xl font-semibold text-[#49333F]">
+            <h3 className="mt-5 text-xl font-semibold text-[#49333F] dark:text-gray-100">
               No Services Found
             </h3>
 
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#987B88]">
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#987B88] dark:text-gray-400">
               We couldn't find any services matching your filters. Try changing
               your search or category.
             </p>

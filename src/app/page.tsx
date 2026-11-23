@@ -12,7 +12,7 @@ export default async function Home() {
   await connection();
 
   return (
-    <main className="min-h-screen bg-[#FFF9F6]">
+    <main className="min-h-screen bg-[#FFF9F6] dark:bg-[#15141B]">
       <Hero />
       <FeaturedServices />
       <ServiceCategories />

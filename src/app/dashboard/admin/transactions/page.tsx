@@ -136,16 +136,16 @@ export default function AdminTransactionsPage() {
     if (
       ["paid", "active", "success", "succeeded", "completed"].includes(value)
     ) {
-      return "bg-green-50 text-green-700";
+      return "bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-300";
     }
 
     if (
       ["failed", "cancelled", "canceled", "unpaid"].includes(value)
     ) {
-      return "bg-red-50 text-red-600";
+      return "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400";
     }
 
-    return "bg-amber-50 text-amber-700";
+    return "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300";
   };
 
   const totalAmount = transactions.reduce(
@@ -157,10 +157,10 @@ export default function AdminTransactionsPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-[#49333F]">
+          <h2 className="text-lg font-bold text-[#49333F] dark:text-gray-100">
             Transactions
           </h2>
-          <p className="mt-1 text-xs text-[#987B88]">
+          <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
             View vendor subscription payments and transaction records.
           </p>
         </div>
@@ -169,7 +169,7 @@ export default function AdminTransactionsPage() {
           type="button"
           onClick={() => fetchTransactions(true)}
           disabled={loading || refreshing}
-          className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] bg-white px-3 py-2 text-xs font-semibold text-[#765D68] hover:bg-[#FFF5F8] disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-3 py-2 text-xs font-semibold text-[#765D68] dark:text-gray-300 hover:bg-[#FFF5F8] disabled:opacity-50"
         >
           <RefreshCw
             size={14}
@@ -180,38 +180,38 @@ export default function AdminTransactionsPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="rounded-xl border border-[#F0E2E7] bg-white p-4">
+        <div className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#987B88]">
+            <p className="text-xs text-[#987B88] dark:text-gray-400">
               Total Transactions
             </p>
 
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#FCECF2] text-[#D96F96]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#FCECF2] dark:bg-white/10 text-[#D96F96]">
               <CreditCard size={17} />
             </div>
           </div>
 
-          <h3 className="mt-2 text-2xl font-bold text-[#49333F]">
+          <h3 className="mt-2 text-2xl font-bold text-[#49333F] dark:text-gray-100">
             {loading ? "—" : transactions.length}
           </h3>
 
-          <p className="mt-1 text-[10px] text-[#B49AA5]">
+          <p className="mt-1 text-[10px] text-[#B49AA5] dark:text-gray-500">
             All recorded payments
           </p>
         </div>
 
-        <div className="rounded-xl border border-[#F0E2E7] bg-white p-4">
+        <div className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#987B88]">
+            <p className="text-xs text-[#987B88] dark:text-gray-400">
               Recorded Amount
             </p>
 
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#FCECF2] text-[#D96F96]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#FCECF2] dark:bg-white/10 text-[#D96F96]">
               <Store size={17} />
             </div>
           </div>
 
-          <h3 className="mt-2 text-2xl font-bold text-[#49333F]">
+          <h3 className="mt-2 text-2xl font-bold text-[#49333F] dark:text-gray-100">
             {loading
               ? "—"
               : totalAmount.toLocaleString("en-US", {
@@ -219,7 +219,7 @@ export default function AdminTransactionsPage() {
                 })}
           </h3>
 
-          <p className="mt-1 text-[10px] text-[#B49AA5]">
+          <p className="mt-1 text-[10px] text-[#B49AA5] dark:text-gray-500">
             Sum of transaction amounts (recorded currency values)
           </p>
         </div>
@@ -228,34 +228,34 @@ export default function AdminTransactionsPage() {
       <div className="relative">
         <Search
           size={15}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B49AA5]"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B49AA5] dark:text-gray-500"
         />
 
         <input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search vendor, email, plan or status..."
-          className="h-10 w-full rounded-lg border border-[#F0E2E7] bg-white pl-9 pr-3 text-xs text-[#49333F] outline-none focus:border-[#E477A0]"
+          className="h-10 w-full rounded-lg border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#25232B] pl-9 pr-3 text-xs text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E477A0]"
         />
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-[#F0E2E7] bg-white">
-        <div className="flex items-center justify-between border-b border-[#F0E2E7] px-4 py-3">
+      <div className="overflow-hidden rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24]">
+        <div className="flex items-center justify-between border-b border-[#F0E2E7] dark:border-white/10 px-4 py-3">
           <div className="flex items-center gap-2">
             <CreditCard size={16} className="text-[#D96F96]" />
-            <h3 className="text-sm font-bold text-[#49333F]">
+            <h3 className="text-sm font-bold text-[#49333F] dark:text-gray-100">
               Payment History
             </h3>
           </div>
 
-          <span className="text-[11px] text-[#987B88]">
+          <span className="text-[11px] text-[#987B88] dark:text-gray-400">
             {filteredTransactions.length} records
           </span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-left">
-            <thead className="bg-[#FFF9F6] text-[10px] uppercase tracking-wide text-[#987B88]">
+            <thead className="bg-[#FFF9F6] dark:bg-white/5 text-[10px] uppercase tracking-wide text-[#987B88] dark:text-gray-400">
               <tr>
                 <th className="px-4 py-3">Vendor</th>
                 <th className="px-4 py-3">Subscription Plan</th>
@@ -265,12 +265,12 @@ export default function AdminTransactionsPage() {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-[#F5EAF0]">
+            <tbody className="divide-y divide-[#F5EAF0] dark:divide-white/10">
               {loading ? (
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-4 py-12 text-center text-xs text-[#987B88]"
+                    className="px-4 py-12 text-center text-xs text-[#987B88] dark:text-gray-400"
                   >
                     Loading transactions...
                   </td>
@@ -279,7 +279,7 @@ export default function AdminTransactionsPage() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-4 py-12 text-center text-xs text-[#987B88]"
+                    className="px-4 py-12 text-center text-xs text-[#987B88] dark:text-gray-400"
                   >
                     No transactions found.
                   </td>
@@ -288,25 +288,25 @@ export default function AdminTransactionsPage() {
                 filteredTransactions.map((transaction) => (
                   <tr
                     key={transaction._id}
-                    className="text-xs hover:bg-[#FFFCFD]"
+                    className="text-xs hover:bg-[#FFFCFD] dark:hover:bg-white/5"
                   >
                     <td className="px-4 py-3">
-                      <p className="font-semibold text-[#49333F]">
+                      <p className="font-semibold text-[#49333F] dark:text-gray-100">
                         {transaction.vendor?.name || "Vendor"}
                       </p>
 
-                      <p className="mt-1 text-[10px] text-[#987B88]">
+                      <p className="mt-1 text-[10px] text-[#987B88] dark:text-gray-400">
                         {transaction.vendor?.email || transaction.vendorId}
                       </p>
                     </td>
 
                     <td className="px-4 py-3">
-                      <span className="rounded-full bg-[#FCECF2] px-2.5 py-1 text-[10px] font-semibold text-[#D96F96]">
+                      <span className="rounded-full bg-[#FCECF2] dark:bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-[#D96F96]">
                         {transaction.plan || "—"}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 font-bold text-[#49333F]">
+                    <td className="px-4 py-3 font-bold text-[#49333F] dark:text-gray-100">
                       {transaction.currency || "USD"}{" "}
                       {Number(transaction.amount || 0).toLocaleString(
                         "en-US",
@@ -327,7 +327,7 @@ export default function AdminTransactionsPage() {
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 text-[#987B88]">
+                    <td className="px-4 py-3 text-[#987B88] dark:text-gray-400">
                       <span className="flex items-center gap-1.5">
                         <CalendarDays size={13} />
                         {transaction.createdAt

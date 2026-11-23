@@ -41,7 +41,7 @@ export default function ProfileSettingsPage() {
 
   if (isPending || !session || !user) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center bg-[#FFF9F6]">
+      <div className="flex min-h-[60vh] items-center justify-center bg-[#FFF9F6] dark:bg-[#15141B]">
         <Loader2 className="animate-spin text-[#D96F96]" size={30} />
       </div>
     );
@@ -154,23 +154,23 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
   };
 
   return (
-    <main className="min-h-screen bg-[#FFF9F6] px-4 py-10 sm:px-6 lg:py-14">
+    <main className="min-h-screen bg-[#FFF9F6] dark:bg-[#15141B] px-4 py-10 sm:px-6 lg:py-14">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#D96F96]">
             Your Account
           </p>
-          <h1 className="mt-2 font-logo text-4xl font-semibold text-[#49333F] sm:text-5xl">
+          <h1 className="mt-2 font-logo text-4xl font-semibold text-[#49333F] dark:text-gray-100 sm:text-5xl">
             Profile Settings
           </h1>
-          <p className="mt-2 text-sm text-[#987B88]">
+          <p className="mt-2 text-sm text-[#987B88] dark:text-gray-400">
             Manage your personal information and keep your WedPlan profile up to date.
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
           <aside className="space-y-5">
-            <div className="rounded-2xl border border-[#F0E3E7] bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-[#F0E3E7] dark:border-white/10 bg-white p-6 shadow-sm">
               <div className="flex flex-col items-center text-center">
                 <div className="relative">
                   {preview ? (
@@ -180,17 +180,17 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
                       width={112}
                       height={112}
                       unoptimized
-                      className="h-28 w-28 rounded-full border-4 border-[#FFF0F4] object-cover"
+                      className="h-28 w-28 rounded-full border-4 border-[#FFF0F4] dark:border-white/10 object-cover"
                     />
                   ) : (
-                    <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-[#FFF0F4] bg-[#F5E8EC] text-[#D96F96]">
+                    <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-[#FFF0F4] dark:border-white/10 bg-[#F5E8EC] dark:bg-white/10 text-[#D96F96]">
                       <UserRound size={42} />
                     </div>
                   )}
 
                   <label
                     htmlFor="profile-image"
-                    className="absolute bottom-0 right-0 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-[#E88BAA] text-white shadow-sm transition hover:bg-[#D96F96]"
+                    className="absolute bottom-0 right-0 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-2 border-white dark:border-[#1D1C24] bg-[#E88BAA] text-white shadow-sm transition hover:bg-[#D96F96]"
                     title="Change profile image"
                   >
                     <Camera size={16} />
@@ -207,20 +207,20 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
                   }
                 />
 
-                <h2 className="mt-4 text-lg font-semibold text-[#49333F]">
+                <h2 className="mt-4 text-lg font-semibold text-[#49333F] dark:text-gray-100">
                   {name || "WedPlan User"}
                 </h2>
-                <p className="mt-1 max-w-full break-all text-xs text-[#987B88]">
+                <p className="mt-1 max-w-full break-all text-xs text-[#987B88] dark:text-gray-400">
                   {user.email}
                 </p>
-                <span className="mt-3 rounded-full bg-[#FFF0F4] px-4 py-1.5 text-xs font-semibold lowercase text-[#D96F96]">
+                <span className="mt-3 rounded-full bg-[#FFF0F4] dark:bg-white/10 px-4 py-1.5 text-xs font-semibold lowercase text-[#D96F96]">
                   {role}
                 </span>
               </div>
 
-              <div className="mt-6 border-t border-[#F0E3E7] pt-5">
+              <div className="mt-6 border-t border-[#F0E3E7] dark:border-white/10 pt-5">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-[#49333F]">
+                  <p className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
                     Profile Completion
                   </p>
                   <p className="text-sm font-semibold text-[#D96F96]">
@@ -228,27 +228,27 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
                   </p>
                 </div>
 
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#F5E8EC]">
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#F5E8EC] dark:bg-white/10">
                   <div
                     className="h-full rounded-full bg-[#E88BAA] transition-all"
                     style={{ width: `${completion}%` }}
                   />
                 </div>
 
-                <p className="mt-2 text-xs leading-5 text-[#987B88]">
+                <p className="mt-2 text-xs leading-5 text-[#987B88] dark:text-gray-400">
                   Add a profile photo and keep your details updated.
                 </p>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#F0E3E7] bg-white p-5 shadow-sm">
+            <div className="rounded-2xl border border-[#F0E3E7] dark:border-white/10 bg-white p-5 shadow-sm">
               <div className="flex items-center gap-2">
                 <Sparkles size={18} className="text-[#D96F96]" />
-                <h3 className="text-sm font-semibold text-[#49333F]">
+                <h3 className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
                   Your WedPlan Account
                 </h3>
               </div>
-              <p className="mt-2 text-xs leading-6 text-[#987B88]">
+              <p className="mt-2 text-xs leading-6 text-[#987B88] dark:text-gray-400">
                 {role === "vendor"
                   ? "Grow your wedding business and connect with customers through WedPlan."
                   : role === "admin"
@@ -261,13 +261,13 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
           <section className="space-y-5">
             <form
               onSubmit={handleSave}
-              className="rounded-2xl border border-[#F0E3E7] bg-white p-5 shadow-sm sm:p-7"
+              className="rounded-2xl border border-[#F0E3E7] dark:border-white/10 bg-white p-5 shadow-sm sm:p-7"
             >
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-[#49333F]">
+                <h2 className="text-lg font-semibold text-[#49333F] dark:text-gray-100">
                   Personal Information
                 </h2>
-                <p className="mt-1 text-xs text-[#987B88]">
+                <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
                   Update your profile details below.
                 </p>
               </div>
@@ -276,14 +276,14 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
                 <div>
                   <label
                     htmlFor="full-name"
-                    className="mb-2 block text-sm font-medium text-[#49333F]"
+                    className="mb-2 block text-sm font-medium text-[#49333F] dark:text-gray-100"
                   >
                     Full Name
                   </label>
                   <div className="relative">
                     <UserRound
                       size={17}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-[#B49AA5]"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-[#B49AA5] dark:text-gray-500"
                     />
                     <input
                       id="full-name"
@@ -291,48 +291,48 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
                       onChange={(event) => setName(event.target.value)}
                       required
                       placeholder="Enter your full name"
-                      className="h-12 w-full rounded-xl border border-[#EADDE1] bg-white pl-11 pr-4 text-sm text-[#49333F] outline-none transition focus:border-[#E88BAA] focus:ring-2 focus:ring-[#E88BAA]/10"
+                      className="h-12 w-full rounded-xl border border-[#EADDE1] dark:border-white/10 bg-white pl-11 pr-4 text-sm text-[#49333F] dark:text-gray-100 outline-none transition focus:border-[#E88BAA] focus:ring-2 focus:ring-[#E88BAA]/10"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#49333F]">
+                  <label className="mb-2 block text-sm font-medium text-[#49333F] dark:text-gray-100">
                     Email Address
                   </label>
                   <div className="relative">
                     <Mail
                       size={17}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-[#B49AA5]"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-[#B49AA5] dark:text-gray-500"
                     />
                     <input
                       value={user.email || ""}
                       readOnly
-                      className="h-12 w-full cursor-not-allowed rounded-xl border border-[#EADDE1] bg-[#FFF9F6] pl-11 pr-4 text-sm text-[#987B88] outline-none"
+                      className="h-12 w-full cursor-not-allowed rounded-xl border border-[#EADDE1] dark:border-white/10 bg-[#FFF9F6] dark:bg-white/5 pl-11 pr-4 text-sm text-[#987B88] dark:text-gray-400 outline-none"
                     />
                   </div>
-                  <p className="mt-1.5 text-[11px] text-[#987B88]">
+                  <p className="mt-1.5 text-[11px] text-[#987B88] dark:text-gray-400">
                     Your email address cannot be changed here.
                   </p>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#49333F]">
+                  <label className="mb-2 block text-sm font-medium text-[#49333F] dark:text-gray-100">
                     Account Role
                   </label>
-                  <div className="flex h-12 items-center justify-between rounded-xl border border-[#EADDE1] bg-[#FFF9F6] px-4">
-                    <span className="text-sm capitalize text-[#987B88]">
+                  <div className="flex h-12 items-center justify-between rounded-xl border border-[#EADDE1] dark:border-white/10 bg-[#FFF9F6] dark:bg-white/5 px-4">
+                    <span className="text-sm capitalize text-[#987B88] dark:text-gray-400">
                       {role}
                     </span>
                     <ShieldCheck size={18} className="text-[#D96F96]" />
                   </div>
-                  <p className="mt-1.5 text-[11px] text-[#987B88]">
+                  <p className="mt-1.5 text-[11px] text-[#987B88] dark:text-gray-400">
                     Your account role is fixed and cannot be changed.
                   </p>
                 </div>
               </div>
 
-              <div className="mt-7 flex flex-col-reverse gap-3 border-t border-[#F0E3E7] pt-5 sm:flex-row sm:justify-end">
+              <div className="mt-7 flex flex-col-reverse gap-3 border-t border-[#F0E3E7] dark:border-white/10 pt-5 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => {
@@ -341,7 +341,7 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
                     setPreview(user.image || "");
                     setImageFile(null);
                   }}
-                  className="h-11 rounded-full border border-[#EADDE1] px-6 text-sm font-semibold text-[#66525E] transition hover:bg-[#FFF9F6]"
+                  className="h-11 rounded-full border border-[#EADDE1] dark:border-white/10 px-6 text-sm font-semibold text-[#66525E] dark:text-gray-200 transition hover:bg-[#FFF9F6] dark:hover:bg-white/10"
                 >
                   Reset
                 </button>
@@ -361,34 +361,34 @@ function ProfileSettingsForm({ user }: { user: ProfileUser }) {
               </div>
             </form>
 
-            <div className="rounded-2xl border border-[#F0E3E7] bg-white p-5 shadow-sm sm:p-7">
-              <h2 className="text-lg font-semibold text-[#49333F]">
+            <div className="rounded-2xl border border-[#F0E3E7] dark:border-white/10 bg-white p-5 shadow-sm sm:p-7">
+              <h2 className="text-lg font-semibold text-[#49333F] dark:text-gray-100">
                 Account Overview
               </h2>
-              <p className="mt-1 text-xs text-[#987B88]">
+              <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
                 A quick look at your account information.
               </p>
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                <div className="flex items-start gap-3 rounded-xl bg-[#FFF9F6] p-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] text-[#D96F96]">
+                <div className="flex items-start gap-3 rounded-xl bg-[#FFF9F6] dark:bg-white/5 p-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 text-[#D96F96]">
                     <CalendarDays size={19} />
                   </span>
                   <div>
-                    <p className="text-xs text-[#987B88]">Member Since</p>
-                    <p className="mt-1 text-sm font-semibold text-[#49333F]">
+                    <p className="text-xs text-[#987B88] dark:text-gray-400">Member Since</p>
+                    <p className="mt-1 text-sm font-semibold text-[#49333F] dark:text-gray-100">
                       {memberSince}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 rounded-xl bg-[#FFF9F6] p-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] text-[#D96F96]">
+                <div className="flex items-start gap-3 rounded-xl bg-[#FFF9F6] dark:bg-white/5 p-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 text-[#D96F96]">
                     <ShieldCheck size={19} />
                   </span>
                   <div>
-                    <p className="text-xs text-[#987B88]">Email Verification</p>
-                    <p className="mt-1 text-sm font-semibold text-[#49333F]">
+                    <p className="text-xs text-[#987B88] dark:text-gray-400">Email Verification</p>
+                    <p className="mt-1 text-sm font-semibold text-[#49333F] dark:text-gray-100">
                       {user.emailVerified ? "Verified" : "Not verified"}
                     </p>
                   </div>

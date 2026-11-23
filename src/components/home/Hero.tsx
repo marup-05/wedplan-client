@@ -3,6 +3,11 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { motion, MotionConfig } from "motion/react";
+
+const MotionLink = motion.create(Link);
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 const videos = Array.from(
   { length: 18 },
@@ -74,49 +79,76 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative flex min-h-[650px] items-center overflow-hidden bg-[#49333F] md:min-h-[720px]">
-      <video
-        ref={videoOne}
-        autoPlay
-        muted
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ opacity: 1 }}
-      />
+    <MotionConfig reducedMotion="user">
+      <section className="relative flex min-h-[650px] items-center overflow-hidden bg-[#49333F] md:min-h-[720px]">
+        <video
+          ref={videoOne}
+          autoPlay
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: 1 }}
+        />
 
-      <video
-        ref={videoTwo}
-        muted
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ opacity: 0 }}
-      />
+        <video
+          ref={videoTwo}
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: 0 }}
+        />
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-black/10" />
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-black/10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.1, ease: EASE }}
+        />
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 md:px-8">
-        <div className="max-w-2xl">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-[#F5B5CA]">
-            Your Dream Wedding Starts Here
-          </p>
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 md:px-8">
+          <div className="max-w-2xl">
+            <motion.p
+              className="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-[#F5B5CA]"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
+            >
+              Your Dream Wedding Starts Here
+            </motion.p>
 
-          <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl">
-            Plan Your Dream Wedding with WedPlan
-          </h1>
+            <motion.h1
+              className="text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
+            >
+              Plan Your Dream Wedding with WedPlan
+            </motion.h1>
 
-          <p className="mt-6 max-w-xl text-base leading-8 text-white/85 md:text-lg">
-            Discover trusted vendors, book wedding services, and make
-            your special day unforgettable.
-          </p>
+            <motion.p
+              className="mt-6 max-w-xl text-base leading-8 text-white/85 md:text-lg"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.32, ease: EASE }}
+            >
+              Discover trusted vendors, book wedding services, and make
+              your special day unforgettable.
+            </motion.p>
 
-          <Link
-            href="/services"
-            className="mt-8 inline-flex rounded-full bg-[#E88BAA] px-8 py-4 font-semibold text-[#49333F] hover:bg-[#F3B2C8]"
-          >
-            Explore Wedding Services →
-          </Link>
+            <MotionLink
+              href="/services"
+              className="mt-8 inline-flex rounded-full bg-[#E88BAA] px-8 py-4 font-semibold text-[#49333F] hover:bg-[#F3B2C8]"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.44, ease: EASE }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Explore Wedding Services →
+            </MotionLink>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </MotionConfig>
   );
 }

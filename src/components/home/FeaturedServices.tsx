@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MapPin, Sparkles } from "lucide-react";
+import { Reveal, Stagger, StaggerItem } from "./animations";
 
 type Service = {
   _id: string;
@@ -56,20 +57,20 @@ export async function FeaturedServices() {
   const featuredServices = await getFeaturedServices();
 
   return (
-    <section className="bg-[#FFF9F6] px-5 py-20 md:px-8 md:py-24">
+    <section className="bg-[#FFF9F6] dark:bg-[#15141B] px-5 py-20 md:px-8 md:py-24">
       <div className="mx-auto max-w-6xl">
         {/* Section Heading */}
-        <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <Reveal className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div className="max-w-xl">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#987B88]">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#987B88] dark:text-gray-400">
               Curated Showcase
             </p>
 
-            <h2 className="font-logo text-3xl font-bold text-[#743443] sm:text-4xl">
+            <h2 className="font-logo text-3xl font-bold text-[#743443] dark:text-gray-100 sm:text-4xl">
               Featured Wedding Services
             </h2>
 
-            <p className="mt-2 text-sm leading-6 text-[#806D76]">
+            <p className="mt-2 text-sm leading-6 text-[#806D76] dark:text-gray-300">
               Explore approved, active wedding experiences hand-picked from our
               top creative partners and Premium vendors.
             </p>
@@ -77,20 +78,22 @@ export async function FeaturedServices() {
 
           <Link
             href="/services"
-            className="inline-flex shrink-0 items-center gap-2 self-start rounded-lg border border-[#E9DFE2] bg-white px-4 py-2.5 text-sm font-medium text-[#49333F] hover:bg-[#F5E8EC] sm:self-auto"
+            className="inline-flex shrink-0 items-center gap-2 self-start rounded-lg border border-[#E9DFE2] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-4 py-2.5 text-sm font-medium text-[#49333F] dark:text-gray-100 hover:bg-[#F5E8EC] dark:hover:bg-white/10 sm:self-auto"
           >
             View All Services
             <ArrowRight size={15} />
           </Link>
-        </div>
+        </Reveal>
 
         {/* Service Cards */}
         {featuredServices.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <Stagger className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featuredServices.map((service) => (
-              <article
+              <StaggerItem
                 key={service._id}
-                className="overflow-hidden rounded-xl border border-[#EAE1E3] bg-white shadow-sm transition-shadow hover:shadow-md"
+                as="article"
+                hover="lift"
+                className="overflow-hidden rounded-xl border border-[#EAE1E3] dark:border-white/10 bg-white dark:bg-[#1D1C24] shadow-sm transition-shadow hover:shadow-md"
               >
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden">
@@ -124,30 +127,30 @@ export async function FeaturedServices() {
 
                 {/* Card Content */}
                 <div className="p-4">
-                  <h3 className="truncate font-logo text-xl font-bold text-[#49333F]">
+                  <h3 className="truncate font-logo text-xl font-bold text-[#49333F] dark:text-gray-100">
                     {service.serviceName}
                   </h3>
 
-                  <div className="mt-1.5 flex items-center gap-1 text-xs text-[#987B88]">
+                  <div className="mt-1.5 flex items-center gap-1 text-xs text-[#987B88] dark:text-gray-400">
                     <MapPin size={13} />
                     {service.location}
                   </div>
 
-                  <p className="mt-3 min-h-10 text-xs leading-5 text-[#806D76] line-clamp-2">
+                  <p className="mt-3 min-h-10 text-xs leading-5 text-[#806D76] dark:text-gray-300 line-clamp-2">
                     {service.description}
                   </p>
 
                   {/* Vendor */}
-                  <div className="mt-3 flex items-center gap-2 border-t border-[#F0E7E9] pt-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] text-xs font-bold text-[#743443]">
+                  <div className="mt-3 flex items-center gap-2 border-t border-[#F0E7E9] dark:border-white/10 pt-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 text-xs font-bold text-[#743443] dark:text-gray-100">
                       W
                     </div>
 
                     <div>
-                      <p className="text-xs font-semibold text-[#49333F]">
+                      <p className="text-xs font-semibold text-[#49333F] dark:text-gray-100">
                         Wedding Vendor
                       </p>
-                      <p className="text-[10px] text-[#987B88]">
+                      <p className="text-[10px] text-[#987B88] dark:text-gray-400">
                         Service Provider
                       </p>
                     </div>
@@ -162,18 +165,18 @@ export async function FeaturedServices() {
                     <ArrowRight size={14} />
                   </Link>
                 </div>
-              </article>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         ) : (
-          <div className="rounded-xl border border-[#EAE1E3] bg-white py-16 text-center">
-            <p className="text-sm font-medium text-[#743443]">
+          <Reveal className="rounded-xl border border-[#EAE1E3] dark:border-white/10 bg-white dark:bg-[#1D1C24] py-16 text-center">
+            <p className="text-sm font-medium text-[#743443] dark:text-gray-100">
               No featured services available right now.
             </p>
-            <p className="mt-2 text-xs text-[#987B88]">
+            <p className="mt-2 text-xs text-[#987B88] dark:text-gray-400">
               Please check back later.
             </p>
-          </div>
+          </Reveal>
         )}
       </div>
     </section>

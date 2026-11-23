@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, Suspense } from "react";
@@ -62,7 +63,7 @@ function UserAvatar({
     />
   ) : (
     <span
-      className={`${size} flex shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] font-semibold text-[#D96F96]`}
+      className={`${size} flex shrink-0 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 font-semibold text-[#D96F96]`}
     >
       {getInitial(user)}
     </span>
@@ -217,28 +218,14 @@ function NavbarContent() {
           onClick={closeMenus}
           className="flex items-center gap-2.5 justify-self-start"
         >
-          <span className="text-[#E477A0]">
-            <svg
-              viewBox="0 0 100 120"
-              className="h-10 w-9 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M48 55 C28 49 23 29 38 18 C45 7 64 11 69 23 C83 20 91 36 81 47 C77 58 62 64 50 62 C37 60 30 51 34 40 C37 29 51 26 59 34 C67 42 59 53 50 52 C43 50 43 43 49 40" />
-              <path d="M32 45 C17 39 17 25 29 18 M43 15 C47 4 64 5 71 16 M70 26 C84 22 91 35 84 46 M78 48 C76 62 62 68 51 61" />
-              <path d="M48 59 C47 77 43 95 27 110 M48 76 C35 69 21 64 13 51 C29 51 42 57 48 76 Z" />
-              <path d="M43 89 C56 70 72 66 87 69 C78 83 62 91 43 89 Z" />
-              <path d="M23 59 C29 65 36 70 43 73 M79 72 C67 76 56 83 48 91" />
-            </svg>
-          </span>
-
-          <span className="font-logo text-3xl font-semibold tracking-tight text-[#49333F] dark:text-white">
-            WedPlan
-          </span>
+          <Image
+            src="/images/wedplan-logo-transparent.png"
+            alt="WedPlan"
+            width={1346}
+            height={807}
+            priority
+            className="h-16 w-auto dark:brightness-[3] sm:h-20"
+          />
         </Link>
 
         <div className="hidden items-center justify-center gap-8 md:flex">
@@ -284,7 +271,7 @@ function NavbarContent() {
 
                   <ChevronDown
                     size={16}
-                    className={`text-[#987B88] transition ${
+                    className={`text-[#987B88] dark:text-gray-400 transition ${
                       profileOpen ? "rotate-180" : ""
                     }`}
                   />

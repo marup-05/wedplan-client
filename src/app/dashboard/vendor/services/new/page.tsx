@@ -151,25 +151,25 @@ export default function AddServicePage() {
   };
 
   const fieldClass =
-    "w-full rounded-xl border border-[#EEDFE5] bg-white px-4 py-3 text-sm text-[#49333F] outline-none transition focus:border-[#E477A0]";
+    "w-full rounded-xl border border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#25232B] px-4 py-3 text-sm text-[#49333F] dark:text-gray-100 outline-none transition dark:placeholder:text-gray-500 focus:border-[#E477A0]";
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-[#49333F]">
+        <h2 className="text-xl font-bold text-[#49333F] dark:text-gray-100">
           Create a Service
         </h2>
-        <p className="mt-1 text-sm text-[#987B88]">
+        <p className="mt-1 text-sm text-[#987B88] dark:text-gray-400">
           Add your wedding service and submit it for approval.
         </p>
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-5 rounded-2xl border border-[#F0E2E7] bg-white p-5 shadow-sm md:p-7"
+        className="space-y-5 rounded-2xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-5 shadow-sm md:p-7"
       >
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#49333F]">
+          <label className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
             Service Name *
           </label>
           <input
@@ -183,7 +183,7 @@ export default function AddServicePage() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#49333F]">
+          <label className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
             Service Category *
           </label>
           <select
@@ -203,7 +203,7 @@ export default function AddServicePage() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#49333F]">
+          <label className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
             Description *
           </label>
           <textarea
@@ -219,7 +219,7 @@ export default function AddServicePage() {
 
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#49333F]">
+            <label className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
               Price (USD) *
             </label>
             <input
@@ -235,7 +235,7 @@ export default function AddServicePage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#49333F]">
+            <label className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
               Location *
             </label>
             <input
@@ -251,22 +251,22 @@ export default function AddServicePage() {
 
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-semibold text-[#49333F]">
+            <label className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
               Service Images * (Maximum 5)
             </label>
-            <p className="mt-1 text-xs text-[#987B88]">
+            <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
               JPG, PNG or WEBP · Max 5MB per image
             </p>
           </div>
 
-          <label className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#EEDFE5] bg-[#FFFAFC] p-5 text-center transition hover:border-[#E477A0]">
+          <label className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#EEDFE5] dark:border-white/10 bg-[#FFFAFC] dark:bg-white/5 p-5 text-center transition hover:border-[#E477A0]">
             <ImagePlus size={32} className="text-[#D96F96]" />
 
-            <span className="mt-3 text-sm font-semibold text-[#49333F]">
+            <span className="mt-3 text-sm font-semibold text-[#49333F] dark:text-gray-100">
               Click to upload images
             </span>
 
-            <span className="mt-1 text-xs text-[#987B88]">
+            <span className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
               You can select multiple images or add more later
             </span>
 
@@ -288,7 +288,7 @@ export default function AddServicePage() {
               {previews.map((preview, index) => (
                 <div
                   key={preview}
-                  className="relative overflow-hidden rounded-xl border border-[#EEDFE5] p-2"
+                  className="relative overflow-hidden rounded-xl border border-[#EEDFE5] dark:border-white/10 p-2"
                 >
                   <Image
                     width={300}
@@ -302,12 +302,12 @@ export default function AddServicePage() {
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
-                    className="absolute right-3 top-3 rounded-full bg-white p-1.5 text-red-500 shadow hover:bg-red-50"
+                    className="absolute right-3 top-3 rounded-full bg-white dark:bg-[#25232B] p-1.5 text-red-500 dark:text-red-400 shadow hover:bg-red-50 dark:hover:bg-red-500/10"
                   >
                     <X size={16} />
                   </button>
 
-                  <p className="mt-2 truncate text-xs text-[#987B88]">
+                  <p className="mt-2 truncate text-xs text-[#987B88] dark:text-gray-400">
                     {files[index].name}
                   </p>
                 </div>
@@ -315,12 +315,12 @@ export default function AddServicePage() {
             </div>
           )}
 
-          <p className="text-xs text-[#987B88]">
+          <p className="text-xs text-[#987B88] dark:text-gray-400">
             {files.length}/5 images selected
           </p>
         </div>
 
-        <div className="rounded-xl bg-[#FFF5F8] p-4 text-sm text-[#765D68]">
+        <div className="rounded-xl bg-[#FFF5F8] dark:bg-white/5 p-4 text-sm text-[#765D68] dark:text-gray-300">
           Your service will be submitted with{" "}
           <strong>Pending</strong> status. It will become visible to
           customers only after admin approval.

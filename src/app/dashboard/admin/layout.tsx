@@ -35,8 +35,8 @@ export default function AdminDashboardLayout({
 
   if (isPending || !session) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FFF9F6]">
-        <div className="h-9 w-9 animate-spin rounded-full border-4 border-[#F5D6E2] border-t-[#E477A0]" />
+      <div className="flex min-h-screen items-center justify-center bg-[#FFF9F6] dark:bg-[#15141B]">
+        <div className="h-9 w-9 animate-spin rounded-full border-4 border-[#F5D6E2] border-t-[#E477A0] dark:border-white/10 dark:border-t-[#E477A0]" />
       </div>
     );
   }
@@ -45,14 +45,14 @@ export default function AdminDashboardLayout({
 
   if (role?.toLowerCase() !== "admin") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FFF9F6] text-sm text-[#987B88]">
+      <div className="flex min-h-screen items-center justify-center bg-[#FFF9F6] dark:bg-[#15141B] text-sm text-[#987B88] dark:text-gray-400">
         Redirecting...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF9F6] lg:flex">
+    <div className="min-h-screen bg-[#FFF9F6] dark:bg-[#15141B] lg:flex">
       <AdminSidebar />
 
       <div className="min-w-0 flex-1">

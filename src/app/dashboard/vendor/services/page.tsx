@@ -182,14 +182,16 @@ export default function MyServicesPage() {
   };
 
   const statusStyle = (status: string) => {
-    if (status === "Approved") return "bg-green-100 text-green-700";
-    if (status === "Rejected") return "bg-red-100 text-red-700";
-    return "bg-amber-100 text-amber-700";
+    if (status === "Approved")
+      return "bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300";
+    if (status === "Rejected")
+      return "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300";
+    return "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300";
   };
 
   if (loading) {
     return (
-      <div className="py-16 text-center text-xs text-[#987B88]">
+      <div className="py-16 text-center text-xs text-[#987B88] dark:text-gray-400">
         Loading your services...
       </div>
     );
@@ -199,10 +201,10 @@ export default function MyServicesPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-[#49333F]">
+          <h2 className="text-lg font-bold text-[#49333F] dark:text-gray-100">
             My Services
           </h2>
-          <p className="mt-1 text-xs text-[#987B88]">
+          <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
             Manage your submitted wedding services.
           </p>
         </div>
@@ -210,7 +212,7 @@ export default function MyServicesPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={loadServices}
-            className="rounded-lg border border-[#EEDFE5] bg-white p-2 text-[#987B88] hover:text-[#D96F96]"
+            className="rounded-lg border border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-2 text-[#987B88] dark:text-gray-400 hover:text-[#D96F96]"
             title="Refresh"
             aria-label="Refresh services"
           >
@@ -228,12 +230,12 @@ export default function MyServicesPage() {
       </div>
 
       {services.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#EEDFE5] bg-white px-5 py-12 text-center">
-          <h3 className="text-sm font-semibold text-[#49333F]">
+        <div className="rounded-xl border border-dashed border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-5 py-12 text-center">
+          <h3 className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
             No services yet
           </h3>
 
-          <p className="mt-2 text-xs text-[#987B88]">
+          <p className="mt-2 text-xs text-[#987B88] dark:text-gray-400">
             Add your first wedding service to get started.
           </p>
 
@@ -250,9 +252,9 @@ export default function MyServicesPage() {
           {services.map((service) => (
             <article
               key={service._id}
-              className="flex min-w-0 items-center gap-3 rounded-xl border border-[#F0E2E7] bg-white p-2.5 shadow-sm transition hover:shadow-md sm:gap-4 sm:p-3"
+              className="flex min-w-0 items-center gap-3 rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-2.5 shadow-sm transition hover:shadow-md sm:gap-4 sm:p-3"
             >
-              <div className="relative h-[62px] w-[62px] shrink-0 overflow-hidden rounded-lg bg-[#FFF5F8] sm:h-[72px] sm:w-[72px]">
+              <div className="relative h-[62px] w-[62px] shrink-0 overflow-hidden rounded-lg bg-[#FFF5F8] dark:bg-white/10 sm:h-[72px] sm:w-[72px]">
                 <Image
                   src={service.images?.[0] || "/placeholder.png"}
                   alt={service.serviceName}
@@ -264,7 +266,7 @@ export default function MyServicesPage() {
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <h3 className="max-w-full truncate text-xs font-bold text-[#49333F] sm:text-sm">
+                  <h3 className="max-w-full truncate text-xs font-bold text-[#49333F] dark:text-gray-100 sm:text-sm">
                     {service.serviceName}
                   </h3>
 
@@ -282,7 +284,7 @@ export default function MyServicesPage() {
                 </p>
 
                 <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <p className="flex items-center gap-1 text-[10px] text-[#987B88]">
+                  <p className="flex items-center gap-1 text-[10px] text-[#987B88] dark:text-gray-400">
                     <MapPin size={11} />
                     <span className="max-w-[110px] truncate">
                       {service.location}
@@ -297,7 +299,7 @@ export default function MyServicesPage() {
 
               <div className="flex shrink-0 items-center gap-2">
                 <div className="flex shrink-0 items-center gap-2">
-                  <span className="text-[10px] font-medium text-[#987B88]">
+                  <span className="text-[10px] font-medium text-[#987B88] dark:text-gray-400">
                     Active
                   </span>
 
@@ -311,7 +313,7 @@ export default function MyServicesPage() {
                     disabled={processing === service._id}
                     onClick={() => toggleAvailability(service)}
                     className={`relative inline-flex h-5 w-9 shrink-0 appearance-none items-center rounded-full p-0 transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-                      service.isActive ? "bg-red-500" : "bg-gray-300"
+                      service.isActive ? "bg-red-500" : "bg-gray-300 dark:bg-white/15"
                     }`}
                   >
                     <span
@@ -332,7 +334,7 @@ export default function MyServicesPage() {
                         `/dashboard/vendor/services/${service._id}/edit`
                       )
                     }
-                    className="rounded-md border border-[#EEDFE5] p-1.5 text-[#D96F96] transition hover:bg-[#FFF5F8]"
+                    className="rounded-md border border-[#EEDFE5] dark:border-white/10 p-1.5 text-[#D96F96] transition hover:bg-[#FFF5F8] dark:hover:bg-white/10"
                     title="Edit service"
                     aria-label="Edit service"
                   >
@@ -346,7 +348,7 @@ export default function MyServicesPage() {
                       setSelectedService(service);
                       setDeleteDialogOpen(true);
                     }}
-                    className="rounded-md border border-red-100 p-1.5 text-red-500 transition hover:bg-red-50 disabled:opacity-50"
+                    className="rounded-md border border-red-100 dark:border-red-500/30 p-1.5 text-red-500 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-500/10 disabled:opacity-50"
                     title="Delete service"
                     aria-label="Delete service"
                   >
@@ -361,13 +363,13 @@ export default function MyServicesPage() {
               >
                 <AlertDialogContent className="rounded-xl">
                   <AlertDialogHeader>
-                    <AlertDialogTitle className="text-[#49333F]">
+                    <AlertDialogTitle className="text-[#49333F] dark:text-gray-100">
                       Delete Service?
                     </AlertDialogTitle>
 
-                    <AlertDialogDescription className="text-[#987B88]">
+                    <AlertDialogDescription className="text-[#987B88] dark:text-gray-400">
                       Are you sure you want to delete{" "}
-                      <span className="font-semibold text-[#49333F]">
+                      <span className="font-semibold text-[#49333F] dark:text-gray-100">
                         {selectedService?.serviceName}
                       </span>
                       ? This action cannot be undone.

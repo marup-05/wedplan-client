@@ -7,7 +7,7 @@ type AuthLayoutProps = {
 export function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <section className="mx-auto w-full max-w-[1600px] px-4 py-6 md:px-6 md:py-8">
-      <div className="grid min-h-[650px] overflow-hidden rounded-2xl border border-[#F0E3E7] bg-white shadow-sm lg:grid-cols-2">
+      <div className="grid min-h-[650px] overflow-hidden rounded-2xl border border-[#F0E3E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] shadow-sm lg:grid-cols-2">
         {/* Wedding Image */}
         <div className="relative min-h-[320px] overflow-hidden lg:min-h-[700px]">
           <img

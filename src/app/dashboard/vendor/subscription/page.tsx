@@ -75,50 +75,50 @@ export default function VendorSubscriptionPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h2 className="text-xl font-bold text-[#49333F]">
+        <h2 className="text-xl font-bold text-[#49333F] dark:text-gray-100">
           Choose Your Plan
         </h2>
 
-        <p className="mt-1 text-sm text-[#987B88]">
+        <p className="mt-1 text-sm text-[#987B88] dark:text-gray-400">
           Grow your wedding business with the right subscription.
         </p>
       </div>
 
       {loading ? (
-        <p className="py-16 text-center text-sm text-[#987B88]">
+        <p className="py-16 text-center text-sm text-[#987B88] dark:text-gray-400">
           Loading subscription...
         </p>
       ) : (
         <div className="grid gap-5 md:grid-cols-2">
           <div
-            className={`rounded-2xl border bg-white p-6 ${
+            className={`rounded-2xl border bg-white dark:bg-[#1D1C24] p-6 ${
               plan === "Free"
                 ? "border-[#E477A0] ring-1 ring-[#E477A0]"
-                : "border-[#F0E2E7]"
+                : "border-[#F0E2E7] dark:border-white/10"
             }`}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-[#49333F]">
+              <h3 className="text-lg font-bold text-[#49333F] dark:text-gray-100">
                 Free Plan
               </h3>
 
               {plan === "Free" && (
-                <span className="rounded-full bg-[#FCECF2] px-3 py-1 text-xs font-bold text-[#D96F96]">
+                <span className="rounded-full bg-[#FCECF2] dark:bg-white/10 px-3 py-1 text-xs font-bold text-[#D96F96]">
                   Current Plan
                 </span>
               )}
             </div>
 
-            <p className="mt-4 text-3xl font-bold text-[#49333F]">
+            <p className="mt-4 text-3xl font-bold text-[#49333F] dark:text-gray-100">
               Free
             </p>
 
-            <p className="mt-2 text-sm text-[#987B88]">
+            <p className="mt-2 text-sm text-[#987B88] dark:text-gray-400">
               Get started with your wedding business.
             </p>
 
             <div className="my-6 space-y-4">
-              <p className="flex items-center gap-2 text-sm text-[#765D68]">
+              <p className="flex items-center gap-2 text-sm text-[#765D68] dark:text-gray-300">
                 <Check size={17} className="text-[#D96F96]" />
                 Maximum 3 active services
               </p>
@@ -126,7 +126,7 @@ export default function VendorSubscriptionPage() {
               {features.map((feature) => (
                 <p
                   key={feature}
-                  className="flex items-center gap-2 text-sm text-[#765D68]"
+                  className="flex items-center gap-2 text-sm text-[#765D68] dark:text-gray-300"
                 >
                   <Check size={17} className="text-[#D96F96]" />
                   {feature}
@@ -136,26 +136,26 @@ export default function VendorSubscriptionPage() {
 
             <button
               disabled
-              className="w-full cursor-not-allowed rounded-xl border border-[#EEDFE5] bg-[#FFF9F6] px-4 py-3 text-sm font-semibold text-[#987B88]"
+              className="w-full cursor-not-allowed rounded-xl border border-[#EEDFE5] dark:border-white/10 bg-[#FFF9F6] dark:bg-white/5 px-4 py-3 text-sm font-semibold text-[#987B88] dark:text-gray-400"
             >
               {plan === "Free" ? "Current Plan" : "Free Plan"}
             </button>
           </div>
 
           <div
-            className={`relative rounded-2xl border bg-white p-6 ${
+            className={`relative rounded-2xl border bg-white dark:bg-[#1D1C24] p-6 ${
               plan === "Premium"
                 ? "border-amber-400 ring-1 ring-amber-300"
-                : "border-[#F0E2E7]"
+                : "border-[#F0E2E7] dark:border-white/10"
             }`}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-[#49333F]">
+              <h3 className="text-lg font-bold text-[#49333F] dark:text-gray-100">
                 Premium Plan
               </h3>
 
               {plan === "Premium" ? (
-                <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
+                <span className="rounded-full bg-amber-100 dark:bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
                   Current Plan
                 </span>
               ) : (
@@ -163,21 +163,21 @@ export default function VendorSubscriptionPage() {
               )}
             </div>
 
-            <p className="mt-4 text-3xl font-bold text-[#49333F]">
+            <p className="mt-4 text-3xl font-bold text-[#49333F] dark:text-gray-100">
               Premium
             </p>
 
-            <p className="mt-2 text-sm text-[#987B88]">
+            <p className="mt-2 text-sm text-[#987B88] dark:text-gray-400">
               Unlock more opportunities for your business.
             </p>
 
             <div className="my-6 space-y-4">
-              <p className="flex items-center gap-2 text-sm text-[#765D68]">
+              <p className="flex items-center gap-2 text-sm text-[#765D68] dark:text-gray-300">
                 <Check size={17} className="text-amber-500" />
                 Unlimited active services
               </p>
 
-              <p className="flex items-center gap-2 text-sm text-[#765D68]">
+              <p className="flex items-center gap-2 text-sm text-[#765D68] dark:text-gray-300">
                 <Check size={17} className="text-amber-500" />
                 Premium Vendor Badge
               </p>
@@ -185,7 +185,7 @@ export default function VendorSubscriptionPage() {
               {features.map((feature) => (
                 <p
                   key={feature}
-                  className="flex items-center gap-2 text-sm text-[#765D68]"
+                  className="flex items-center gap-2 text-sm text-[#765D68] dark:text-gray-300"
                 >
                   <Check size={17} className="text-amber-500" />
                   {feature}

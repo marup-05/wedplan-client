@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { Reveal, Stagger, StaggerItem } from "./animations";
 
 interface ServiceCategory {
   name: string;
@@ -109,65 +110,66 @@ export async function ServiceCategories() {
   );
 
   return (
-    <section className="bg-[#FDF7F5] px-5 py-20 md:px-8 md:py-24">
+    <section className="bg-[#FDF7F5] dark:bg-[#15141B] px-5 py-20 md:px-8 md:py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10 text-center">
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#987B88]">
+        <Reveal className="mb-10 text-center">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#987B88] dark:text-gray-400">
             Explore By Category
           </p>
 
-          <h2 className="font-logo text-3xl font-bold text-[#743443] sm:text-4xl">
+          <h2 className="font-logo text-3xl font-bold text-[#743443] dark:text-gray-100 sm:text-4xl">
             Find Services for Every Detail
           </h2>
 
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#987B88]">
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#987B88] dark:text-gray-400">
             From stunning venues to beautiful decorations, discover
             everything you need for your perfect wedding day.
           </p>
-        </div>
+        </Reveal>
 
         {activeCategories.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <Stagger className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {activeCategories.map((category) => (
-              <Link
-                key={category.name}
-                href={`/services?category=${encodeURIComponent(category.name)}`}
-                className="group relative h-64 overflow-hidden rounded-2xl"
-              >
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+              <StaggerItem key={category.name} hover="lift">
+                <Link
+                  href={`/services?category=${encodeURIComponent(category.name)}`}
+                  className="group relative block h-64 overflow-hidden rounded-2xl"
+                >
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5">
-                  <div className="pr-3">
-                    <h3 className="text-lg font-semibold text-white">
-                      {category.name}
-                    </h3>
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5">
+                    <div className="pr-3">
+                      <h3 className="text-lg font-semibold text-white">
+                        {category.name}
+                      </h3>
 
-                    <p className="mt-1 text-xs text-white/80">
-                      {category.description}
-                    </p>
+                      <p className="mt-1 text-xs text-white/80">
+                        {category.description}
+                      </p>
+                    </div>
+
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-[#743443] transition-colors group-hover:bg-[#E88BAA] group-hover:text-white">
+                      <ArrowUpRight size={18} />
+                    </span>
                   </div>
-
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-[#743443] transition-colors group-hover:bg-[#E88BAA] group-hover:text-white">
-                    <ArrowUpRight size={18} />
-                  </span>
-                </div>
-              </Link>
+                </Link>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         ) : (
-          <div className="rounded-xl border border-[#EAE1E3] bg-white py-12 text-center">
-            <p className="text-sm text-[#743443]">
+          <Reveal className="rounded-xl border border-[#EAE1E3] dark:border-white/10 bg-white dark:bg-[#1D1C24] py-12 text-center">
+            <p className="text-sm text-[#743443] dark:text-gray-100">
               No service categories available right now.
             </p>
-          </div>
+          </Reveal>
         )}
       </div>
     </section>

@@ -131,16 +131,16 @@ export default function SignUpPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#D96F96]">
           Start Your Journey
         </p>
-        <h1 className="mt-2 font-logo text-4xl font-semibold text-[#49333F] sm:text-5xl">
+        <h1 className="mt-2 font-logo text-4xl font-semibold text-[#49333F] dark:text-gray-100 sm:text-5xl">
           Create Account
         </h1>
-        <p className="mt-2 text-sm text-[#987B88]">
+        <p className="mt-2 text-sm text-[#987B88] dark:text-gray-400">
           Join WedPlan and make your wedding journey special.
         </p>
       </div>
 
       <div className="mt-6">
-        <p className="mb-2 text-sm font-medium text-[#49333F]">
+        <p className="mb-2 text-sm font-medium text-[#49333F] dark:text-gray-100">
           Choose Account Type
         </p>
 
@@ -150,13 +150,13 @@ export default function SignUpPage() {
             onClick={() => setRole("customer")}
             className={`rounded-xl border p-3 text-left transition ${
               role === "customer"
-                ? "border-[#E88BAA] bg-[#FFF3F7]"
-                : "border-[#EADDE1] bg-white hover:bg-[#FFF9F6]"
+                ? "border-[#E88BAA] bg-[#FFF3F7] dark:bg-[#E88BAA]/10"
+                : "border-[#EADDE1] dark:border-white/10 bg-white dark:bg-[#25232B] hover:bg-[#FFF9F6] dark:hover:bg-white/10"
             }`}
           >
             <Heart size={20} className="text-[#D96F96]" />
-            <p className="mt-2 text-sm font-semibold text-[#49333F]">Customer</p>
-            <p className="mt-1 text-[11px] leading-5 text-[#987B88]">
+            <p className="mt-2 text-sm font-semibold text-[#49333F] dark:text-gray-100">Customer</p>
+            <p className="mt-1 text-[11px] leading-5 text-[#987B88] dark:text-gray-400">
               Discover wedding services and plan your special day.
             </p>
             <span className={`mt-2 block text-[10px] font-semibold ${role === "customer" ? "text-[#D96F96]" : "text-transparent"}`}>
@@ -169,13 +169,13 @@ export default function SignUpPage() {
             onClick={() => setRole("vendor")}
             className={`rounded-xl border p-3 text-left transition ${
               role === "vendor"
-                ? "border-[#E88BAA] bg-[#FFF3F7]"
-                : "border-[#EADDE1] bg-white hover:bg-[#FFF9F6]"
+                ? "border-[#E88BAA] bg-[#FFF3F7] dark:bg-[#E88BAA]/10"
+                : "border-[#EADDE1] dark:border-white/10 bg-white dark:bg-[#25232B] hover:bg-[#FFF9F6] dark:hover:bg-white/10"
             }`}
           >
             <Store size={20} className="text-[#D96F96]" />
-            <p className="mt-2 text-sm font-semibold text-[#49333F]">Vendor</p>
-            <p className="mt-1 text-[11px] leading-5 text-[#987B88]">
+            <p className="mt-2 text-sm font-semibold text-[#49333F] dark:text-gray-100">Vendor</p>
+            <p className="mt-1 text-[11px] leading-5 text-[#987B88] dark:text-gray-400">
               Showcase services and manage customer bookings.
             </p>
             <span className={`mt-2 block text-[10px] font-semibold ${role === "vendor" ? "text-[#D96F96]" : "text-transparent"}`}>
@@ -186,14 +186,14 @@ export default function SignUpPage() {
       </div>
 
       <div className="my-5 flex items-center gap-4">
-        <div className="h-px flex-1 bg-[#EADDE1]" />
-        <span className="text-xs text-[#987B88]">Register with email</span>
-        <div className="h-px flex-1 bg-[#EADDE1]" />
+        <div className="h-px flex-1 bg-[#EADDE1] dark:bg-white/10" />
+        <span className="text-xs text-[#987B88] dark:text-gray-400">Register with email</span>
+        <div className="h-px flex-1 bg-[#EADDE1] dark:bg-white/10" />
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-[#49333F]">
+          <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-[#49333F] dark:text-gray-100">
             Full Name
           </label>
           <input
@@ -202,12 +202,12 @@ export default function SignUpPage() {
             type="text"
             placeholder="Enter your full name"
             required
-            className="h-11 w-full rounded-lg border border-[#EADDE1] px-4 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
+            className="h-11 w-full rounded-lg border border-[#EADDE1] dark:border-white/10 dark:bg-[#25232B] px-4 text-sm text-[#49333F] dark:text-gray-100 outline-none placeholder:text-[#B7A4AD] dark:placeholder:text-gray-500 focus:border-[#E88BAA]"
           />
         </div>
 
         <div>
-          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-[#49333F]">
+          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-[#49333F] dark:text-gray-100">
             Email Address
           </label>
           <input
@@ -216,12 +216,12 @@ export default function SignUpPage() {
             type="email"
             placeholder="Enter your email"
             required
-            className="h-11 w-full rounded-lg border border-[#EADDE1] px-4 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
+            className="h-11 w-full rounded-lg border border-[#EADDE1] dark:border-white/10 dark:bg-[#25232B] px-4 text-sm text-[#49333F] dark:text-gray-100 outline-none placeholder:text-[#B7A4AD] dark:placeholder:text-gray-500 focus:border-[#E88BAA]"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-[#49333F]">
+          <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-[#49333F] dark:text-gray-100">
             Password
           </label>
           <div className="relative">
@@ -234,27 +234,27 @@ export default function SignUpPage() {
               minLength={6}
               pattern="(?=.*[a-z])(?=.*[A-Z]).{6,}"
               title="At least 6 characters, one uppercase and one lowercase letter"
-              className="h-11 w-full rounded-lg border border-[#EADDE1] px-4 pr-12 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
+              className="h-11 w-full rounded-lg border border-[#EADDE1] dark:border-white/10 dark:bg-[#25232B] px-4 pr-12 text-sm text-[#49333F] dark:text-gray-100 outline-none placeholder:text-[#B7A4AD] dark:placeholder:text-gray-500 focus:border-[#E88BAA]"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-3 flex items-center text-[#987B88]"
+              className="absolute inset-y-0 right-3 flex items-center text-[#987B88] dark:text-gray-400"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          <p className="mt-1.5 text-[11px] text-[#987B88]">
+          <p className="mt-1.5 text-[11px] text-[#987B88] dark:text-gray-400">
             Minimum 6 characters, including uppercase and lowercase letters.
           </p>
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-[#49333F]">
-            Profile Image <span className="font-normal text-[#987B88]">(Optional)</span>
+          <label className="mb-1.5 block text-sm font-medium text-[#49333F] dark:text-gray-100">
+            Profile Image <span className="font-normal text-[#987B88] dark:text-gray-400">(Optional)</span>
           </label>
-          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#E8B5C7] bg-[#FFF9F6] p-3 transition hover:bg-[#FDF0F4]">
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#E8B5C7] dark:border-[#E8B5C7]/30 bg-[#FFF9F6] dark:bg-white/5 p-3 transition hover:bg-[#FDF0F4] dark:hover:bg-white/10">
             {imagePreview ? (
               <Image
                 src={imagePreview}
@@ -265,16 +265,16 @@ export default function SignUpPage() {
                 unoptimized
               />
             ) : (
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5E8EC] text-[#D96F96]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 text-[#D96F96]">
                 <UserRound size={20} />
               </div>
             )}
 
             <div className="flex-1">
-              <p className="text-xs font-semibold text-[#49333F]">
+              <p className="text-xs font-semibold text-[#49333F] dark:text-gray-100">
                 {imagePreview ? "Image selected" : "Upload profile image"}
               </p>
-              <p className="mt-1 text-[10px] text-[#987B88]">JPG, PNG or WEBP</p>
+              <p className="mt-1 text-[10px] text-[#987B88] dark:text-gray-400">JPG, PNG or WEBP</p>
             </div>
 
             <Upload size={18} className="text-[#D96F96]" />
@@ -297,22 +297,22 @@ export default function SignUpPage() {
       </form>
 
       <div className="my-5 flex items-center gap-4">
-        <div className="h-px flex-1 bg-[#EADDE1]" />
-        <span className="text-xs text-[#987B88]">or</span>
-        <div className="h-px flex-1 bg-[#EADDE1]" />
+        <div className="h-px flex-1 bg-[#EADDE1] dark:bg-white/10" />
+        <span className="text-xs text-[#987B88] dark:text-gray-400">or</span>
+        <div className="h-px flex-1 bg-[#EADDE1] dark:bg-white/10" />
       </div>
 
       <button
         type="button"
         onClick={handleGoogleSignUp}
         disabled={googleLoading}
-        className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] text-sm font-semibold text-[#49333F] transition hover:bg-[#FFF9F6] disabled:opacity-60"
+        className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] dark:border-white/10 text-sm font-semibold text-[#49333F] dark:text-gray-100 transition hover:bg-[#FFF9F6] dark:hover:bg-white/10 disabled:opacity-60"
       >
         <FcGoogle size={21} />
         {googleLoading ? "Redirecting..." : "Continue with Google"}
       </button>
 
-      <p className="mt-5 text-center text-sm text-[#987B88]">
+      <p className="mt-5 text-center text-sm text-[#987B88] dark:text-gray-400">
         Already have an account?{" "}
         <Link href="/sign-in" className="font-semibold text-[#D96F96] hover:underline">
           Sign In

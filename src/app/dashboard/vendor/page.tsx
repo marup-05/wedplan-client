@@ -128,11 +128,11 @@ export default function VendorDashboardPage() {
           Vendor Dashboard
         </p>
 
-        <h2 className="mt-1.5 text-xl font-bold text-[#49333F] md:text-2xl">
+        <h2 className="mt-1.5 text-xl font-bold text-[#49333F] dark:text-gray-100 md:text-2xl">
           Welcome to your workspace!
         </h2>
 
-        <p className="mt-1.5 text-xs text-[#987B88]">
+        <p className="mt-1.5 text-xs text-[#987B88] dark:text-gray-400">
           Manage your wedding services and booking requests from here.
         </p>
       </div>
@@ -144,28 +144,28 @@ export default function VendorDashboardPage() {
           return (
             <div
               key={stat.title}
-              className="rounded-xl border border-[#F0E2E7] bg-white p-3.5 shadow-sm"
+              className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-3.5 shadow-sm"
             >
               <div className="flex items-center justify-between">
-                <div className="rounded-lg bg-[#FCECF2] p-2 text-[#D96F96]">
+                <div className="rounded-lg bg-[#FCECF2] dark:bg-white/10 p-2 text-[#D96F96]">
                   <Icon size={17} />
                 </div>
 
                 <ArrowUpRight
                   size={15}
-                  className="text-[#C5AAB5]"
+                  className="text-[#C5AAB5] dark:text-gray-500"
                 />
               </div>
 
-              <h3 className="mt-3 text-xs font-medium text-[#987B88]">
+              <h3 className="mt-3 text-xs font-medium text-[#987B88] dark:text-gray-400">
                 {stat.title}
               </h3>
 
-              <p className="mt-1 text-2xl font-bold text-[#49333F]">
+              <p className="mt-1 text-2xl font-bold text-[#49333F] dark:text-gray-100">
                 {loading ? "—" : stat.value}
               </p>
 
-              <p className="mt-1.5 text-[11px] text-[#B49AA5]">
+              <p className="mt-1.5 text-[11px] text-[#B49AA5] dark:text-gray-500">
                 {stat.description}
               </p>
             </div>
@@ -173,18 +173,18 @@ export default function VendorDashboardPage() {
         })}
       </div>
 
-      <div className="rounded-xl border border-[#F0E2E7] bg-white p-4">
+      <div className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-4">
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-[#FCECF2] p-2.5 text-[#D96F96]">
+          <div className="rounded-lg bg-[#FCECF2] dark:bg-white/10 p-2.5 text-[#D96F96]">
             <Crown size={19} />
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-[#49333F]">
+            <h3 className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
               Your Current Plan
             </h3>
 
-            <p className="text-xs text-[#987B88]">
+            <p className="text-xs text-[#987B88] dark:text-gray-400">
               {loading
                 ? "Loading..."
                 : `${data.subscriptionPlan} Plan`}
@@ -192,7 +192,7 @@ export default function VendorDashboardPage() {
           </div>
         </div>
 
-        <p className="mt-3 text-xs text-[#765D68]">
+        <p className="mt-3 text-xs text-[#765D68] dark:text-gray-300">
           {data.subscriptionPlan === "Premium"
             ? "You have unlimited active services with your Premium Plan."
             : "You can publish up to 3 active services with your Free Plan."}
@@ -200,7 +200,7 @@ export default function VendorDashboardPage() {
 
         <Link
           href="/dashboard/vendor/subscription"
-          className="mt-4 inline-flex rounded-lg bg-[#FCECF2] px-3.5 py-2 text-xs font-semibold text-[#D96F96] hover:bg-[#F8DFE9]"
+          className="mt-4 inline-flex rounded-lg bg-[#FCECF2] dark:bg-white/10 px-3.5 py-2 text-xs font-semibold text-[#D96F96] hover:bg-[#F8DFE9] dark:hover:bg-white/15"
         >
           Manage Subscription
         </Link>

@@ -130,25 +130,25 @@ export default function EditServicePage() {
     }
   };
 
-  if (loading) return <p className="py-20 text-center text-sm text-[#987B88]">Loading service...</p>;
+  if (loading) return <p className="py-20 text-center text-sm text-[#987B88] dark:text-gray-400">Loading service...</p>;
 
-  const inputClass = "w-full rounded-xl border border-[#EEDFE5] bg-white px-4 py-3 text-sm text-[#49333F] outline-none focus:border-[#E477A0]";
+  const inputClass = "w-full rounded-xl border border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#25232B] px-4 py-3 text-sm text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E477A0]";
 
   return (
     <div className="mx-auto max-w-3xl space-y-5">
       <div>
-        <h2 className="text-xl font-bold text-[#49333F]">Edit Service</h2>
-        <p className="mt-1 text-sm text-[#987B88]">Update your service information.</p>
+        <h2 className="text-xl font-bold text-[#49333F] dark:text-gray-100">Edit Service</h2>
+        <p className="mt-1 text-sm text-[#987B88] dark:text-gray-400">Update your service information.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-[#F0E2E7] bg-white p-5 md:p-7">
+      <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-5 md:p-7">
         <div>
-          <label className="mb-2 block text-sm font-semibold text-[#49333F]">Service Name *</label>
+          <label className="mb-2 block text-sm font-semibold text-[#49333F] dark:text-gray-100">Service Name *</label>
           <input required className={inputClass} value={form.serviceName} onChange={(e) => setForm({ ...form, serviceName: e.target.value })} />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-[#49333F]">Category *</label>
+          <label className="mb-2 block text-sm font-semibold text-[#49333F] dark:text-gray-100">Category *</label>
           <select required className={inputClass} value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
             <option value="">Select category</option>
             {categories.map((category) => <option key={category}>{category}</option>)}
@@ -156,28 +156,28 @@ export default function EditServicePage() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-[#49333F]">Description *</label>
+          <label className="mb-2 block text-sm font-semibold text-[#49333F] dark:text-gray-100">Description *</label>
           <textarea required rows={5} className={inputClass} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-semibold text-[#49333F]">Price (BDT) *</label>
+            <label className="mb-2 block text-sm font-semibold text-[#49333F] dark:text-gray-100">Price (BDT) *</label>
             <input type="number" min="1" required className={inputClass} value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-semibold text-[#49333F]">Location *</label>
+            <label className="mb-2 block text-sm font-semibold text-[#49333F] dark:text-gray-100">Location *</label>
             <input required className={inputClass} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
           </div>
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-semibold text-[#49333F]">Service Image</label>
+          <label className="mb-2 block text-sm font-semibold text-[#49333F] dark:text-gray-100">Service Image</label>
           {preview && <Image width={600} height={240} src={preview} alt="Service" className="mb-3 h-40 w-full rounded-xl object-cover" />}
           <input
             type="file"
             accept="image/png,image/jpeg,image/webp"
-            className="w-full text-sm text-[#765D68]"
+            className="w-full text-sm text-[#765D68] dark:text-gray-300"
             onChange={(e) => {
               const selected = e.target.files?.[0];
               if (!selected) return;

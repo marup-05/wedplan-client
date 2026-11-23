@@ -85,23 +85,23 @@ export default function SignInPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#D96F96]">
           Welcome Back
         </p>
-        <h1 className="mt-3 font-logo text-4xl font-semibold text-[#49333F] sm:text-5xl">
+        <h1 className="mt-3 font-logo text-4xl font-semibold text-[#49333F] dark:text-gray-100 sm:text-5xl">
           Sign In
         </h1>
-        <p className="mt-3 text-sm text-[#987B88]">
+        <p className="mt-3 text-sm text-[#987B88] dark:text-gray-400">
           Welcome back! Please enter your details.
         </p>
       </div>
 
       <div className="my-7 flex items-center gap-4">
-        <div className="h-px flex-1 bg-[#EADDE1]" />
-        <span className="text-xs text-[#987B88]">Continue with email</span>
-        <div className="h-px flex-1 bg-[#EADDE1]" />
+        <div className="h-px flex-1 bg-[#EADDE1] dark:bg-white/10" />
+        <span className="text-xs text-[#987B88] dark:text-gray-400">Continue with email</span>
+        <div className="h-px flex-1 bg-[#EADDE1] dark:bg-white/10" />
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="email" className="mb-2 block text-sm font-medium text-[#49333F]">
+          <label htmlFor="email" className="mb-2 block text-sm font-medium text-[#49333F] dark:text-gray-100">
             Email Address
           </label>
           <input
@@ -110,12 +110,12 @@ export default function SignInPage() {
             type="email"
             placeholder="Enter your email"
             required
-            className="h-12 w-full rounded-lg border border-[#EADDE1] bg-white px-4 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
+            className="h-12 w-full rounded-lg border border-[#EADDE1] dark:border-white/10 bg-white dark:bg-[#25232B] px-4 text-sm text-[#49333F] dark:text-gray-100 outline-none placeholder:text-[#B7A4AD] dark:placeholder:text-gray-500 focus:border-[#E88BAA]"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="mb-2 block text-sm font-medium text-[#49333F]">
+          <label htmlFor="password" className="mb-2 block text-sm font-medium text-[#49333F] dark:text-gray-100">
             Password
           </label>
           <div className="relative">
@@ -125,12 +125,12 @@ export default function SignInPage() {
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               required
-              className="h-12 w-full rounded-lg border border-[#EADDE1] bg-white px-4 pr-12 text-sm text-[#49333F] outline-none placeholder:text-[#B7A4AD] focus:border-[#E88BAA]"
+              className="h-12 w-full rounded-lg border border-[#EADDE1] dark:border-white/10 bg-white dark:bg-[#25232B] px-4 pr-12 text-sm text-[#49333F] dark:text-gray-100 outline-none placeholder:text-[#B7A4AD] dark:placeholder:text-gray-500 focus:border-[#E88BAA]"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-3 flex items-center text-[#987B88]"
+              className="absolute inset-y-0 right-3 flex items-center text-[#987B88] dark:text-gray-400"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -154,22 +154,22 @@ export default function SignInPage() {
       </form>
 
       <div className="my-5 flex items-center gap-4">
-        <div className="h-px flex-1 bg-[#EADDE1]" />
-        <span className="text-xs text-[#987B88]">or</span>
-        <div className="h-px flex-1 bg-[#EADDE1]" />
+        <div className="h-px flex-1 bg-[#EADDE1] dark:bg-white/10" />
+        <span className="text-xs text-[#987B88] dark:text-gray-400">or</span>
+        <div className="h-px flex-1 bg-[#EADDE1] dark:bg-white/10" />
       </div>
 
       <button
         type="button"
         onClick={handleGoogleSignIn}
         disabled={googleLoading}
-        className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] text-sm font-semibold text-[#49333F] transition hover:bg-[#FFF9F6] disabled:opacity-60"
+        className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-[#EADDE1] dark:border-white/10 text-sm font-semibold text-[#49333F] dark:text-gray-100 transition hover:bg-[#FFF9F6] dark:hover:bg-white/10 disabled:opacity-60"
       >
         <FcGoogle size={21} />
         {googleLoading ? "Redirecting..." : "Continue with Google"}
       </button>
 
-      <p className="mt-7 text-center text-sm text-[#987B88]">
+      <p className="mt-7 text-center text-sm text-[#987B88] dark:text-gray-400">
         Don&apos;t have an account?{" "}
         <Link href="/sign-up" className="font-semibold text-[#D96F96] hover:underline">
           Get Started

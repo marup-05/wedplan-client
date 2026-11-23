@@ -155,10 +155,10 @@ export default function AdminDashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-[#49333F]">
+          <h2 className="text-lg font-bold text-[#49333F] dark:text-gray-100">
             Dashboard Overview
           </h2>
-          <p className="mt-1 text-xs text-[#987B88]">
+          <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
             Monitor and manage your WedPlan platform.
           </p>
         </div>
@@ -167,7 +167,7 @@ export default function AdminDashboardPage() {
           type="button"
           onClick={handleRefresh}
           disabled={refreshing || loading || !adminId}
-          className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] bg-white px-3 py-2 text-xs font-semibold text-[#765D68] transition hover:bg-[#FFF5F8] disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-3 py-2 text-xs font-semibold text-[#765D68] dark:text-gray-300 transition hover:bg-[#FFF5F8] dark:hover:bg-white/10 disabled:opacity-50"
         >
           <RefreshCw
             size={14}
@@ -184,29 +184,29 @@ export default function AdminDashboardPage() {
           return (
             <div
               key={card.key}
-              className="rounded-xl border border-[#F0E2E7] bg-white p-4 shadow-sm transition hover:shadow-md"
+              className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-4 shadow-sm transition hover:shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs font-medium text-[#987B88]">
+                  <p className="text-xs font-medium text-[#987B88] dark:text-gray-400">
                     {card.title}
                   </p>
 
-                  <h3 className="mt-3 text-2xl font-bold text-[#49333F]">
+                  <h3 className="mt-3 text-2xl font-bold text-[#49333F] dark:text-gray-100">
                     {loading ? (
-                      <span className="inline-block h-7 w-12 animate-pulse rounded bg-[#FCECF2]" />
+                      <span className="inline-block h-7 w-12 animate-pulse rounded bg-[#FCECF2] dark:bg-white/10" />
                     ) : (
                       stats[card.key].toLocaleString()
                     )}
                   </h3>
                 </div>
 
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FCECF2] text-[#D96F96]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FCECF2] dark:bg-white/10 text-[#D96F96]">
                   <Icon size={19} />
                 </div>
               </div>
 
-              <p className="mt-3 text-[11px] text-[#B49AA5]">
+              <p className="mt-3 text-[11px] text-[#B49AA5] dark:text-gray-500">
                 {card.description}
               </p>
             </div>

@@ -109,17 +109,17 @@ export default function CustomerDashboardPage() {
           Customer Dashboard
         </p>
 
-        <h2 className="mt-1.5 text-xl font-bold text-[#49333F] md:text-2xl">
+        <h2 className="mt-1.5 text-xl font-bold text-[#49333F] dark:text-gray-100 md:text-2xl">
           Welcome to your workspace!
         </h2>
 
-        <p className="mt-1.5 text-xs text-[#987B88]">
+        <p className="mt-1.5 text-xs text-[#987B88] dark:text-gray-400">
           Track your wedding bookings and manage your requests from here.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400">
           {error}
           <button
             onClick={() => window.location.reload()}
@@ -137,25 +137,25 @@ export default function CustomerDashboardPage() {
           return (
             <div
               key={stat.title}
-              className="rounded-xl border border-[#F0E2E7] bg-white p-3.5 shadow-sm"
+              className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-3.5 shadow-sm"
             >
               <div className="flex items-center justify-between">
-                <div className="rounded-lg bg-[#FCECF2] p-2 text-[#D96F96]">
+                <div className="rounded-lg bg-[#FCECF2] dark:bg-white/10 p-2 text-[#D96F96]">
                   <Icon size={17} />
                 </div>
 
-                <ArrowUpRight size={15} className="text-[#C5AAB5]" />
+                <ArrowUpRight size={15} className="text-[#C5AAB5] dark:text-gray-500" />
               </div>
 
-              <h3 className="mt-3 text-xs font-medium text-[#987B88]">
+              <h3 className="mt-3 text-xs font-medium text-[#987B88] dark:text-gray-400">
                 {stat.title}
               </h3>
 
-              <p className="mt-1 text-2xl font-bold text-[#49333F]">
+              <p className="mt-1 text-2xl font-bold text-[#49333F] dark:text-gray-100">
                 {loading ? "—" : stat.value}
               </p>
 
-              <p className="mt-1.5 text-[11px] text-[#B49AA5]">
+              <p className="mt-1.5 text-[11px] text-[#B49AA5] dark:text-gray-500">
                 {stat.description}
               </p>
             </div>
@@ -163,19 +163,19 @@ export default function CustomerDashboardPage() {
         })}
       </div>
 
-      <div className="rounded-xl border border-[#F0E2E7] bg-white p-5">
+      <div className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-[#FCECF2] p-2.5 text-[#D96F96]">
+            <div className="rounded-lg bg-[#FCECF2] dark:bg-white/10 p-2.5 text-[#D96F96]">
               <CalendarCheck size={20} />
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-[#49333F]">
+              <h3 className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
                 My Bookings
               </h3>
 
-              <p className="mt-1 text-xs text-[#987B88]">
+              <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
                 View your booking requests and their current status.
               </p>
             </div>
@@ -183,7 +183,7 @@ export default function CustomerDashboardPage() {
 
           <Link
             href="/dashboard/customer/bookings"
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#FCECF2] px-4 py-2.5 text-xs font-semibold text-[#D96F96] transition hover:bg-[#F8DFE9]"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#FCECF2] dark:bg-white/10 px-4 py-2.5 text-xs font-semibold text-[#D96F96] transition hover:bg-[#F8DFE9] dark:hover:bg-white/15"
           >
             View My Bookings
             <ArrowUpRight size={15} />

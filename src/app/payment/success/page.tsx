@@ -32,12 +32,12 @@ export default async function PaymentSuccessPage({
     session = await stripe.checkout.sessions.retrieve(session_id);
   } catch {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FFF8FA] p-5">
-        <div className="rounded-2xl border border-[#F0E2E7] bg-white p-8 text-center shadow-sm">
-          <h1 className="text-xl font-bold text-[#49333F]">
+      <div className="flex min-h-screen items-center justify-center bg-[#FFF8FA] dark:bg-[#15141B] p-5">
+        <div className="rounded-2xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-8 text-center shadow-sm">
+          <h1 className="text-xl font-bold text-[#49333F] dark:text-gray-100">
             Payment Verification Failed
           </h1>
-          <p className="mt-2 text-sm text-[#987B88]">
+          <p className="mt-2 text-sm text-[#987B88] dark:text-gray-400">
             We could not verify your payment. Please try again.
           </p>
           <Link
@@ -57,12 +57,12 @@ export default async function PaymentSuccessPage({
     session.mode !== "payment"
   ) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FFF8FA] p-5">
-        <div className="rounded-2xl border border-[#F0E2E7] bg-white p-8 text-center shadow-sm">
-          <h1 className="text-xl font-bold text-[#49333F]">
+      <div className="flex min-h-screen items-center justify-center bg-[#FFF8FA] dark:bg-[#15141B] p-5">
+        <div className="rounded-2xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-8 text-center shadow-sm">
+          <h1 className="text-xl font-bold text-[#49333F] dark:text-gray-100">
             Payment Not Completed
           </h1>
-          <p className="mt-2 text-sm text-[#987B88]">
+          <p className="mt-2 text-sm text-[#987B88] dark:text-gray-400">
             Your payment has not been completed yet.
           </p>
           <Link
@@ -93,12 +93,12 @@ export default async function PaymentSuccessPage({
 
   if (activationFailed) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FFF8FA] p-5">
-        <div className="rounded-2xl border border-[#F0E2E7] bg-white p-8 text-center shadow-sm">
-          <h1 className="text-xl font-bold text-[#49333F]">
+      <div className="flex min-h-screen items-center justify-center bg-[#FFF8FA] dark:bg-[#15141B] p-5">
+        <div className="rounded-2xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-8 text-center shadow-sm">
+          <h1 className="text-xl font-bold text-[#49333F] dark:text-gray-100">
             Premium Activation Failed
           </h1>
-          <p className="mt-2 text-sm text-[#987B88]">
+          <p className="mt-2 text-sm text-[#987B88] dark:text-gray-400">
             Your payment was successful, but we could not activate Premium.
             Please contact support.
           </p>
@@ -135,8 +135,8 @@ export default async function PaymentSuccessPage({
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FFF8FA] px-4 py-10">
-      <div className="w-full max-w-2xl overflow-hidden rounded-3xl border border-[#F0E2E7] bg-white shadow-[0_15px_60px_rgba(228,119,160,0.10)]">
+    <div className="flex min-h-screen items-center justify-center bg-[#FFF8FA] dark:bg-[#15141B] px-4 py-10">
+      <div className="w-full max-w-2xl overflow-hidden rounded-3xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] shadow-[0_15px_60px_rgba(228,119,160,0.10)] dark:shadow-[0_15px_60px_rgba(0,0,0,0.35)]">
 
         {/* Header */}
         <div className="relative overflow-hidden bg-gradient-to-br from-[#E477A0] to-[#D85D8D] px-6 py-10 text-center text-white">
@@ -164,17 +164,17 @@ export default async function PaymentSuccessPage({
         <div className="space-y-6 p-6 sm:p-8">
 
           {/* Premium activated */}
-          <div className="rounded-2xl border border-[#F4D5E1] bg-[#FFF5F8] p-5">
+          <div className="rounded-2xl border border-[#F4D5E1] dark:border-white/10 bg-[#FFF5F8] dark:bg-white/5 p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FCE1EB] text-[#D85D8D]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FCE1EB] dark:bg-white/10 text-[#D85D8D] dark:text-[#E88BAA]">
                 <Sparkles size={23} />
               </div>
 
               <div>
-                <h2 className="font-bold text-[#49333F]">
+                <h2 className="font-bold text-[#49333F] dark:text-gray-100">
                   Premium Activated
                 </h2>
-                <p className="text-xs text-[#987B88]">
+                <p className="text-xs text-[#987B88] dark:text-gray-400">
                   Your account has been upgraded successfully.
                 </p>
               </div>
@@ -184,14 +184,14 @@ export default async function PaymentSuccessPage({
               </div>
             </div>
 
-            <div className="mt-5 flex items-center gap-3 rounded-xl bg-white p-4">
+            <div className="mt-5 flex items-center gap-3 rounded-xl bg-white dark:bg-[#25232B] p-4">
               <Infinity size={30} className="text-[#E477A0]" />
 
               <div>
-                <p className="font-semibold text-[#49333F]">
+                <p className="font-semibold text-[#49333F] dark:text-gray-100">
                   Unlimited Services
                 </p>
-                <p className="text-xs text-[#987B88]">
+                <p className="text-xs text-[#987B88] dark:text-gray-400">
                   Create as many services as you need.
                 </p>
               </div>
@@ -200,31 +200,31 @@ export default async function PaymentSuccessPage({
 
           {/* Payment Details */}
           <div>
-            <h2 className="mb-4 flex items-center gap-2 font-bold text-[#49333F]">
+            <h2 className="mb-4 flex items-center gap-2 font-bold text-[#49333F] dark:text-gray-100">
               <Receipt size={19} className="text-[#E477A0]" />
               Payment Details
             </h2>
 
-            <div className="space-y-4 rounded-2xl border border-[#F0E2E7] p-5">
+            <div className="space-y-4 rounded-2xl border border-[#F0E2E7] dark:border-white/10 p-5">
 
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <Mail size={18} className="text-[#E477A0]" />
-                  <span className="text-sm text-[#987B88]">
+                  <span className="text-sm text-[#987B88] dark:text-gray-400">
                     Payment Email
                   </span>
                 </div>
-                <span className="break-all text-right text-sm font-semibold text-[#49333F]">
+                <span className="break-all text-right text-sm font-semibold text-[#49333F] dark:text-gray-100">
                   {email}
                 </span>
               </div>
 
-              <div className="h-px bg-[#F5E9EE]" />
+              <div className="h-px bg-[#F5E9EE] dark:bg-white/10" />
 
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <CreditCard size={18} className="text-[#E477A0]" />
-                  <span className="text-sm text-[#987B88]">
+                  <span className="text-sm text-[#987B88] dark:text-gray-400">
                     Amount Paid
                   </span>
                 </div>
@@ -233,30 +233,30 @@ export default async function PaymentSuccessPage({
                 </span>
               </div>
 
-              <div className="h-px bg-[#F5E9EE]" />
+              <div className="h-px bg-[#F5E9EE] dark:bg-white/10" />
 
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <CalendarDays size={18} className="text-[#E477A0]" />
-                  <span className="text-sm text-[#987B88]">
+                  <span className="text-sm text-[#987B88] dark:text-gray-400">
                     Payment Date
                   </span>
                 </div>
-                <span className="text-right text-sm font-medium text-[#49333F]">
+                <span className="text-right text-sm font-medium text-[#49333F] dark:text-gray-100">
                   {paymentDate}
                 </span>
               </div>
 
-              <div className="h-px bg-[#F5E9EE]" />
+              <div className="h-px bg-[#F5E9EE] dark:bg-white/10" />
 
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <Receipt size={18} className="text-[#E477A0]" />
-                  <span className="text-sm text-[#987B88]">
+                  <span className="text-sm text-[#987B88] dark:text-gray-400">
                     Transaction ID
                   </span>
                 </div>
-                <span className="max-w-[190px] break-all text-right text-xs font-medium text-[#49333F]">
+                <span className="max-w-[190px] break-all text-right text-xs font-medium text-[#49333F] dark:text-gray-100">
                   {session.id}
                 </span>
               </div>
@@ -273,7 +273,7 @@ export default async function PaymentSuccessPage({
             <ArrowRight size={18} />
           </Link>
 
-          <p className="text-center text-xs text-[#987B88]">
+          <p className="text-center text-xs text-[#987B88] dark:text-gray-400">
             Thank you for choosing WedPlan. Enjoy your Premium experience!
           </p>
         </div>

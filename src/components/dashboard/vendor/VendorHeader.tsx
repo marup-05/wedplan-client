@@ -31,10 +31,10 @@ export function VendorHeader() {
   const page = pageTitles[pathname] || pageTitles["/dashboard/vendor"];
 
   return (
-    <header className="flex min-h-[76px] items-center border-b border-[#F0E2E7] bg-white px-5 md:px-8">
+    <header className="flex min-h-[76px] items-center border-b border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#15141B] px-5 md:px-8">
       <div>
-        <h1 className="text-lg font-bold text-[#49333F]">{page.title}</h1>
-        <p className="mt-1 text-xs text-[#987B88]">{page.description}</p>
+        <h1 className="text-lg font-bold text-[#49333F] dark:text-gray-100">{page.title}</h1>
+        <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">{page.description}</p>
       </div>
     </header>
   );

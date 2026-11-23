@@ -1,4 +1,5 @@
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   Heart,
@@ -23,17 +24,20 @@ const categories = [
 
 export function Footer() {
   return (
-    <footer className="bg-[#49333F] px-5 py-9 text-white md:px-8">
+    <footer className="bg-[#49333F] dark:bg-[#15141B] px-5 py-9 text-white md:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-8 border-b border-white/15 pb-7 sm:grid-cols-2 lg:grid-cols-4">
 
           {/* Brand */}
           <div>
-            <Link
-              href="/"
-              className="font-logo text-2xl font-bold text-[#F3B2C8]"
-            >
-              WedPlan
+            <Link href="/" aria-label="WedPlan home">
+              <Image
+                src="/images/wedplan-logo-transparent.png"
+                alt="WedPlan"
+                width={1346}
+                height={807}
+                className="h-10 w-auto dark:brightness-[3]"
+              />
             </Link>
 
             <p className="mt-3 max-w-xs text-xs leading-6 text-white/65">

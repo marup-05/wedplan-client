@@ -233,19 +233,21 @@ export default function ManageServicesPage() {
   };
 
   const statusStyle = (value: string) => {
-    if (value === "Approved") return "bg-green-50 text-green-700";
-    if (value === "Rejected") return "bg-red-50 text-red-600";
-    return "bg-amber-50 text-amber-700";
+    if (value === "Approved")
+      return "bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-300";
+    if (value === "Rejected")
+      return "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400";
+    return "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300";
   };
 
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-[#49333F]">
+          <h2 className="text-lg font-bold text-[#49333F] dark:text-gray-100">
             Manage Services
           </h2>
-          <p className="mt-1 text-xs text-[#987B88]">
+          <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
             Review submitted services and manage their publishing status.
           </p>
         </div>
@@ -254,7 +256,7 @@ export default function ManageServicesPage() {
           type="button"
           onClick={() => fetchServices(true)}
           disabled={loading || refreshing}
-          className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] bg-white px-3 py-2 text-xs font-semibold text-[#765D68] hover:bg-[#FFF5F8] disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-3 py-2 text-xs font-semibold text-[#765D68] dark:text-gray-300 hover:bg-[#FFF5F8] dark:hover:bg-white/10 disabled:opacity-50"
         >
           <RefreshCw
             size={14}
@@ -264,24 +266,24 @@ export default function ManageServicesPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 rounded-xl border border-[#F0E2E7] bg-white p-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-3 sm:grid-cols-3">
         <div className="relative sm:col-span-1">
           <Search
             size={15}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B49AA5]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B49AA5] dark:text-gray-500"
           />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search services..."
-            className="h-10 w-full rounded-lg border border-[#F0E2E7] bg-[#FFFCFD] pl-9 pr-3 text-xs text-[#49333F] outline-none focus:border-[#E477A0]"
+            className="h-10 w-full rounded-lg border border-[#F0E2E7] dark:border-white/10 bg-[#FFFCFD] dark:bg-[#25232B] pl-9 pr-3 text-xs text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E477A0]"
           />
         </div>
 
         <select
           value={status}
           onChange={(event) => setStatus(event.target.value)}
-          className="h-10 rounded-lg border border-[#F0E2E7] bg-[#FFFCFD] px-3 text-xs text-[#765D68] outline-none focus:border-[#E477A0]"
+          className="h-10 rounded-lg border border-[#F0E2E7] dark:border-white/10 bg-[#FFFCFD] dark:bg-[#25232B] px-3 text-xs text-[#765D68] dark:text-gray-300 outline-none focus:border-[#E477A0]"
         >
           <option value="All">All Status</option>
           <option value="Pending">Pending</option>
@@ -292,7 +294,7 @@ export default function ManageServicesPage() {
         <select
           value={category}
           onChange={(event) => setCategory(event.target.value)}
-          className="h-10 rounded-lg border border-[#F0E2E7] bg-[#FFFCFD] px-3 text-xs text-[#765D68] outline-none focus:border-[#E477A0]"
+          className="h-10 rounded-lg border border-[#F0E2E7] dark:border-white/10 bg-[#FFFCFD] dark:bg-[#25232B] px-3 text-xs text-[#765D68] dark:text-gray-300 outline-none focus:border-[#E477A0]"
         >
           <option value="All">All Categories</option>
           {categories.map((item) => (
@@ -306,26 +308,26 @@ export default function ManageServicesPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BriefcaseBusiness size={16} className="text-[#D96F96]" />
-          <h3 className="text-sm font-bold text-[#49333F]">
+          <h3 className="text-sm font-bold text-[#49333F] dark:text-gray-100">
             Submitted Services
           </h3>
         </div>
-        <span className="text-[11px] text-[#987B88]">
+        <span className="text-[11px] text-[#987B88] dark:text-gray-400">
           {services.length} services
         </span>
       </div>
 
       {loading ? (
-        <div className="rounded-xl border border-[#F0E2E7] bg-white py-14 text-center text-xs text-[#987B88]">
+        <div className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] py-14 text-center text-xs text-[#987B88] dark:text-gray-400">
           Loading services...
         </div>
       ) : services.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#EEDFE5] bg-white px-5 py-14 text-center">
-          <BriefcaseBusiness size={25} className="mx-auto text-[#D9B8C6]" />
-          <p className="mt-3 text-sm font-semibold text-[#49333F]">
+        <div className="rounded-xl border border-dashed border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-5 py-14 text-center">
+          <BriefcaseBusiness size={25} className="mx-auto text-[#D9B8C6] dark:text-gray-600" />
+          <p className="mt-3 text-sm font-semibold text-[#49333F] dark:text-gray-100">
             No services found
           </p>
-          <p className="mt-1 text-xs text-[#987B88]">
+          <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
             Try changing your search or filters.
           </p>
         </div>
@@ -334,9 +336,9 @@ export default function ManageServicesPage() {
           {services.map((service) => (
             <article
               key={service._id}
-              className="flex min-w-0 flex-col gap-3 rounded-xl border border-[#F0E2E7] bg-white p-3 shadow-sm transition hover:shadow-md sm:flex-row sm:items-center sm:gap-4"
+              className="flex min-w-0 flex-col gap-3 rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-3 shadow-sm transition hover:shadow-md sm:flex-row sm:items-center sm:gap-4"
             >
-              <div className="relative h-36 w-full shrink-0 overflow-hidden rounded-lg bg-[#FFF5F8] sm:h-[92px] sm:w-[110px]">
+              <div className="relative h-36 w-full shrink-0 overflow-hidden rounded-lg bg-[#FFF5F8] dark:bg-white/5 sm:h-[92px] sm:w-[110px]">
                 {service.images?.[0] ? (
                   <Image
                     src={service.images[0]}
@@ -346,7 +348,7 @@ export default function ManageServicesPage() {
                     className="object-cover"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-xs text-[#B49AA5]">
+                  <div className="flex h-full items-center justify-center text-xs text-[#B49AA5] dark:text-gray-500">
                     No image
                   </div>
                 )}
@@ -354,7 +356,7 @@ export default function ManageServicesPage() {
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="truncate text-sm font-bold text-[#49333F]">
+                  <h3 className="truncate text-sm font-bold text-[#49333F] dark:text-gray-100">
                     {service.serviceName}
                   </h3>
 
@@ -367,8 +369,8 @@ export default function ManageServicesPage() {
                   <span
                     className={`rounded-full px-2.5 py-1 text-[9px] font-semibold ${
                       service.isActive
-                        ? "bg-green-50 text-green-700"
-                        : "bg-gray-100 text-gray-500"
+                        ? "bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-300"
+                        : "bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400"
                     }`}
                   >
                     {service.isActive ? "Active" : "Inactive"}
@@ -379,11 +381,11 @@ export default function ManageServicesPage() {
                   {service.category}
                 </p>
 
-                <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-[#987B88]">
+                <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-[#987B88] dark:text-gray-400">
                   {service.description}
                 </p>
 
-                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-[#987B88]">
+                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-[#987B88] dark:text-gray-400">
                   <span className="flex items-center gap-1">
                     <MapPin size={11} />
                     {service.location}
@@ -406,7 +408,7 @@ export default function ManageServicesPage() {
                 </div>
 
                 {service.vendor?.email && (
-                  <p className="mt-1 truncate text-[10px] text-[#B49AA5]">
+                  <p className="mt-1 truncate text-[10px] text-[#B49AA5] dark:text-gray-500">
                     {service.vendor.email}
                   </p>
                 )}
@@ -434,7 +436,7 @@ export default function ManageServicesPage() {
                       void updateServiceStatus(service, "Rejected")
                     }
                     disabled={!!processing}
-                    className="flex items-center justify-center gap-1 rounded-lg bg-red-50 px-3 py-2 text-[10px] font-semibold text-red-600 hover:bg-red-100 disabled:opacity-50"
+                    className="flex items-center justify-center gap-1 rounded-lg bg-red-50 px-3 py-2 text-[10px] font-semibold text-red-600 hover:bg-red-100 disabled:opacity-50 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20"
                   >
                     <X size={13} />
                     Reject
@@ -448,7 +450,7 @@ export default function ManageServicesPage() {
                     setDeleteDialogOpen(true);
                   }}
                   disabled={!!processing}
-                  className="flex items-center justify-center gap-1 rounded-lg border border-[#F0E2E7] px-3 py-2 text-[10px] font-semibold text-[#987B88] hover:bg-[#FFF5F8] hover:text-red-600 disabled:opacity-50"
+                  className="flex items-center justify-center gap-1 rounded-lg border border-[#F0E2E7] dark:border-white/10 px-3 py-2 text-[10px] font-semibold text-[#987B88] dark:text-gray-400 hover:bg-[#FFF5F8] dark:hover:bg-white/10 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-50"
                 >
                   <Trash2 size={13} />
                   Delete
@@ -465,13 +467,13 @@ export default function ManageServicesPage() {
       >
         <AlertDialogContent className="rounded-xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#49333F]">
+            <AlertDialogTitle className="text-[#49333F] dark:text-gray-100">
               Delete Service?
             </AlertDialogTitle>
 
-            <AlertDialogDescription className="text-[#987B88]">
+            <AlertDialogDescription className="text-[#987B88] dark:text-gray-400">
               Are you sure you want to delete{" "}
-              <span className="font-semibold text-[#49333F]">
+              <span className="font-semibold text-[#49333F] dark:text-gray-100">
                 {selectedService?.serviceName}
               </span>
               ? This action cannot be undone.

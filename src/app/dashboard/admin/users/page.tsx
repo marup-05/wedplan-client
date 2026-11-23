@@ -216,8 +216,8 @@ export default function ManageUsersPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-[#49333F]">Manage Users</h2>
-          <p className="mt-1 text-xs text-[#987B88]">
+          <h2 className="text-lg font-bold text-[#49333F] dark:text-gray-100">Manage Users</h2>
+          <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
             View, search and manage registered platform users.
           </p>
         </div>
@@ -226,7 +226,7 @@ export default function ManageUsersPage() {
           type="button"
           onClick={() => fetchUsers(true)}
           disabled={loading || refreshing}
-          className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] bg-white px-3 py-2 text-xs font-semibold text-[#765D68] hover:bg-[#FFF5F8] disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg border border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-3 py-2 text-xs font-semibold text-[#765D68] dark:text-gray-300 hover:bg-[#FFF5F8] dark:hover:bg-white/10 disabled:opacity-50"
         >
           <RefreshCw
             size={14}
@@ -236,11 +236,11 @@ export default function ManageUsersPage() {
         </button>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-xl border border-[#F0E2E7] bg-white p-3 sm:flex-row">
+      <div className="flex flex-col gap-3 rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-3 sm:flex-row">
         <div className="relative flex-1">
           <Search
             size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B49AA5]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B49AA5] dark:text-gray-500"
           />
           <input
             value={search}
@@ -249,7 +249,7 @@ export default function ManageUsersPage() {
               setLoading(true);
             }}
             placeholder="Search by name or email..."
-            className="h-10 w-full rounded-lg border border-[#F0E2E7] bg-[#FFFCFD] pl-9 pr-3 text-xs text-[#49333F] outline-none focus:border-[#E477A0]"
+            className="h-10 w-full rounded-lg border border-[#F0E2E7] dark:border-white/10 bg-[#FFFCFD] dark:bg-[#25232B] pl-9 pr-3 text-xs text-[#49333F] dark:text-gray-100 outline-none dark:placeholder:text-gray-500 focus:border-[#E477A0]"
           />
         </div>
 
@@ -259,7 +259,7 @@ export default function ManageUsersPage() {
             setRole(event.target.value);
             setLoading(true);
           }}
-          className="h-10 rounded-lg border border-[#F0E2E7] bg-[#FFFCFD] px-3 text-xs text-[#765D68] outline-none focus:border-[#E477A0] sm:w-44"
+          className="h-10 rounded-lg border border-[#F0E2E7] dark:border-white/10 bg-[#FFFCFD] dark:bg-[#25232B] px-3 text-xs text-[#765D68] dark:text-gray-300 outline-none focus:border-[#E477A0] sm:w-44"
         >
           <option value="All">All Roles</option>
           <option value="admin">Admin</option>
@@ -268,20 +268,20 @@ export default function ManageUsersPage() {
         </select>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-[#F0E2E7] bg-white">
-        <div className="flex items-center justify-between border-b border-[#F0E2E7] px-4 py-3">
+      <div className="overflow-hidden rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24]">
+        <div className="flex items-center justify-between border-b border-[#F0E2E7] dark:border-white/10 px-4 py-3">
           <div className="flex items-center gap-2">
             <Users size={16} className="text-[#D96F96]" />
-            <h3 className="text-sm font-bold text-[#49333F]">All Users</h3>
+            <h3 className="text-sm font-bold text-[#49333F] dark:text-gray-100">All Users</h3>
           </div>
-          <span className="text-[11px] text-[#987B88]">
+          <span className="text-[11px] text-[#987B88] dark:text-gray-400">
             {users.length} users
           </span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left">
-            <thead className="bg-[#FFF9F6] text-[10px] uppercase tracking-wide text-[#987B88]">
+            <thead className="bg-[#FFF9F6] dark:bg-white/5 text-[10px] uppercase tracking-wide text-[#987B88] dark:text-gray-400">
               <tr>
                 <th className="px-4 py-3">User</th>
                 <th className="px-4 py-3">Role</th>
@@ -291,12 +291,12 @@ export default function ManageUsersPage() {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-[#F5EAF0]">
+            <tbody className="divide-y divide-[#F5EAF0] dark:divide-white/10">
               {loading ? (
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-4 py-12 text-center text-xs text-[#987B88]"
+                    className="px-4 py-12 text-center text-xs text-[#987B88] dark:text-gray-400"
                   >
                     Loading users...
                   </td>
@@ -305,17 +305,17 @@ export default function ManageUsersPage() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-4 py-12 text-center text-xs text-[#987B88]"
+                    className="px-4 py-12 text-center text-xs text-[#987B88] dark:text-gray-400"
                   >
                     No users found.
                   </td>
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user._id} className="text-xs hover:bg-[#FFFCFD]">
+                  <tr key={user._id} className="text-xs hover:bg-[#FFFCFD] dark:hover:bg-white/5">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full bg-[#FCECF2]">
+                        <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full bg-[#FCECF2] dark:bg-white/10">
                           {user.image ? (
                             <Image
                               src={user.image}
@@ -332,10 +332,10 @@ export default function ManageUsersPage() {
                         </div>
 
                         <div className="min-w-0">
-                          <p className="max-w-[190px] truncate font-semibold text-[#49333F]">
+                          <p className="max-w-[190px] truncate font-semibold text-[#49333F] dark:text-gray-100">
                             {user.name}
                           </p>
-                          <p className="max-w-[190px] truncate text-[10px] text-[#987B88]">
+                          <p className="max-w-[190px] truncate text-[10px] text-[#987B88] dark:text-gray-400">
                             {user.email}
                           </p>
                         </div>
@@ -343,7 +343,7 @@ export default function ManageUsersPage() {
                     </td>
 
                     <td className="px-4 py-3">
-                      <span className="rounded-full bg-[#FCECF2] px-2.5 py-1 text-[10px] font-semibold capitalize text-[#D96F96]">
+                      <span className="rounded-full bg-[#FCECF2] dark:bg-white/10 px-2.5 py-1 text-[10px] font-semibold capitalize text-[#D96F96]">
                         {user.role}
                       </span>
                     </td>
@@ -352,15 +352,15 @@ export default function ManageUsersPage() {
                       <span
                         className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${
                           user.isBlocked
-                            ? "bg-red-50 text-red-600"
-                            : "bg-green-50 text-green-700"
+                            ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400"
+                            : "bg-green-50 dark:bg-emerald-500/15 text-green-700 dark:text-emerald-300"
                         }`}
                       >
                         {user.isBlocked ? "Blocked" : "Active"}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 text-[#987B88]">
+                    <td className="px-4 py-3 text-[#987B88] dark:text-gray-400">
                       {user.createdAt
                         ? new Date(user.createdAt).toLocaleDateString()
                         : "—"}
@@ -371,7 +371,7 @@ export default function ManageUsersPage() {
                         <button
                           type="button"
                           onClick={() => void viewDetails(user)}
-                          className="rounded-lg border border-[#EEDFE5] p-2 text-[#987B88] hover:bg-[#FFF5F8] hover:text-[#D96F96]"
+                          className="rounded-lg border border-[#EEDFE5] dark:border-white/10 p-2 text-[#987B88] dark:text-gray-400 hover:bg-[#FFF5F8] dark:hover:bg-white/10 hover:text-[#D96F96]"
                           title="View details"
                         >
                           <Eye size={14} />
@@ -386,8 +386,8 @@ export default function ManageUsersPage() {
                           disabled={processing === user._id}
                           className={`flex items-center gap-1 rounded-lg px-2.5 py-2 text-[10px] font-semibold disabled:opacity-50 ${
                             user.isBlocked
-                              ? "bg-green-50 text-green-700 hover:bg-green-100"
-                              : "bg-red-50 text-red-600 hover:bg-red-100"
+                              ? "bg-green-50 dark:bg-emerald-500/15 text-green-700 dark:text-emerald-300 hover:bg-green-100 dark:hover:bg-emerald-500/25"
+                              : "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20"
                           }`}
                         >
                           {user.isBlocked ? (
@@ -413,29 +413,29 @@ export default function ManageUsersPage() {
           onClick={() => setDetailUser(null)}
         >
           <div
-            className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl"
+            className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1D1C24] p-5 shadow-xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-5 flex items-center justify-between">
-              <h3 className="text-base font-bold text-[#49333F]">
+              <h3 className="text-base font-bold text-[#49333F] dark:text-gray-100">
                 User Details
               </h3>
               <button
                 onClick={() => setDetailUser(null)}
-                className="rounded-lg p-1 text-[#987B88] hover:bg-[#FFF5F8]"
+                className="rounded-lg p-1 text-[#987B88] dark:text-gray-400 hover:bg-[#FFF5F8] dark:hover:bg-white/10"
               >
                 <X size={18} />
               </button>
             </div>
 
             {detailsLoading ? (
-              <p className="py-8 text-center text-xs text-[#987B88]">
+              <p className="py-8 text-center text-xs text-[#987B88] dark:text-gray-400">
                 Loading details...
               </p>
             ) : (
               <div className="space-y-3 text-xs">
-                <div className="flex items-center gap-3 border-b border-[#F5EAF0] pb-4">
-                  <div className="relative h-12 w-12 overflow-hidden rounded-full bg-[#FCECF2]">
+                <div className="flex items-center gap-3 border-b border-[#F5EAF0] dark:border-white/10 pb-4">
+                  <div className="relative h-12 w-12 overflow-hidden rounded-full bg-[#FCECF2] dark:bg-white/10">
                     {detailUser.image ? (
                       <Image
                         src={detailUser.image}
@@ -452,32 +452,32 @@ export default function ManageUsersPage() {
                   </div>
 
                   <div>
-                    <p className="font-bold text-[#49333F]">
+                    <p className="font-bold text-[#49333F] dark:text-gray-100">
                       {detailUser.name}
                     </p>
-                    <p className="mt-1 text-[#987B88]">
+                    <p className="mt-1 text-[#987B88] dark:text-gray-400">
                       {detailUser.email}
                     </p>
                   </div>
                 </div>
 
                 <p className="flex justify-between gap-3">
-                  <span className="text-[#987B88]">Role</span>
-                  <span className="font-semibold capitalize text-[#49333F]">
+                  <span className="text-[#987B88] dark:text-gray-400">Role</span>
+                  <span className="font-semibold capitalize text-[#49333F] dark:text-gray-100">
                     {detailUser.role}
                   </span>
                 </p>
 
                 <p className="flex justify-between gap-3">
-                  <span className="text-[#987B88]">Status</span>
-                  <span className="font-semibold text-[#49333F]">
+                  <span className="text-[#987B88] dark:text-gray-400">Status</span>
+                  <span className="font-semibold text-[#49333F] dark:text-gray-100">
                     {detailUser.isBlocked ? "Blocked" : "Active"}
                   </span>
                 </p>
 
                 <p className="flex justify-between gap-3">
-                  <span className="text-[#987B88]">Joined</span>
-                  <span className="font-semibold text-[#49333F]">
+                  <span className="text-[#987B88] dark:text-gray-400">Joined</span>
+                  <span className="font-semibold text-[#49333F] dark:text-gray-100">
                     {detailUser.createdAt
                       ? new Date(detailUser.createdAt).toLocaleString()
                       : "—"}
@@ -492,11 +492,11 @@ export default function ManageUsersPage() {
       <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <AlertDialogContent className="rounded-xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#49333F]">
+            <AlertDialogTitle className="text-[#49333F] dark:text-gray-100">
               {selectedUser?.isBlocked ? "Unblock User?" : "Block User?"}
             </AlertDialogTitle>
 
-            <AlertDialogDescription className="text-[#987B88]">
+            <AlertDialogDescription className="text-[#987B88] dark:text-gray-400">
               {selectedUser?.isBlocked
                 ? `Allow ${selectedUser?.name} to access the platform again?`
                 : `Block ${selectedUser?.name}? This user should no longer access protected platform features.`}

@@ -54,16 +54,17 @@ function formatDate(value?: string) {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    Pending: "bg-amber-50 text-amber-700",
-    Accepted: "bg-green-50 text-green-700",
-    Rejected: "bg-red-50 text-red-600",
-    Cancelled: "bg-gray-100 text-gray-600",
+    Pending: "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
+    Accepted:
+      "bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-300",
+    Rejected: "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400",
+    Cancelled: "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300",
   };
 
   return (
     <span
       className={`inline-flex rounded-full px-3 py-1.5 text-xs font-semibold ${
-        styles[status] || "bg-gray-100 text-gray-600"
+        styles[status] || "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300"
       }`}
     >
       {status}
@@ -170,8 +171,8 @@ export default function CustomerBookingDetailsPage() {
 
   if (error || !booking) {
     return (
-      <div className="rounded-xl border border-[#F0E2E7] bg-white p-8 text-center">
-        <p className="text-sm text-red-500">
+      <div className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-8 text-center">
+        <p className="text-sm text-red-500 dark:text-red-400">
           {error || "Booking not found"}
         </p>
         <Link
@@ -190,19 +191,19 @@ export default function CustomerBookingDetailsPage() {
     <div className="mx-auto max-w-4xl space-y-5">
       <Link
         href="/dashboard/customer/bookings"
-        className="inline-flex items-center gap-2 text-xs font-semibold text-[#987B88] hover:text-[#D96F96]"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-[#987B88] dark:text-gray-400 hover:text-[#D96F96]"
       >
         <ArrowLeft size={16} />
         Back to My Bookings
       </Link>
 
-      <div className="rounded-xl border border-[#F0E2E7] bg-white p-5 md:p-6">
+      <div className="rounded-xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-medium text-[#D96F96]">
               Booking Information
             </p>
-            <h2 className="mt-1 text-xl font-bold text-[#49333F]">
+            <h2 className="mt-1 text-xl font-bold text-[#49333F] dark:text-gray-100">
               Booking Details
             </h2>
           </div>
@@ -211,7 +212,7 @@ export default function CustomerBookingDetailsPage() {
         </div>
 
         <div className="mt-5 grid gap-5 sm:grid-cols-[200px_1fr]">
-          <div className="h-40 overflow-hidden rounded-xl bg-[#FFF5F8] sm:h-40">
+          <div className="h-40 overflow-hidden rounded-xl bg-[#FFF5F8] dark:bg-white/5 sm:h-40">
             {image ? (
               <Image
                 src={image}
@@ -221,54 +222,54 @@ export default function CustomerBookingDetailsPage() {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <div className="flex h-full items-center justify-center text-xs text-[#B49AA5]">
+              <div className="flex h-full items-center justify-center text-xs text-[#B49AA5] dark:text-gray-500">
                 No Image
               </div>
             )}
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-[#49333F]">
+            <h3 className="text-lg font-bold text-[#49333F] dark:text-gray-100">
               {booking.service?.serviceName || "Service"}
             </h3>
 
             {booking.service?.category && (
-              <p className="mt-1 text-xs text-[#987B88]">
+              <p className="mt-1 text-xs text-[#987B88] dark:text-gray-400">
                 {booking.service.category}
               </p>
             )}
 
-            <p className="mt-3 text-sm leading-6 text-[#765D68]">
+            <p className="mt-3 text-sm leading-6 text-[#765D68] dark:text-gray-300">
               {booking.service?.description || "No service description available."}
             </p>
           </div>
         </div>
 
-        <div className="mt-6 border-t border-[#F0E2E7] pt-5">
-          <h3 className="text-sm font-bold text-[#49333F]">
+        <div className="mt-6 border-t border-[#F0E2E7] dark:border-white/10 pt-5">
+          <h3 className="text-sm font-bold text-[#49333F] dark:text-gray-100">
             Event Information
           </h3>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div className="flex items-start gap-3">
-              <div className="rounded-lg bg-[#FCECF2] p-2 text-[#D96F96]">
+              <div className="rounded-lg bg-[#FCECF2] dark:bg-white/10 p-2 text-[#D96F96]">
                 <CalendarDays size={17} />
               </div>
               <div>
-                <p className="text-xs text-[#987B88]">Event Date</p>
-                <p className="mt-1 text-sm font-semibold text-[#49333F]">
+                <p className="text-xs text-[#987B88] dark:text-gray-400">Event Date</p>
+                <p className="mt-1 text-sm font-semibold text-[#49333F] dark:text-gray-100">
                   {formatDate(booking.eventDate)}
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="rounded-lg bg-[#FCECF2] p-2 text-[#D96F96]">
+              <div className="rounded-lg bg-[#FCECF2] dark:bg-white/10 p-2 text-[#D96F96]">
                 <MapPin size={17} />
               </div>
               <div>
-                <p className="text-xs text-[#987B88]">Event Location</p>
-                <p className="mt-1 text-sm font-semibold text-[#49333F]">
+                <p className="text-xs text-[#987B88] dark:text-gray-400">Event Location</p>
+                <p className="mt-1 text-sm font-semibold text-[#49333F] dark:text-gray-100">
                   {booking.eventLocation || "Not available"}
                 </p>
               </div>
@@ -276,19 +277,19 @@ export default function CustomerBookingDetailsPage() {
           </div>
 
           {booking.message && (
-            <div className="mt-5 rounded-lg bg-[#FFF9F6] p-4">
-              <p className="text-xs font-semibold text-[#49333F]">
+            <div className="mt-5 rounded-lg bg-[#FFF9F6] dark:bg-white/5 p-4">
+              <p className="text-xs font-semibold text-[#49333F] dark:text-gray-100">
                 Your Message
               </p>
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[#765D68]">
+              <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[#765D68] dark:text-gray-300">
                 {booking.message}
               </p>
             </div>
           )}
         </div>
 
-        <div className="mt-6 border-t border-[#F0E2E7] pt-5">
-          <h3 className="text-sm font-bold text-[#49333F]">
+        <div className="mt-6 border-t border-[#F0E2E7] dark:border-white/10 pt-5">
+          <h3 className="text-sm font-bold text-[#49333F] dark:text-gray-100">
             Vendor Information
           </h3>
 
@@ -302,20 +303,20 @@ export default function CustomerBookingDetailsPage() {
                 className="h-11 w-11 rounded-full object-cover"
               />
             ) : (
-              <div className="rounded-full bg-[#FCECF2] p-3 text-[#D96F96]">
+              <div className="rounded-full bg-[#FCECF2] dark:bg-white/10 p-3 text-[#D96F96]">
                 <Store size={19} />
               </div>
             )}
 
             <div>
-              <p className="text-sm font-semibold text-[#49333F]">
+              <p className="text-sm font-semibold text-[#49333F] dark:text-gray-100">
                 {booking.vendor?.businessName ||
                   booking.vendor?.name ||
                   "Vendor"}
               </p>
 
               {booking.vendor?.email && (
-                <p className="mt-1 flex items-center gap-1.5 text-xs text-[#987B88]">
+                <p className="mt-1 flex items-center gap-1.5 text-xs text-[#987B88] dark:text-gray-400">
                   <Mail size={12} />
                   {booking.vendor.email}
                 </p>
@@ -324,17 +325,17 @@ export default function CustomerBookingDetailsPage() {
           </div>
         </div>
 
-        <div className="mt-6 border-t border-[#F0E2E7] pt-5">
+        <div className="mt-6 border-t border-[#F0E2E7] dark:border-white/10 pt-5">
           <div className="flex flex-wrap justify-between gap-3 text-xs">
             <div>
-              <p className="text-[#987B88]">Booking Request Date</p>
-              <p className="mt-1 font-semibold text-[#49333F]">
+              <p className="text-[#987B88] dark:text-gray-400">Booking Request Date</p>
+              <p className="mt-1 font-semibold text-[#49333F] dark:text-gray-100">
                 {formatDate(booking.createdAt)}
               </p>
             </div>
 
             <div>
-              <p className="text-[#987B88]">Booking Status</p>
+              <p className="text-[#987B88] dark:text-gray-400">Booking Status</p>
               <div className="mt-1">
                 <StatusBadge status={booking.status} />
               </div>
@@ -343,11 +344,11 @@ export default function CustomerBookingDetailsPage() {
         </div>
 
         {booking.status === "Pending" && (
-          <div className="mt-6 flex justify-end border-t border-[#F0E2E7] pt-5">
+          <div className="mt-6 flex justify-end border-t border-[#F0E2E7] dark:border-white/10 pt-5">
             <button
               onClick={handleCancel}
               disabled={cancelling}
-              className="rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
+              className="rounded-lg border border-red-200 px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
             >
               {cancelling ? "Cancelling..." : "Cancel Booking"}
             </button>

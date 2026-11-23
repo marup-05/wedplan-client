@@ -157,15 +157,18 @@ export default function VendorBookingsPage() {
   };
 
   const badge = (status: string) => {
-    if (status === "Accepted") return "bg-green-100 text-green-700";
-    if (status === "Rejected") return "bg-red-100 text-red-700";
-    if (status === "Cancelled") return "bg-gray-100 text-gray-600";
-    return "bg-amber-100 text-amber-700";
+    if (status === "Accepted")
+      return "bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300";
+    if (status === "Rejected")
+      return "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300";
+    if (status === "Cancelled")
+      return "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300";
+    return "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300";
   };
 
   if (isPending || loading) {
     return (
-      <p className="py-20 text-center text-sm text-[#987B88]">
+      <p className="py-20 text-center text-sm text-[#987B88] dark:text-gray-400">
         Loading booking requests...
       </p>
     );
@@ -175,34 +178,34 @@ export default function VendorBookingsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-[#49333F]">
+          <h2 className="text-xl font-bold text-[#49333F] dark:text-gray-100">
             Booking Requests
           </h2>
-          <p className="mt-1 text-sm text-[#987B88]">
+          <p className="mt-1 text-sm text-[#987B88] dark:text-gray-400">
             Review and manage customer booking requests.
           </p>
         </div>
 
         <button
           onClick={loadBookings}
-          className="flex items-center gap-2 rounded-xl border border-[#EEDFE5] bg-white px-4 py-2.5 text-sm text-[#765D68]"
+          className="flex items-center gap-2 rounded-xl border border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-4 py-2.5 text-sm text-[#765D68] dark:text-gray-300"
         >
           <RefreshCw size={16} /> Refresh
         </button>
       </div>
 
       {bookings.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#EEDFE5] bg-white px-5 py-16 text-center">
+        <div className="rounded-2xl border border-dashed border-[#EEDFE5] dark:border-white/10 bg-white dark:bg-[#1D1C24] px-5 py-16 text-center">
           <CalendarDays
             className="mx-auto text-[#D96F96]"
             size={34}
           />
 
-          <h3 className="mt-3 font-semibold text-[#49333F]">
+          <h3 className="mt-3 font-semibold text-[#49333F] dark:text-gray-100">
             No booking requests yet
           </h3>
 
-          <p className="mt-1 text-sm text-[#987B88]">
+          <p className="mt-1 text-sm text-[#987B88] dark:text-gray-400">
             New customer requests for your services will appear here.
           </p>
         </div>
@@ -211,9 +214,9 @@ export default function VendorBookingsPage() {
           {bookings.map((booking) => (
             <article
               key={booking._id}
-              className="overflow-hidden rounded-2xl border border-[#F0E2E7] bg-white"
+              className="overflow-hidden rounded-2xl border border-[#F0E2E7] dark:border-white/10 bg-white dark:bg-[#1D1C24]"
             >
-              <div className="flex items-center justify-between gap-3 border-b border-[#F0E2E7] p-4">
+              <div className="flex items-center justify-between gap-3 border-b border-[#F0E2E7] dark:border-white/10 p-4">
                 <div className="flex min-w-0 items-center gap-3">
                   {booking.customer?.image ? (
                     <Image
@@ -224,17 +227,17 @@ export default function VendorBookingsPage() {
                       className="h-10 w-10 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FCECF2] text-sm font-bold text-[#D96F96]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FCECF2] dark:bg-white/10 text-sm font-bold text-[#D96F96]">
                       {booking.customer?.name?.[0] || "C"}
                     </div>
                   )}
 
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-[#49333F]">
+                    <p className="truncate text-sm font-semibold text-[#49333F] dark:text-gray-100">
                       {booking.customer?.name || "Customer"}
                     </p>
 
-                    <p className="truncate text-xs text-[#987B88]">
+                    <p className="truncate text-xs text-[#987B88] dark:text-gray-400">
                       {booking.customer?.email}
                     </p>
                   </div>
@@ -260,11 +263,11 @@ export default function VendorBookingsPage() {
                   )}
 
                   <div>
-                    <p className="text-xs text-[#987B88]">
+                    <p className="text-xs text-[#987B88] dark:text-gray-400">
                       Requested Service
                     </p>
 
-                    <p className="mt-1 text-sm font-semibold text-[#49333F]">
+                    <p className="mt-1 text-sm font-semibold text-[#49333F] dark:text-gray-100">
                       {booking.service?.serviceName || "Service"}
                     </p>
 
@@ -276,20 +279,20 @@ export default function VendorBookingsPage() {
                   </div>
                 </div>
 
-                <p className="flex items-center gap-2 text-sm text-[#765D68]">
+                <p className="flex items-center gap-2 text-sm text-[#765D68] dark:text-gray-300">
                   <CalendarDays size={16} className="text-[#D96F96]" />
                   {booking.eventDate
                     ? new Date(booking.eventDate).toLocaleDateString()
                     : "Date not provided"}
                 </p>
 
-                <p className="flex items-center gap-2 text-sm text-[#765D68]">
+                <p className="flex items-center gap-2 text-sm text-[#765D68] dark:text-gray-300">
                   <MapPin size={16} className="text-[#D96F96]" />
                   {booking.eventLocation || "Location not provided"}
                 </p>
 
-                <p className="text-sm leading-6 text-[#765D68]">
-                  <span className="font-semibold text-[#49333F]">
+                <p className="text-sm leading-6 text-[#765D68] dark:text-gray-300">
+                  <span className="font-semibold text-[#49333F] dark:text-gray-100">
                     Message:{" "}
                   </span>
                   {booking.message || "No message"}
@@ -297,7 +300,7 @@ export default function VendorBookingsPage() {
               </div>
 
               {booking.status === "Pending" && (
-                <div className="flex gap-3 border-t border-[#F0E2E7] bg-[#FFFAFC] p-4">
+                <div className="flex gap-3 border-t border-[#F0E2E7] dark:border-white/10 bg-[#FFFAFC] dark:bg-white/5 p-4">
                   <button
                     disabled={processing === booking._id}
                     onClick={() =>
@@ -316,7 +319,7 @@ export default function VendorBookingsPage() {
                     onClick={() =>
                       updateStatus(booking._id, "Rejected")
                     }
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-200 bg-white px-3 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-200 dark:border-red-500/30 bg-white dark:bg-transparent px-3 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 disabled:opacity-50"
                   >
                     <X size={16} />
                     Reject

@@ -130,7 +130,7 @@ export default function ServiceDetailsPage() {
 
   if (sessionLoading || !session?.user || loading) {
     return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-[#FFF9F6]">
+      <main className="flex min-h-[70vh] items-center justify-center bg-[#FFF9F6] dark:bg-[#15141B]">
         <Loader2 className="animate-spin text-[#D96F96]" size={32} />
       </main>
     );
@@ -138,17 +138,17 @@ export default function ServiceDetailsPage() {
 
   if (!service) {
     return (
-      <main className="flex min-h-[75vh] items-center justify-center bg-[#FFF9F6] px-5">
+      <main className="flex min-h-[75vh] items-center justify-center bg-[#FFF9F6] dark:bg-[#15141B] px-5">
         <div className="max-w-md text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F5E8EC] text-[#D96F96]">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F5E8EC] dark:bg-white/10 text-[#D96F96]">
             <Heart size={30} />
           </div>
 
-          <h1 className="mt-6 font-logo text-3xl font-semibold text-[#49333F]">
+          <h1 className="mt-6 font-logo text-3xl font-semibold text-[#49333F] dark:text-gray-100">
             Service Not Found
           </h1>
 
-          <p className="mt-3 text-sm leading-7 text-[#987B88]">
+          <p className="mt-3 text-sm leading-7 text-[#987B88] dark:text-gray-400">
             This service may no longer be available.
           </p>
 
@@ -167,11 +167,11 @@ export default function ServiceDetailsPage() {
   const images = service.images?.filter(Boolean) || [];
 
   return (
-    <main className="min-h-screen bg-[#FFF9F6]">
+    <main className="min-h-screen bg-[#FFF9F6] dark:bg-[#15141B]">
       <div className="mx-auto max-w-7xl px-5 pt-7 md:px-8">
         <Link
           href="/services"
-          className="inline-flex items-center gap-2 text-sm font-medium text-[#987B88] hover:text-[#D96F96]"
+          className="inline-flex items-center gap-2 text-sm font-medium text-[#987B88] dark:text-gray-400 hover:text-[#D96F96]"
         >
           <ArrowLeft size={17} />
           Back to Services
@@ -215,55 +215,55 @@ export default function ServiceDetailsPage() {
                   </div>
                 </>
               ) : (
-                <div className="flex h-[180px] w-full items-center justify-center rounded-xl bg-[#F5E8EC] text-sm text-[#987B88]">
+                <div className="flex h-[180px] w-full items-center justify-center rounded-xl bg-[#F5E8EC] dark:bg-white/10 text-sm text-[#987B88] dark:text-gray-400">
                   No images available
                 </div>
               )}
             </div>
 
             <div className="mt-7">
-              <span className="inline-flex rounded-full bg-[#F5E8EC] px-4 py-2 text-xs font-semibold text-[#D96F96]">
+              <span className="inline-flex rounded-full bg-[#F5E8EC] dark:bg-white/10 px-4 py-2 text-xs font-semibold text-[#D96F96]">
                 {service.category}
               </span>
 
-              <h1 className="mt-4 font-logo text-3xl font-semibold leading-tight text-[#49333F] sm:text-4xl">
+              <h1 className="mt-4 font-logo text-3xl font-semibold leading-tight text-[#49333F] dark:text-gray-100 sm:text-4xl">
                 {service.serviceName}
               </h1>
 
-              <div className="mt-4 flex flex-wrap items-center gap-5 text-sm text-[#987B88]">
+              <div className="mt-4 flex flex-wrap items-center gap-5 text-sm text-[#987B88] dark:text-gray-400">
                 <span className="flex items-center gap-2">
                   <MapPin size={17} />
                   {service.location}
                 </span>
               </div>
 
-              <div className="mt-8 border-t border-[#F0E3E7] pt-7">
-                <h2 className="font-logo text-2xl font-semibold text-[#49333F]">
+              <div className="mt-8 border-t border-[#F0E3E7] dark:border-white/10 pt-7">
+                <h2 className="font-logo text-2xl font-semibold text-[#49333F] dark:text-gray-100">
                   About This Service
                 </h2>
 
-                <p className="mt-3 text-sm leading-8 text-[#806C77]">
+                <p className="mt-3 text-sm leading-8 text-[#806C77] dark:text-gray-300">
                   {service.description}
                 </p>
               </div>
 
-              <div className="mt-8 border-t border-[#F0E3E7] pt-7">
-                <h2 className="font-logo text-2xl font-semibold text-[#49333F]">
+              <div className="mt-8 border-t border-[#F0E3E7] dark:border-white/10 pt-7">
+                <h2 className="font-logo text-2xl font-semibold text-[#49333F] dark:text-gray-100">
                   Service Benefits
                 </h2>
 
                 <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                  <div className="flex items-center gap-3 text-sm text-[#66525E]">
+                  <div className="flex items-center gap-3 text-sm text-[#66525E] dark:text-gray-200">
                     <CheckCircle2 size={18} className="text-[#D96F96]" />
                     Professional wedding vendor
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm text-[#66525E]">
+                  <div className="flex items-center gap-3 text-sm text-[#66525E] dark:text-gray-200">
                     <CheckCircle2 size={18} className="text-[#D96F96]" />
                     Personalized service
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm text-[#66525E]">
+                  <div className="flex items-center gap-3 text-sm text-[#66525E] dark:text-gray-200">
                     <ShieldCheck size={18} className="text-[#D96F96]" />
                     Approved service
                   </div>
@@ -273,8 +273,8 @@ export default function ServiceDetailsPage() {
           </div>
 
           <aside className="lg:sticky lg:top-24">
-            <div className="rounded-2xl border border-[#F0E3E7] bg-white p-5 shadow-sm sm:p-6">
-              <p className="text-xs font-medium text-[#987B88]">
+            <div className="rounded-2xl border border-[#F0E3E7] dark:border-white/10 bg-white dark:bg-[#1D1C24] p-5 shadow-sm sm:p-6">
+              <p className="text-xs font-medium text-[#987B88] dark:text-gray-400">
                 Starting from
               </p>
 
@@ -282,24 +282,24 @@ export default function ServiceDetailsPage() {
                 ${Number(service.price).toLocaleString("en-US")}
               </p>
 
-              <div className="my-5 border-t border-[#F0E3E7]" />
+              <div className="my-5 border-t border-[#F0E3E7] dark:border-white/10" />
 
-              <h2 className="font-logo text-2xl font-semibold text-[#49333F]">
+              <h2 className="font-logo text-2xl font-semibold text-[#49333F] dark:text-gray-100">
                 Book This Service
               </h2>
 
-              <p className="mt-2 text-xs leading-6 text-[#987B88]">
+              <p className="mt-2 text-xs leading-6 text-[#987B88] dark:text-gray-400">
                 Send a booking request to this service vendor.
               </p>
 
               {session.user.role !== "customer" ? (
-                <p className="mt-5 rounded-xl bg-[#FFF4E8] p-4 text-sm text-[#987B88]">
+                <p className="mt-5 rounded-xl bg-[#FFF4E8] dark:bg-amber-500/10 p-4 text-sm text-[#987B88] dark:text-gray-400">
                   Only customer accounts can book a service.
                 </p>
               ) : (
                 <form onSubmit={handleBooking} className="mt-5 space-y-4">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#66525E]">
+                    <label className="mb-2 block text-sm font-medium text-[#66525E] dark:text-gray-200">
                       Event Date
                     </label>
 
@@ -309,12 +309,12 @@ export default function ServiceDetailsPage() {
                       min={new Date().toISOString().split("T")[0]}
                       value={eventDate}
                       onChange={(e) => setEventDate(e.target.value)}
-                      className="w-full rounded-xl border border-[#F0E3E7] bg-[#FFFCFB] px-4 py-3 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                      className="w-full rounded-xl border border-[#F0E3E7] dark:border-white/10 bg-[#FFFCFB] dark:bg-[#25232B] px-4 py-3 text-sm text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E88BAA]"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#66525E]">
+                    <label className="mb-2 block text-sm font-medium text-[#66525E] dark:text-gray-200">
                       Event Location
                     </label>
 
@@ -324,12 +324,12 @@ export default function ServiceDetailsPage() {
                       value={eventLocation}
                       onChange={(e) => setEventLocation(e.target.value)}
                       placeholder="Enter event location"
-                      className="w-full rounded-xl border border-[#F0E3E7] bg-[#FFFCFB] px-4 py-3 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                      className="w-full rounded-xl border border-[#F0E3E7] dark:border-white/10 bg-[#FFFCFB] dark:bg-[#25232B] px-4 py-3 text-sm text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E88BAA]"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#66525E]">
+                    <label className="mb-2 block text-sm font-medium text-[#66525E] dark:text-gray-200">
                       Additional Message
                     </label>
 
@@ -338,7 +338,7 @@ export default function ServiceDetailsPage() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Write any additional details..."
-                      className="w-full resize-none rounded-xl border border-[#F0E3E7] bg-[#FFFCFB] px-4 py-3 text-sm text-[#49333F] outline-none focus:border-[#E88BAA]"
+                      className="w-full resize-none rounded-xl border border-[#F0E3E7] dark:border-white/10 bg-[#FFFCFB] dark:bg-[#25232B] px-4 py-3 text-sm text-[#49333F] dark:text-gray-100 outline-none focus:border-[#E88BAA]"
                     />
                   </div>
 
@@ -360,7 +360,7 @@ export default function ServiceDetailsPage() {
                     )}
                   </button>
 
-                  <p className="text-center text-xs leading-5 text-[#987B88]">
+                  <p className="text-center text-xs leading-5 text-[#987B88] dark:text-gray-400">
                     Your booking request will be sent with Pending status.
                   </p>
                 </form>
